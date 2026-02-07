@@ -15,7 +15,7 @@
     "cz-customizable": "^7.0.0"
   },
   "scripts": {
-    "commit": "git-cz",
-    "cz": "git-cz"
+    "commit": "cz",
+    "cz": "cz"
   }
 }
