@@ -1,0 +1,21 @@
+{
+  "name": "flutter_demo2",
+  "version": "1.0.0",
+  "private": true,
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": ".cz-config.js"
+    }
+  },
+  "devDependencies": {
+    "commitizen": "^4.3.0",
+    "cz-customizable": "^7.0.0"
+  },
+  "scripts": {
+    "commit": "git-cz",
+    "cz": "git-cz"
+  }
+}

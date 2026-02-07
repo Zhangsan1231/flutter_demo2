@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Node (for commitizen / git-cz)
+node_modules/
+package-lock.json
