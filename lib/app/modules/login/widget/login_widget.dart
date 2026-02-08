@@ -215,6 +215,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   // 忘记密码弹窗方法
   void showForgotPasswordDialog() {
+    final hasText = false.obs;
     final emailController = TextEditingController();   // 创建邮箱输入控制器
     final errorText = ''.obs;                          // 响应式错误提示文本
 
@@ -276,6 +277,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                       contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     ),
                     onChanged: (value) {
+                      hasText.value = value.trim().isNotEmpty;
+
                       // 输入时如果有错误且现在有内容，清除错误提示
                       if (errorText.value.isNotEmpty && value.trim().isNotEmpty) {
                         errorText.value = '';
@@ -289,14 +292,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                 // OK 按钮容器 - 全宽
                 SizedBox(
                   width: double.infinity,
-                  child: Container(
+                  child: Obx(() {
+                    return   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0x732B56D7),   // 半透蓝色背景
+                      color: hasText.value? Color(0xff2B56D7) : Color(0x732B56D7),   // 半透蓝色背景
                       borderRadius: BorderRadius.circular(20.h),
                     ),
                     child: InkWell(
                       onTap: () async {                  // 点击事件 - 异步处理
                         final email = emailController.text.trim(); // 去除首尾空格
+                        if(email.isNotEmpty){
+
+                        }
                         errorText.value = '';            // 先清空错误
 
                         if (email.isEmpty) {
@@ -367,7 +374,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                         ),
                       ),
                     ),
-                  ),
+                  );
+                
+                  }) 
                 ),
                 Gap(12.h),
               ],
