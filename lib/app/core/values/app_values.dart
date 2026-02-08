@@ -55,4 +55,6 @@ abstract class AppValues {
   /// 令牌相关常量
   static const String accessToken = "ACCESS_TOKEN";
   static const String refreshToken = "REFRESH_TOKEN";
+
+  static const String locale = 'locale_key';
 }

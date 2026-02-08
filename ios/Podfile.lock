@@ -1,0 +1,34 @@
+PODS:
+  - Flutter (1.0.0)
+  - MMKV (2.3.0):
+    - MMKVCore (~> 2.3.0)
+  - mmkv_ios (2.3.0):
+    - Flutter
+    - FlutterMacOS
+    - MMKV (< 2.4, >= 2.3.0)
+  - MMKVCore (2.3.0)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - mmkv_ios (from `.symlinks/plugins/mmkv_ios/darwin`)
+
+SPEC REPOS:
+  trunk:
+    - MMKV
+    - MMKVCore
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  mmkv_ios:
+    :path: ".symlinks/plugins/mmkv_ios/darwin"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  MMKV: c953dbaac0da392c24b005e763c03ce2638b4ed7
+  mmkv_ios: b8849045b0f19a88abd6302378b84543a1c1e1dc
+  MMKVCore: d078dce7d6586a888b2c2ef5343b6242678e3ee8
+
+PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+
+COCOAPODS: 1.16.2

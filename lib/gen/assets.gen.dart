@@ -21,6 +21,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/AIH.png
   AssetGenImage get aih => const AssetGenImage('assets/images/AIH.png');
 
+  /// File path: assets/images/Vector.png
+  AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
+
   /// File path: assets/images/backgronud.png
   AssetGenImage get backgronud =>
       const AssetGenImage('assets/images/backgronud.png');
@@ -42,6 +45,7 @@ class $AssetsImagesGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     aih,
+    vector,
     backgronud,
     goggeIcon,
     googe,
