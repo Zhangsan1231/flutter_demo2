@@ -47,6 +47,10 @@ abstract class AppValues {
   /// 用于定义基础UI元素的尺寸
   static const double smallRadius = 8;           /// 小圆角半径
   static const double radius = 16;               /// 对话框圆角半径
+  static const double LoginRadius = 36; //登录页面radius
+  static const double LoginHeight = 287;//登录按钮长度
+  static const double LoginWidth = 47;//登录按钮宽度
+  static const double LoginTextSize = 16;
 
   /// 令牌相关常量
   static const String accessToken = "ACCESS_TOKEN";

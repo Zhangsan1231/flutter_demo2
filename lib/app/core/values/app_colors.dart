@@ -21,7 +21,7 @@ abstract class AppColors {
   /// 应用的默认页面背景色
   /// 用于页面容器、卡片背景等场景
   /// 颜色值：浅灰色 (#FAFAFA)
-  static const Color pageBackground = Color(0xFFF7F8FA);
+  static const Color pageBackground = Color(0xFFFFFF);
 
   /// 带透明度的容器背景色
   /// 

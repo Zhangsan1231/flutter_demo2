@@ -59,20 +59,26 @@ abstract class BaseViews<Controller extends BaseController>
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          if (bgImage != null)
-            Positioned(
-              top: bgImage!.top - MediaQuery.of(Get.context!).padding.top,
-              left: bgImage!.left,
-              child: Container(
-                // color: Colors.red,
-                width: bgImage!.width,
-                height: bgImage!.height,
-                // color: Colors.red,
-                child: Image.asset(bgImage!.imagePath, fit: bgImage!.fit),
-              ),
-            ),
+          // 在 BaseViews 的 build 方法裡，修改 Positioned 部分
+if (bgImage != null)
+  Positioned(
+    top: bgImage!.top - MediaQuery.of(context).padding.top,
+    left: bgImage!.left,
+    child: SizedBox(  // 改用 SizedBox 更明確
+      width: bgImage!.width ?? Get.width,
+      height: bgImage!.height ?? Get.height,
+      child: Image.asset(
+        bgImage!.imagePath,
+        fit: bgImage!.fit ?? BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return const Icon(Icons.broken_image, color: Colors.red, size: 50);
+        },
+      ),
+    ),
+  ),
 
           SafeArea(
+            bottom: false, // 让 body 铺满到底，避免底部露出背景图；需避开安全区时在页面内用 padding
             child: Column(
               children: [
                 appBar(context) ?? const SizedBox(),
