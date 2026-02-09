@@ -1,23 +1,16 @@
-import 'package:get/get.dart';
+import 'dart:ui';
 
-class HomeController extends GetxController {
+import 'package:flutter/material.dart';
+import 'package:flutter_demo2/app/core/base/base_controller.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:simple_ruler_picker/simple_ruler_picker.dart';
+
+class HomeController extends BaseController {
   //TODO: Implement HomeController
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
+  
 }
+
+
+

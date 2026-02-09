@@ -6,6 +6,7 @@ import 'package:flutter_demo2/app/modules/login/widget/login_banner.dart';
 
 // 导入用户协议组件
 import 'package:flutter_demo2/app/modules/login/widget/user_agreement.dart';
+import 'package:flutter_demo2/app/routes/app_pages.dart';
 
 // 导入通过 flutter_gen 生成的资源路径类（图片、svg等）
 import 'package:flutter_demo2/gen/assets.gen.dart';
@@ -426,6 +427,7 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       child: InkWell(
         onTap: () {
+          Get.toNamed(Routes.USER);
           print('用户点击了 Log in 按钮');
           // TODO: 实现登录逻辑（验证账号密码、调用 API 等）
         },

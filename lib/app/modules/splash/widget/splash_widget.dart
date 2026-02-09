@@ -9,6 +9,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:logger/logger.dart';
 
 class SplashWidget extends StatefulWidget {
   SplashWidget({Key? key}) : super(key: key);
@@ -61,7 +62,9 @@ class _SplashWidgetState extends State<SplashWidget> {
       onTap: () {
         Get.toNamed(Routes.LOGIN);
         // logger.d("nihao");
-        print("微信点击");
+        Get.toNamed(Routes.HOME);
+        
+        print("微信点击 跳转首页");
       },
       child: Container(
         height: 47,
@@ -110,7 +113,8 @@ class _SplashWidgetState extends State<SplashWidget> {
       IntrinsicWidth(
         child: InkWell(
           onTap: () {
-            print("谷歌点击");
+            Get.toNamed(Routes.INFORMATION);
+            print("谷歌点击 跳转用户页面");
           },
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 30.w),

@@ -41,6 +41,7 @@ dependencies:
   flutter_screenutil: ^5.9.3  #屏幕适配
   gap: ^3.0.1                 #间距
   mmkv: "^2.3.0"
+  simple_ruler_picker: ^0.1.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
