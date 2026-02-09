@@ -1,6 +1,7 @@
+import 'package:flutter_demo2/app/core/base/base_controller.dart';
 import 'package:get/get.dart';
 
-class RegisterController extends GetxController {
+class RegisterController extends BaseController {
   //TODO: Implement RegisterController
 
   final count = 0.obs;

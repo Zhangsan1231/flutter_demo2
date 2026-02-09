@@ -30,7 +30,8 @@ class InformationController extends BaseController {
 
   final double minValue = 90;
   final double maxValue = 280;
-
+  final double weightMinValue = 40;
+  final double weightMaxValue = 150;
   // 每条刻度间隔像素（可根据需求调整）
   final double tickSpacing = 20.0;
 

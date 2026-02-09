@@ -146,6 +146,7 @@ class _SplashWidgetState extends State<SplashWidget> {
 
       child: InkWell(
         onTap: () {
+          Get.toNamed(Routes.REGISTER);
           print("other点击");
         },
         child: Text(
