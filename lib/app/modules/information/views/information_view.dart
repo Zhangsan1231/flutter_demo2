@@ -75,610 +75,709 @@ class InformationView extends BaseViews<InformationController> {
                   topRight: Radius.circular(24.h),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Gap(24.h),
-                  Text(
-                    'Name',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
-                      color: Color(0xff444444),
-                    ),
-                  ),
-                  Gap(12.h),
-
-                  firstTextInput(),
-
-                  Gap(12.h),
-
-                  lastTextInput(),
-                  Gap(16.h),
-                  Text(
-                    'Gender',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
-                      color: Color(0xff444444),
-                    ),
-                  ),
-                  Gap(12.h),
-                  InkWell(
-                    onTap: () {
-                      final inforController = Get.find<InformationController>();
-                      Get.bottomSheet(
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 16,
-                          ),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(24),
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // 标题
-                              const Text(
-                                '选择性别',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              // 使用枚举循环生成选项
-                              ...Gender.values.map(
-                                (gender) => ListTile(
-                                  leading: Icon(
-                                    gender.icon,
-                                    color: gender.color,
-                                  ),
-                                  title: Text(gender.label),
-                                  onTap: () {
-                                    inforController.selectGender(gender);
-                                    Get.back(); // 关闭弹窗
-                                  },
-                                  trailing: Obx(() {
-                                    return inforController
-                                                .selectedGender
-                                                .value ==
-                                            gender
-                                        ? Icon(
-                                            Icons.check_circle,
-                                            color: gender.color,
-                                          )
-                                        : const SizedBox.shrink();
-                                  }),
-                                ),
-                              ),
-
-                              const SizedBox(height: 24),
-                            ],
-                          ),
-                        ),
-                        backgroundColor: Colors.transparent,
-                        isScrollControlled: true,
-                      );
-                      logger.d('性别点击测试');
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 16.h,
-                        horizontal: 16.h,
-                      ),
-                      alignment: Alignment.centerRight,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(24.h),
-                        color: Color(0xffF5F6FA),
-                      ),
-
-                      child: Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween, //左右布局
-                        children: [
-                          Obx(
-                            () => Text(
-                              controller.selectedGender.value.toString(),
-                            ),
-                          ),
-                          Icon(Icons.arrow_drop_down_sharp),
-                        ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Gap(24.h),
+                    Text(
+                      'Name',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        color: Color(0xff444444),
                       ),
                     ),
-                  ),
+                    Gap(12.h),
 
-                  Gap(16.h),
-                  Text(
-                    'Height (cm)',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
-                      color: Color(0xff444444),
+                    firstTextInput(),
+
+                    Gap(12.h),
+
+                    lastTextInput(),
+                    Gap(16.h),
+                    Text(
+                      'Gender',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        color: Color(0xff444444),
+                      ),
                     ),
-                  ),
-
-                  InkWell(
-                    // 點擊整個容器時觸發 bottomSheet
-                    onTap: () {
-                      // 在打開 bottomSheet 之前先獲取 controller 引用
-                      final infoController = Get.find<InformationController>();
-
-                      Get.bottomSheet(
-                        // bottomSheet 的主容器
-                        Container(
-                          // 設定 bottomSheet 高度為螢幕高度的 60%，避免無限高度導致佈局崩潰
-                          height:
-                              MediaQuery.of(Get.context!).size.height * 0.60,
-                          width: double.infinity,
-
-                          // 內部左右留白
-                          padding: EdgeInsets.symmetric(horizontal: 12.w),
-
-                          // 白色背景 + 頂部圓角
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(24.h),
+                    Gap(12.h),
+                    InkWell(
+                      onTap: () {
+                        final inforController =
+                            Get.find<InformationController>();
+                        Get.bottomSheet(
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 16,
                             ),
-                          ),
-
-                          child: Column(
-                            // 使用 min 避免 Column 在垂直方向無限擴張
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-
-                            children: [
-                              // 頂部間距
-                              Gap(32.h),
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Weight',
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Color(0xff333333),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 20.w),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w,
-                                        vertical: 5.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xff3262FF),
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3262FF),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'cm',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 20.w),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 30.w,
-                                        vertical: 5.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3262FF),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'ft',
-                                        style: TextStyle(
-                                          color: Color(0xff3262FF),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(24),
                               ),
-                              Gap(17.h),
-                              Container(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color(0xffF5F6FA),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(24.w),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    hintText: 'Your height',
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 标题
+                                const Text(
+                                  '选择性别',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
+                                const SizedBox(height: 16),
 
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(),
-                              ),
-
-                              Gap(32.h),
-
-                              //插入身高尺子 - 可拖动滑块
-                              // ── 尺子区域 ──
-                              RulerWidget(
-                                onVerticalDragUpdate:
-                                    controller.onVerticalDragUpdate,
-                                onVerticalDragEnd: controller.onVerticalDragEnd,
-                                visibleHeight: controller.visibleHeight,
-                                offset: controller.offset,
-                                targetOffset: controller.targetOffset,
-                                tickSpacing: controller.tickSpacing,
-                                minValue: controller.minValue,
-                                maxValue: controller.maxValue,
-                                unit: 'cm',
-                              ),
-
-                              Gap(24.h),
-
-                              // 確認按鈕（置中）
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10.w),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 40.w,
-                                        vertical: 10.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3c72ff),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Cancel',
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xff3c72ff),
-                                        ),
-                                      ),
+                                // 使用枚举循环生成选项
+                                ...Gender.values.map(
+                                  (gender) => ListTile(
+                                    leading: Icon(
+                                      gender.icon,
+                                      color: gender.color,
                                     ),
-                                    Gap(20.w),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 50.w,
-                                        vertical: 10.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xff3c72ff),
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3c72ff),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Next',
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                    title: Text(gender.label),
+                                    onTap: () {
+                                      inforController.selectGender(gender);
+                                      Get.back(); // 关闭弹窗
+                                    },
+                                    trailing: Obx(() {
+                                      return inforController
+                                                  .selectedGender
+                                                  .value ==
+                                              gender
+                                          ? Icon(
+                                              Icons.check_circle,
+                                              color: gender.color,
+                                            )
+                                          : const SizedBox.shrink();
+                                    }),
+                                  ),
                                 ),
-                              ),
 
-                              // 底部額外安全間距，避免按鈕太貼底
-                              Gap(15.h),
-                            ],
+                                const SizedBox(height: 24),
+                              ],
+                            ),
                           ),
+                          backgroundColor: Colors.transparent,
+                          isScrollControlled: true,
+                        );
+                        logger.d('性别点击测试');
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16.h,
+                          horizontal: 16.h,
+                        ),
+                        alignment: Alignment.centerRight,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24.h),
+                          color: Color(0xffF5F6FA),
                         ),
 
-                        // 重要參數：允許自訂高度的 bottomSheet
-                        isScrollControlled: true,
-
-                        // 背景透明，讓頂部圓角更自然顯示
-                        backgroundColor: Colors.transparent,
-                      );
-                    },
-
-                    // 未點擊時顯示的容器（目前身高預覽）
-                    child: Container(
-                      // 內部上下左右留白
-                      padding: EdgeInsets.symmetric(
-                        vertical: 16.h,
-                        horizontal: 16.w,
-                      ),
-
-                      // 淺灰色背景 + 圓角
-                      decoration: BoxDecoration(
-                        color: Color(0xffF5F6FA),
-                        borderRadius: BorderRadius.circular(24.h),
-                      ),
-
-                      child: Row(
-                        // 左右對齊：左邊顯示身高，右邊顯示箭頭
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          // 目前選擇的身高（這裡寫死 170 cm，建議改用 Obx 從 controller 取值）
-                          Text('170 cm', style: TextStyle(fontSize: 16.sp)),
-
-                          // 右側箭頭圖示，表示可點擊編輯
-                          Icon(Icons.arrow_drop_down_sharp),
-                        ],
+                        child: Row(
+                          mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween, //左右布局
+                          children: [
+                            Obx(
+                              () => Text(
+                                controller.selectedGender.value.toString(),
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down_sharp),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
 
-                  Gap(16.h),
-                  Text(
-                    'weight (cm)',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16.sp,
-                      color: Color(0xff444444),
+                    Gap(16.h),
+                    Text(
+                      'Height (cm)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        color: Color(0xff444444),
+                      ),
                     ),
-                  ),
 
-                  InkWell(
-                    // 點擊整個容器時觸發 bottomSheet
-                    onTap: () {
-                      // 在打開 bottomSheet 之前先獲取 controller 引用
-                      final infoController = Get.find<InformationController>();
+                    InkWell(
+                      // 點擊整個容器時觸發 bottomSheet
+                      onTap: () {
+                        // 在打開 bottomSheet 之前先獲取 controller 引用
+                        final infoController =
+                            Get.find<InformationController>();
 
-                      Get.bottomSheet(
-                        // bottomSheet 的主容器
-                        Container(
-                          // 設定 bottomSheet 高度為螢幕高度的 60%，避免無限高度導致佈局崩潰
-                          height:
-                              MediaQuery.of(Get.context!).size.height * 0.60,
-                          width: double.infinity,
+                        Get.bottomSheet(
+                          // bottomSheet 的主容器
+                          Container(
+                            // 設定 bottomSheet 高度為螢幕高度的 60%，避免無限高度導致佈局崩潰
+                            height:
+                                MediaQuery.of(Get.context!).size.height * 0.60,
+                            width: double.infinity,
 
-                          // 內部左右留白
-                          padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            // 內部左右留白
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
 
-                          // 白色背景 + 頂部圓角
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(24.h),
+                            // 白色背景 + 頂部圓角
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(24.h),
+                              ),
+                            ),
+
+                            child: Column(
+                              // 使用 min 避免 Column 在垂直方向無限擴張
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+
+                              children: [
+                                // 頂部間距
+                                Gap(32.h),
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Weight',
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Color(0xff333333),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 20.w),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20.w,
+                                          vertical: 5.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff3262FF),
+                                          borderRadius: BorderRadius.circular(
+                                            24.h,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xff3262FF),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'cm',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 20.w),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 30.w,
+                                          vertical: 5.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            24.h,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xff3262FF),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'ft',
+                                          style: TextStyle(
+                                            color: Color(0xff3262FF),
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Gap(17.h),
+                                Container(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0xffF5F6FA),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          24.w,
+                                        ),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      hintText: 'Your height',
+                                    ),
+                                  ),
+                                ),
+
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(),
+                                ),
+
+                                Gap(32.h),
+
+                                //插入身高尺子 - 可拖动滑块
+                                // ── 尺子区域 ──
+                                RulerWidget(
+                                  onVerticalDragUpdate:
+                                      controller.onVerticalDragUpdate,
+                                  onVerticalDragEnd:
+                                      controller.onVerticalDragEnd,
+                                  visibleHeight: controller.visibleHeight,
+                                  offset: controller.offset,
+                                  targetOffset: controller.targetOffset,
+                                  tickSpacing: controller.tickSpacing,
+                                  minValue: controller.minValue,
+                                  maxValue: controller.maxValue,
+                                  unit: 'cm',
+                                ),
+
+                                Gap(24.h),
+
+                                // 確認按鈕（置中）
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () => Get.back(),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 40.w,
+                                            vertical: 10.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              24.h,
+                                            ),
+                                            border: Border.all(
+                                              color: Color(0xff3c72ff),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              fontSize: 20.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff3c72ff),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Gap(20.w),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 50.w,
+                                          vertical: 10.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff3c72ff),
+                                          borderRadius: BorderRadius.circular(
+                                            24.h,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xff3c72ff),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Next',
+                                          style: TextStyle(
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // 底部額外安全間距，避免按鈕太貼底
+                                Gap(15.h),
+                              ],
                             ),
                           ),
 
-                          child: Column(
-                            // 使用 min 避免 Column 在垂直方向無限擴張
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          // 重要參數：允許自訂高度的 bottomSheet
+                          isScrollControlled: true,
 
-                            children: [
-                              // 頂部間距
-                              Gap(32.h),
+                          // 背景透明，讓頂部圓角更自然顯示
+                          backgroundColor: Colors.transparent,
+                        );
+                      },
 
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Weight',
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Color(0xff333333),
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 20.w),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20.w,
-                                        vertical: 5.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xff3262FF),
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3262FF),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'lb',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 20.w),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 30.w,
-                                        vertical: 5.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3262FF),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'kg',
-                                        style: TextStyle(
-                                          color: Color(0xff3262FF),
-                                          fontSize: 12.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              Gap(17.h),
-                              Container(
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color(0xffF5F6FA),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(24.w),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                    hintText: 'Your weight',
-                                  ),
-                                ),
-                              ),
-
-                              Gap(32.h),
-
-                              //插入身高尺子 - 可拖动滑块
-                              // ── 尺子区域 ──
-                              RulerWidget(
-                                onVerticalDragUpdate:
-                                    controller.onVerticalDragUpdate,
-                                onVerticalDragEnd: controller.onVerticalDragEnd,
-                                visibleHeight: controller.visibleHeight,
-                                offset: controller.offset,
-                                targetOffset: controller.targetOffset,
-                                tickSpacing: controller.tickSpacing,
-                                minValue: controller.weightMinValue,
-                                maxValue: controller.weightMaxValue,
-                                unit: 'kg',
-                              ),
-
-                              Gap(24.h),
-
-                              // 確認按鈕（置中）
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10.w),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 40.w,
-                                        vertical: 10.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3c72ff),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Cancel',
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xff3c72ff),
-                                        ),
-                                      ),
-                                    ),
-                                    Gap(20.w),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 50.w,
-                                        vertical: 10.h,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xff3c72ff),
-                                        borderRadius: BorderRadius.circular(
-                                          24.h,
-                                        ),
-                                        border: Border.all(
-                                          color: Color(0xff3c72ff),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Next',
-                                        style: TextStyle(
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              // 底部額外安全間距，避免按鈕太貼底
-                              Gap(15.h),
-                            ],
-                          ),
+                      // 未點擊時顯示的容器（目前身高預覽）
+                      child: Container(
+                        // 內部上下左右留白
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16.h,
+                          horizontal: 16.w,
                         ),
 
-                        // 重要參數：允許自訂高度的 bottomSheet
-                        isScrollControlled: true,
+                        // 淺灰色背景 + 圓角
+                        decoration: BoxDecoration(
+                          color: Color(0xffF5F6FA),
+                          borderRadius: BorderRadius.circular(24.h),
+                        ),
 
-                        // 背景透明，讓頂部圓角更自然顯示
-                        backgroundColor: Colors.transparent,
-                      );
-                    },
+                        child: Row(
+                          // 左右對齊：左邊顯示身高，右邊顯示箭頭
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                    // 未點擊時顯示的容器（目前身高預覽）
-                    child: Container(
-                      // 內部上下左右留白
-                      padding: EdgeInsets.symmetric(
-                        vertical: 16.h,
-                        horizontal: 16.w,
-                      ),
+                          children: [
+                            // 目前選擇的身高（這裡寫死 170 cm，建議改用 Obx 從 controller 取值）
+                            Obx(
+                              () => Text(
+                                '${controller.currentValue.round().toStringAsFixed(0)} cm',
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                            ),
 
-                      // 淺灰色背景 + 圓角
-                      decoration: BoxDecoration(
-                        color: Color(0xffF5F6FA),
-                        borderRadius: BorderRadius.circular(24.h),
-                      ),
-
-                      child: Row(
-                        // 左右對齊：左邊顯示身高，右邊顯示箭頭
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                        children: [
-                          // 目前選擇的身高（這裡寫死 170 cm，建議改用 Obx 從 controller 取值）
-                          Text('170 cm', style: TextStyle(fontSize: 16.sp)),
-
-                          // 右側箭頭圖示，表示可點擊編輯
-                          Icon(Icons.arrow_drop_down_sharp),
-                        ],
+                            // 右側箭頭圖示，表示可點擊編輯
+                            Icon(Icons.arrow_drop_down_sharp),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+
+                    Gap(16.h),
+                    Text(
+                      'weight (cm)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        color: Color(0xff444444),
+                      ),
+                    ),
+
+                    InkWell(
+                      // 點擊整個容器時觸發 bottomSheet
+                      onTap: () {
+                        // 在打開 bottomSheet 之前先獲取 controller 引用
+                        final infoController =
+                            Get.find<InformationController>();
+
+                        Get.bottomSheet(
+                          // bottomSheet 的主容器
+                          Container(
+                            // 設定 bottomSheet 高度為螢幕高度的 60%，避免無限高度導致佈局崩潰
+                            height:
+                                MediaQuery.of(Get.context!).size.height * 0.60,
+                            width: double.infinity,
+
+                            // 內部左右留白
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
+
+                            // 白色背景 + 頂部圓角
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(24.h),
+                              ),
+                            ),
+
+                            child: Column(
+                              // 使用 min 避免 Column 在垂直方向無限擴張
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+
+                              children: [
+                                // 頂部間距
+                                Gap(32.h),
+
+                                Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Weight',
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Color(0xff333333),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 20.w),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20.w,
+                                          vertical: 5.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff3262FF),
+                                          borderRadius: BorderRadius.circular(
+                                            24.h,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xff3262FF),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'lb',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 20.w),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 30.w,
+                                          vertical: 5.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            24.h,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xff3262FF),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'kg',
+                                          style: TextStyle(
+                                            color: Color(0xff3262FF),
+                                            fontSize: 12.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                Gap(17.h),
+                                Container(
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0xffF5F6FA),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          24.w,
+                                        ),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                      hintText: 'Your weight',
+                                    ),
+                                  ),
+                                ),
+
+                                Gap(32.h),
+
+                                //插入身高尺子 - 可拖动滑块
+                                // ── 尺子区域 ──
+                                RulerWidget(
+                                  onVerticalDragUpdate:
+                                      controller.onWeightDragUpdate,
+                                  onVerticalDragEnd: controller.onWeightDragEnd,
+                                  visibleHeight: controller.visibleHeight,
+                                  offset: controller.weightOffset,
+                                  targetOffset: controller.weightTargetOffset,
+                                  tickSpacing: controller.tickSpacing,
+                                  minValue: controller.weightMinValue,
+                                  maxValue: controller.weightMaxValue,
+                                  unit: 'kg',
+                                ),
+
+                                Gap(24.h),
+
+                                // 確認按鈕（置中）
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: 10.w,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () => Get.back(),
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 40.w,
+                                            vertical: 10.h,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              24.h,
+                                            ),
+                                            border: Border.all(
+                                              color: Color(0xff3c72ff),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              fontSize: 20.sp,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff3c72ff),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      Gap(20.w),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 50.w,
+                                          vertical: 10.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xff3c72ff),
+                                          borderRadius: BorderRadius.circular(
+                                            24.h,
+                                          ),
+                                          border: Border.all(
+                                            color: Color(0xff3c72ff),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Next',
+                                          style: TextStyle(
+                                            fontSize: 20.sp,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // 底部額外安全間距，避免按鈕太貼底
+                                Gap(15.h),
+                              ],
+                            ),
+                          ),
+
+                          // 重要參數：允許自訂高度的 bottomSheet
+                          isScrollControlled: true,
+
+                          // 背景透明，讓頂部圓角更自然顯示
+                          backgroundColor: Colors.transparent,
+                        );
+                      },
+
+                      // 未點擊時顯示的容器（目前身高預覽）
+                      child: Container(
+                        // 內部上下左右留白
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16.h,
+                          horizontal: 16.w,
+                        ),
+
+                        // 淺灰色背景 + 圓角
+                        decoration: BoxDecoration(
+                          color: Color(0xffF5F6FA),
+                          borderRadius: BorderRadius.circular(24.h),
+                        ),
+
+                        child: Row(
+                          // 左右對齊：左邊顯示身高，右邊顯示箭頭
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                          children: [
+                            // 目前選擇的身高（這裡寫死 170 cm，建議改用 Obx 從 controller 取值）
+                            Obx(
+                              () => Text(
+                                '${controller.currentWeightValue.round().toStringAsFixed(0)} kg',
+                                style: TextStyle(fontSize: 16.sp),
+                              ),
+                            ),
+
+                            // 右側箭頭圖示，表示可點擊編輯
+                            Icon(Icons.arrow_drop_down_sharp),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // ==================== Birthday ====================
+                    Text(
+                      'Birthday',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16.sp,
+                        color: Color(0xff444444),
+                      ),
+                    ),
+                    Gap(12.h),
+
+                    InkWell(
+                      onTap: () {
+                        controller.selectBirthday(); // 调用 Controller 的生日选择方法
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 16.h,
+                          horizontal: 16.w,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Color(0xffF5F6FA),
+                          borderRadius: BorderRadius.circular(24.h),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Obx(() {
+                              final birthday =
+                                  controller.selectedBirthday.value;
+                              return Text(
+                                birthday == null
+                                    ? 'Your birthday'
+                                    : '${birthday.year}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}',
+                                style: TextStyle(fontSize: 16.sp),
+                              );
+                            }),
+                            const Icon(Icons.arrow_drop_down_sharp),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // Gap(32.h),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 20.h,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 100.w,
+                        vertical: 10.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(24.h),
+                      ),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    Gap(50.h),
+                  ],
+                ),
               ),
             ),
           ),
