@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/model/page_background_.dart';
+import 'package:flutter_demo2/app/data/enum/gender_enum.dart';
 import 'package:flutter_demo2/app/modules/information/widget/height_painter.dart';
 import 'package:flutter_demo2/app/modules/information/widget/ruler_widget.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
@@ -105,18 +106,66 @@ class InformationView extends BaseViews<InformationController> {
                   Gap(12.h),
                   InkWell(
                     onTap: () {
+                      final inforController = Get.find<InformationController>();
                       Get.bottomSheet(
                         Container(
                           width: double.infinity,
-
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24.h),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          decoration: const BoxDecoration(
                             color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(24),
+                            ),
                           ),
                           child: Column(
-                            children: [Text('男'), Text('男'), Text('男')],
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // 标题
+                              const Text(
+                                '选择性别',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+
+                              // 使用枚举循环生成选项
+                              ...Gender.values.map(
+                                (gender) => ListTile(
+                                  leading: Icon(
+                                    gender.icon,
+                                    color: gender.color,
+                                  ),
+                                  title: Text(gender.label),
+                                  onTap: () {
+                                    inforController.selectGender(gender);
+                                    Get.back(); // 关闭弹窗
+                                  },
+                                  trailing: Obx(() {
+                                    return inforController
+                                                .selectedGender
+                                                .value ==
+                                            gender
+                                        ? Icon(
+                                            Icons.check_circle,
+                                            color: gender.color,
+                                          )
+                                        : const SizedBox.shrink();
+                                  }),
+                                ),
+                              ),
+
+                              const SizedBox(height: 24),
+                            ],
                           ),
                         ),
+                        backgroundColor: Colors.transparent,
+                        isScrollControlled: true,
                       );
                       logger.d('性别点击测试');
                     },
@@ -132,7 +181,18 @@ class InformationView extends BaseViews<InformationController> {
                         color: Color(0xffF5F6FA),
                       ),
 
-                      child: Icon(Icons.home),
+                      child: Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween, //左右布局
+                        children: [
+                          Obx(
+                            () => Text(
+                              controller.selectedGender.value.toString(),
+                            ),
+                          ),
+                          Icon(Icons.arrow_drop_down_sharp),
+                        ],
+                      ),
                     ),
                   ),
 
@@ -179,7 +239,7 @@ class InformationView extends BaseViews<InformationController> {
                             children: [
                               // 頂部間距
                               Gap(32.h),
-                               Container(
+                              Container(
                                 margin: EdgeInsets.symmetric(horizontal: 10),
                                 child: Row(
                                   children: [
@@ -256,7 +316,6 @@ class InformationView extends BaseViews<InformationController> {
                                   ),
                                 ),
                               ),
-                             
 
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: 10),
@@ -288,29 +347,51 @@ class InformationView extends BaseViews<InformationController> {
                                 child: Row(
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 40.w,vertical: 10.h),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 40.w,
+                                        vertical: 10.h,
+                                      ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24.h),
+                                        borderRadius: BorderRadius.circular(
+                                          24.h,
+                                        ),
                                         border: Border.all(
                                           color: Color(0xff3c72ff),
-                                        )
+                                        ),
                                       ),
-                                      child: Text('Cancel',style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.w500,color: Color(0xff3c72ff)),),
+                                      child: Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff3c72ff),
+                                        ),
+                                      ),
                                     ),
                                     Gap(20.w),
                                     Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 50.w,vertical: 10.h),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 50.w,
+                                        vertical: 10.h,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Color(0xff3c72ff),
-                                        borderRadius: BorderRadius.circular(24.h),
+                                        borderRadius: BorderRadius.circular(
+                                          24.h,
+                                        ),
                                         border: Border.all(
                                           color: Color(0xff3c72ff),
-                                        )
+                                        ),
                                       ),
-                                      child: Text('Next',style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.w500,color: Colors.white),),
+                                      child: Text(
+                                        'Next',
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
-                                    
-
                                   ],
                                 ),
                               ),
@@ -352,7 +433,7 @@ class InformationView extends BaseViews<InformationController> {
                           Text('170 cm', style: TextStyle(fontSize: 16.sp)),
 
                           // 右側箭頭圖示，表示可點擊編輯
-                          Icon(Icons.arrow_forward_ios, size: 16.sp),
+                          Icon(Icons.arrow_drop_down_sharp),
                         ],
                       ),
                     ),
@@ -465,7 +546,7 @@ class InformationView extends BaseViews<InformationController> {
                                   ],
                                 ),
                               ),
-                             
+
                               Gap(17.h),
                               Container(
                                 child: TextField(
@@ -500,35 +581,57 @@ class InformationView extends BaseViews<InformationController> {
 
                               Gap(24.h),
 
-                               // 確認按鈕（置中）
+                              // 確認按鈕（置中）
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: 10.w),
                                 child: Row(
                                   children: [
                                     Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 40.w,vertical: 10.h),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 40.w,
+                                        vertical: 10.h,
+                                      ),
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24.h),
+                                        borderRadius: BorderRadius.circular(
+                                          24.h,
+                                        ),
                                         border: Border.all(
                                           color: Color(0xff3c72ff),
-                                        )
+                                        ),
                                       ),
-                                      child: Text('Cancel',style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.w500,color: Color(0xff3c72ff)),),
+                                      child: Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff3c72ff),
+                                        ),
+                                      ),
                                     ),
                                     Gap(20.w),
                                     Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 50.w,vertical: 10.h),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 50.w,
+                                        vertical: 10.h,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Color(0xff3c72ff),
-                                        borderRadius: BorderRadius.circular(24.h),
+                                        borderRadius: BorderRadius.circular(
+                                          24.h,
+                                        ),
                                         border: Border.all(
                                           color: Color(0xff3c72ff),
-                                        )
+                                        ),
                                       ),
-                                      child: Text('Next',style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.w500,color: Colors.white),),
+                                      child: Text(
+                                        'Next',
+                                        style: TextStyle(
+                                          fontSize: 20.sp,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
-                                    
-
                                   ],
                                 ),
                               ),
@@ -570,7 +673,7 @@ class InformationView extends BaseViews<InformationController> {
                           Text('170 cm', style: TextStyle(fontSize: 16.sp)),
 
                           // 右側箭頭圖示，表示可點擊編輯
-                          Icon(Icons.arrow_forward_ios, size: 16.sp),
+                          Icon(Icons.arrow_drop_down_sharp),
                         ],
                       ),
                     ),

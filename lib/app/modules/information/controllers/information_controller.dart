@@ -1,32 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_controller.dart';
+import 'package:flutter_demo2/app/data/enum/gender_enum.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:simple_ruler_picker/simple_ruler_picker.dart';
 
-enum Gender {
-  male('男'),
-  female('女'),
-  other('其他/保密');
 
-  final String label;
-  const Gender(this.label);
-}
 
 class InformationController extends BaseController {
-  final selectedGender = Rxn<Gender>(); // Rxn 代表 nullable Rx
+
+  // 定义控制器（必须在 onClose 中 dispose）
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+
+  // 方便获取值的 getter（可选）
+  String get firstName => firstNameController.text.trim();
+  String get lastName => lastNameController.text.trim();
   //TODO: Implement InformationController
 
   final count = 0.obs;
+ // 当前选中的性别（初始为保密）
+  final selectedGender = Rx<Gender>(Gender.confidential);
 
-  // 可选：当选择改变时可以做额外处理
-  void onGenderChanged(Gender? value) {
-    selectedGender.value = value;
-    // 可以在这里做其他操作，例如：
-    // saveToServer();
-    // validateForm();
-    print('性别更新为：${value?.label}');
+  // 选择性别的方法
+  void selectGender(Gender gender) {
+    selectedGender.value = gender;
+    print('用户选择了性别：${gender.label}');
+    // Get.back();  // 关闭弹窗（可选，根据你的需求）
   }
+
+
+
 
   final double minValue = 90;
   final double maxValue = 280;

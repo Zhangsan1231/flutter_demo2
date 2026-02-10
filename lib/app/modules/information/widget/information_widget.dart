@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_demo2/app/modules/information/controllers/information_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class InformationWidget extends StatefulWidget {
@@ -9,7 +10,10 @@ class InformationWidget extends StatefulWidget {
 }
 
 Widget firstTextInput() {
+  InformationController informationController = InformationController();
+
   return TextField(
+    controller: informationController.firstNameController,
     decoration: InputDecoration(
       filled: true,
       fillColor: Color(0xffF5F6FA),
@@ -23,7 +27,10 @@ Widget firstTextInput() {
 }
 
 Widget lastTextInput() {
+  InformationController informationController = InformationController();
+
   return TextField(
+    controller: informationController.lastNameController,
     decoration: InputDecoration(
       filled: true,
       fillColor: Color(0xffF5F6FA),
