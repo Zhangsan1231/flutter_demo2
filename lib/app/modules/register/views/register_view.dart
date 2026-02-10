@@ -7,22 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../controllers/register_controller.dart';
 
 class RegisterView extends BaseViews<RegisterController> {
   RegisterView({super.key})
     : super(
-        bgImage: PageBackground(
-          imagePath: '', // 注意拼寫改成 background
-          top: 0.0,
-          left: 0.0,
-          width: 375.w,
-          // width: Get.width,           // 螢幕寬度
-          // height: Get.height+MediaQuery.of(Get.context!).padding.top,         // 螢幕高度
-          height: 812.w + MediaQuery.of(Get.context!).padding.top,
-          fit: BoxFit.fitHeight, // 建議用 cover 全屏鋪滿
-        ),
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light, // 看圖片顏色決定
       );
@@ -50,9 +41,7 @@ class RegisterView extends BaseViews<RegisterController> {
                 Positioned(
                   left: 0.w,
 
-                  child: Center(
-                    child: Icon(Icons.arrow_left_sharp, size: 45.sp),
-                  ),
+                  child: Center(child: Icon(Icons.arrow_back, size: 20.sp)),
                 ),
                 // 标题文字 - 自动居中
                 Center(
@@ -83,29 +72,33 @@ class RegisterView extends BaseViews<RegisterController> {
               Gap(20.h),
               Container(
                 child: TextField(
-                  // obscureText: true, // 如果是密碼才開啟
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color(0xffF2F2F2),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12.h),
-                      borderSide: BorderSide.none,
-                    ),
+                  controller: controller.emailController,
+                    // obscureText: true, // 如果是密碼才開啟
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: const Color(0xffF2F2F2),
+                     
 
-                    hintText: '请输入你的邮箱',
-                    hintStyle: TextStyle(
-                      fontSize: 12.sp,
-                      color: Colors.grey[500],
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.h),
+                        borderSide: BorderSide.none,
+                      ),
+
+                      hintText: '请输入你的邮箱',
+                      hintStyle: TextStyle(
+                        fontSize: 12.sp,
+                        color: Colors.grey[500],
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 12.h,
+                      ),
                     ),
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 12.h,
-                    ),
+                    // 補全 keyboardType
+                    keyboardType: TextInputType.emailAddress,
                   ),
-                  // 補全 keyboardType
-                  keyboardType: TextInputType.emailAddress,
                 ),
-              ),
+              
               Gap(20.h),
               //密码
               Container(
@@ -117,12 +110,14 @@ class RegisterView extends BaseViews<RegisterController> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                
               ),
               Gap(20.h),
-              //密码
+              //密码输入
               Container(
                 child: Obx(
                   () => TextField(
+                    controller: controller.passwordController,
                     obscureText: _obscureText.value, // 动态控制是否隐藏
                     decoration: InputDecoration(
                       filled: true,
@@ -131,7 +126,7 @@ class RegisterView extends BaseViews<RegisterController> {
                         borderRadius: BorderRadius.circular(12.h),
                         borderSide: BorderSide.none,
                       ),
-
+                      
                       hintText: '请输入你的密码',
                       hintStyle: TextStyle(
                         fontSize: 12.sp,
@@ -141,6 +136,7 @@ class RegisterView extends BaseViews<RegisterController> {
                         horizontal: 16.w,
                         vertical: 12.h,
                       ),
+                      
                       suffixIcon: IconButton(
                         onPressed: () {
                           _obscureText.value = !_obscureText.value;
@@ -152,6 +148,8 @@ class RegisterView extends BaseViews<RegisterController> {
                         ),
                       ),
                     ),
+                    // onChanged: controller.validatePassword
+                    
                   ),
                   // 補全 keyboardType
                   // keyboardType: TextInputType.emailAddress,
@@ -208,18 +206,28 @@ class RegisterView extends BaseViews<RegisterController> {
                         ),
                       ),
                     ),
+                    onChanged: controller.confirmPassword,
                   ),
                   // 補全 keyboardType
                   // keyboardType: TextInputType.emailAddress,
                 ),
               ),
+              
+              Obx(() => Container(
+                alignment: Alignment.bottomLeft,
+                child: Text(controller.errorText.value,style: TextStyle(color: Colors.red),),
+              )),
             ],
           ),
 
           Gap(10.h),
+
           UserAgreement(),
+          // Obx(() => UserAgreement(agreementValue: controller.registerAgreement),),
           Gap(20.h),
-          Container(
+          InkWell(
+            onTap: controller.RegisterButton,
+            child: Container(
             margin: EdgeInsets.symmetric(horizontal: 20.w),
             padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 10.h),
             alignment: Alignment.center,
@@ -229,6 +237,8 @@ class RegisterView extends BaseViews<RegisterController> {
             ),
             child: Text('注册'),
           ),
+        
+          )
         ],
       ),
     );

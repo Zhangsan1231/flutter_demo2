@@ -1,6 +1,10 @@
+
 import 'dart:typed_data';
 
 
+import 'package:flutter_demo2/app/core/model/region_unit.dart';
+import 'package:flutter_demo2/app/core/values/app_values.dart';
+import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:mmkv/mmkv.dart';
 import 'dart:convert'; // 用于 Bytes 类型编解码
 
@@ -150,5 +154,51 @@ class SecureStorageService {
   // setUserInfo(UserInfo userInfo) {
   //   setString(AppValues.userInfoKey, jsonEncode(userInfo.toJson()));
   // }
+  setRegion(RegionUnit unit){
+    setString(AppValues.apiRegionKey, unit.name);
+  }
 
+  RegionUnit getRegion(){
+    String? region = getString(AppValues.apiRegionKey);
+    if(region == null || region.isEmpty){
+      return RegionUnit.nu;
+    }
+    for(var unit in RegionUnit.values){
+      if(unit.name == region) return unit;
+    }
+    print("本地存储有问题，关于地区的值");
+    return RegionUnit.nu;
+  }
+
+  setIdToken(String idtoken){
+    setString(AppValues.idToken, idtoken);
+  }
+  String? getIdToken(){
+    String? idToken = getString(AppValues.idToken);
+    return idToken;
+  }
+  setUserId(String userId){
+    setString(AppValues.id, userId);
+  }
+  String? getUserId(){
+    return getString(AppValues.id);
+  }
+  setAccessToken(String accessToken){
+    setString(AppValues.accessToken, accessToken);
+  }
+  String? getAccessToken(){
+    return getString(AppValues.accessToken);
+  }
+
+
+  setUserInfo(UserModel user){
+    setString(AppValues.userInfo,jsonEncode(user.toJson()));
+  }
+  UserModel? getUserInfo(){
+    String? userData = getString(AppValues.userInfo);
+    if(userData == null || userData.isEmpty){
+      return null;
+    }
+    return UserModel.fromJson(jsonDecode(userData));
+  }
 }

@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "flutter_demo2",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "flutter_demo2 (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "flutter_demo2 (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "flutter_demo2 (iphone15)",
+            "program": "lib/main.dart",
+            "deviceId": "00008130-0008252001D10",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}

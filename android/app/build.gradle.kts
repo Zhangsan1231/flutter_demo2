@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "zhangsan.flutter_demo2"
+    namespace = " "
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

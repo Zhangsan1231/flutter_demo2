@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_demo2/app/core/service/storage_service.dart';
+import 'package:flutter_demo2/app/core/values/app_values.dart';
+import 'package:flutter_demo2/app/modules/login/controllers/login_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
@@ -14,24 +17,37 @@ class UserAgreement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool? argumengKV = SecureStorageService().getBool(AppValues.agreementValue);
+
+    RxBool value = argumengKV != null ? argumengKV.obs : false.obs;
+
+    // bool agreementValue = false;
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.only(right: 41-25.w, left: 41 - 25.w),
+          margin: EdgeInsets.only(right: 41 - 25.w, left: 41 - 25.w),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               // 勾選框
-              Checkbox(
-                value: false,
-                onChanged: (bool? newValue) {
-                  // if (newValue != null) {
-                  //   agreementValue.value = newValue;
-                  // }
-                },
-                activeColor: Theme.of(context).primaryColor,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              Obx(
+                () => Checkbox(
+                  value: value.value,
+                  onChanged: (bool? newValue) {
+                    if (newValue != null) {
+                      print('点击测试');
+                      SecureStorageService().setBool(
+                        AppValues.agreementValue,
+                        newValue,
+                      );
+                      value.value = newValue;
+                      print(AppValues.agreementValue);
+                    }
+                  },
+                  activeColor: Theme.of(context).primaryColor,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
               ),
 
               const SizedBox(width: 8),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/model/page_background_.dart';
+import 'package:flutter_demo2/app/data/repository/auth_repository_impl.dart';
 import 'package:flutter_demo2/app/modules/splash/widget/splash_widget.dart';
 
 import 'package:flutter_demo2/gen/assets.gen.dart';
@@ -34,6 +35,12 @@ class SplashView extends BaseViews<SplashController> {
   @override
   Widget body(BuildContext context) {
     RxBool _checkValue = false.obs;
+    AuthRepositoryImpl authRepositoryImpl = AuthRepositoryImpl();
+    // logger.d("页面配置");
+    // logger.d("SplashController init");
+    // authRepositoryImpl.registerByEmail('2950909451@qq.com','1234567');
+    // authRepositoryImpl.loginEmailAndPassword('2950909451@qq.com','1234567');
+    
     return SplashWidget();
   }
 }

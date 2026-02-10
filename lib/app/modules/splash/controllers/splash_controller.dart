@@ -1,8 +1,10 @@
 import 'package:flutter_demo2/app/core/base/base_controller.dart';
+import 'package:flutter_demo2/app/data/repository/auth_repository_impl.dart';
 import 'package:get/get.dart';
 
 class SplashController extends BaseController {
-  //TODO: Implement SplashController
+  //TODO: Implement
+  
 
   final count = 0.obs;
   @override
@@ -13,6 +15,8 @@ class SplashController extends BaseController {
   @override
   void onReady() {
     super.onReady();
+    
+    
   }
 
   @override

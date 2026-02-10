@@ -6,6 +6,7 @@ import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
@@ -19,6 +20,7 @@ class SplashWidget extends StatefulWidget {
 }
 
 class _SplashWidgetState extends State<SplashWidget> {
+  RxBool splashAgreement = false.obs;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,7 +45,9 @@ class _SplashWidgetState extends State<SplashWidget> {
 
                   Spacer(),
 
-                  UserAgreement(), 
+                  UserAgreement()
+
+                  // Obx(() => UserAgreement(agreementValue: splashAgreement,),),
                 ],
               ),
             

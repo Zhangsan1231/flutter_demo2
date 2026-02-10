@@ -1,3 +1,5 @@
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+
 /// 应用值常量类
 /// 
 /// 定义应用中使用的所有常量值
@@ -15,6 +17,8 @@ abstract class AppValues {
 
   /// 用户信息存储 key
   static const String userInfoKey = "USER_INFO";
+
+  static const String id = 'ID';
 
   /// 日志配置相关常量
   /// 
@@ -57,4 +61,7 @@ abstract class AppValues {
   static const String refreshToken = "REFRESH_TOKEN";
 
   static const String locale = 'locale_key';
+
+  static const String agreementValue = 'agreement_value';
+  static const String userInfo = 'USER_INFO';
 }

@@ -1,5 +1,6 @@
 // 导入 Flutter 核心库
 import 'package:flutter/material.dart';
+import 'package:flutter_demo2/app/modules/login/controllers/login_controller.dart';
 
 // 导入自定义的登录页面横幅组件
 import 'package:flutter_demo2/app/modules/login/widget/login_banner.dart';
@@ -35,6 +36,8 @@ class LoginWidget extends StatefulWidget {
 
 // 登录页面的状态类
 class _LoginWidgetState extends State<LoginWidget> {
+  final c = Get.find<LoginController>();
+  RxBool loginAgreement = false.obs;
   // 构建 UI 的核心方法，返回 Widget 树
   @override
   Widget build(BuildContext context) {
@@ -131,10 +134,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                     ),
 
                     // 用户协议组件区域，左右小边距
-                    Container(
-                      margin: EdgeInsets.only(left: 10.w, right: 4.w),
-                      child: const UserAgreement(),
-                    ),
+                    // Obx(() => Container(
+                    //   margin: EdgeInsets.only(left: 10.w, right: 4.w),
+                    //   child: UserAgreement(agreementValue:loginAgreement,),
+                    // ),),
 
                     Gap(50.h),                           // 页面最底部留白
                   ],
@@ -150,6 +153,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   // 账号输入框组件
   Widget AccountText() {
     return TextField(
+      controller: c.emailController,
       decoration: InputDecoration(
         filled: true,                              // 启用背景填充
         fillColor: const Color(0xffF2F2F2),        // 极浅灰色背景
@@ -174,6 +178,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   // 密码输入框组件
   Widget PasswordText() {
     return TextField(
+      controller: c.passwordController,
       obscureText: true,                           // 隐藏输入内容（显示为点）
       decoration: InputDecoration(
         filled: true,
@@ -211,6 +216,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         ),
         suffixIconConstraints: const BoxConstraints(), // 防止文字被压缩
       ),
+      
     );
   
   }
@@ -427,11 +433,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         borderRadius: BorderRadius.circular(20.h),
       ),
       child: InkWell(
-        onTap: () {
-          Get.toNamed(Routes.USER);
-          print('用户点击了 Log in 按钮');
-          // TODO: 实现登录逻辑（验证账号密码、调用 API 等）
-        },
+        onTap: c.Login,
         borderRadius: BorderRadius.circular(20.h),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 7.h),

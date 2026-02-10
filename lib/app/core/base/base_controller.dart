@@ -2,8 +2,10 @@ import 'dart:collection';
 import 'dart:ui';
 
 import 'package:flutter_demo2/app/core/model/page_state.dart';
+import 'package:flutter_demo2/app/core/utils/logger.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:logger/web.dart';
 
 
 /**
@@ -23,7 +25,7 @@ abstract class BaseController extends GetxController {
   // final storage = SecureStorageService.instance;
 
   // /// 日志服务实例
-  // final Logger logger = LoggerSingleton.getInstance();
+  final Logger logger = LoggerSingleton.getInstance();
 
   // =============== 页面状态管理 ===============
   /// 页面状态控制器
@@ -48,7 +50,7 @@ abstract class BaseController extends GetxController {
   String get loadingMessage => _loadingMessage.value;
 
   // =============== 消息提示管理 ===============
-  /// 显示消息
+  // / 显示消息
   // void showMessage(String message) {
   //   _showToast(() => ToastUtil.showInfo(Get.context!, message));
   // }
