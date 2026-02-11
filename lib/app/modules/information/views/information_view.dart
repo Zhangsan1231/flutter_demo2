@@ -567,6 +567,7 @@ class InformationView extends BaseViews<InformationController> {
                                 Gap(17.h),
                                 Container(
                                   child: TextField(
+                                    // controller: controller.currentWeightValue,
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: Color(0xffF5F6FA),
@@ -753,7 +754,11 @@ class InformationView extends BaseViews<InformationController> {
                     ),
 
                     // Gap(32.h),
-                    Container(
+
+                    //底部next按钮
+                    InkWell(
+                      onTap: controller.nextPatchInfo,
+                      child: Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: 20.w,
                         vertical: 20.h,
@@ -766,6 +771,7 @@ class InformationView extends BaseViews<InformationController> {
                         color: Colors.blue,
                         borderRadius: BorderRadius.circular(24.h),
                       ),
+                      
                       child: Text(
                         'Next',
                         style: TextStyle(
@@ -774,6 +780,7 @@ class InformationView extends BaseViews<InformationController> {
                           color: Colors.white,
                         ),
                       ),
+                    ),
                     ),
                     Gap(50.h),
                   ],

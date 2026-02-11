@@ -5,4 +5,6 @@ abstract class DefaultRepository {
   Future<UserModel?> getInfo();
   
   Future<void> postInfo([UserModel? user]);
+
+  Future<bool> patchInfo(Map<String,Object> map);
 }

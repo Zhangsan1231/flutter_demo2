@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_controller.dart';
+import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/data/enum/gender_enum.dart';
+import 'package:flutter_demo2/app/data/repository/default_repository_impl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:simple_ruler_picker/simple_ruler_picker.dart';
 
-
-
 class InformationController extends BaseController {
-
   // 定义控制器（必须在 onClose 中 dispose）
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
@@ -20,7 +19,7 @@ class InformationController extends BaseController {
   //TODO: Implement InformationController
 
   final count = 0.obs;
- // 当前选中的性别（初始为保密）
+  // 当前选中的性别（初始为保密）
   final selectedGender = Rx<Gender>(Gender.confidential);
 
   // 选择性别的方法
@@ -30,12 +29,9 @@ class InformationController extends BaseController {
     // Get.back();  // 关闭弹窗（可选，根据你的需求）
   }
 
-
-
-
   final double minValue = 90;
   final double maxValue = 280;
-  
+
   // 每条刻度间隔像素（可根据需求调整）
   final double tickSpacing = 20.0;
 
@@ -54,22 +50,26 @@ class InformationController extends BaseController {
   //   final double centerTickOffset = visibleHeight / 2 / tickSpacing;
   //   return (firstTickValue + centerTickOffset).clamp(minValue, maxValue);
   // }
-// ==================== 体重尺子相关 ====================
-  final double weightMinValue = 40;
+  // ==================== 体重尺子相关 ====================
+  final double weightMinValue = 30;
   final double weightMaxValue = 150;
 
   final RxDouble weightOffset = 0.0.obs;
   final RxDouble weightTargetOffset = 0.0.obs;
-// 体重输入框控制器（用于双向绑定）
+  // 体重输入框控制器（用于双向绑定）
   final weightController = TextEditingController(text: '60');
   // 当前选中的体重值（响应式，供 UI 实时显示）
-  final currentWeight = 60.0.obs;  // RxDouble，默认 60 kg
+  final currentWeight = 60.0.obs; // RxDouble，默认 60 kg
 
   // 计算当前体重值（每次调用时更新 Rx）
   double get currentWeightValue {
-    final double firstTickValue = weightMinValue + (-weightOffset.value / tickSpacing);
+    final double firstTickValue =
+        weightMinValue + (-weightOffset.value / tickSpacing);
     final double centerTickOffset = visibleHeight / 2 / tickSpacing;
-    final double value = (firstTickValue + centerTickOffset).clamp(weightMinValue, weightMaxValue);
+    final double value = (firstTickValue + centerTickOffset).clamp(
+      weightMinValue,
+      weightMaxValue,
+    );
 
     // 实时更新 Rx 变量，让 Obx 能感知变化
     currentWeight.value = value;
@@ -79,42 +79,45 @@ class InformationController extends BaseController {
 
   // 体重滑动更新
   void onWeightDragUpdate(DragUpdateDetails details) {
-    weightOffset.value += details.delta.dy;
+  weightOffset.value += details.delta.dy;
 
-    final double totalRange = weightMaxValue - weightMinValue;
-    final double maxOffset = (totalRange - visibleTicks + 1) * tickSpacing;
-    final double minOffset = -tickSpacing * (visibleTicks ~/ 2);
+  // 修正 clamp 范围：确保能滑到最左（minValue）和最右（maxValue）
+  final double totalTicks = weightMaxValue - weightMinValue;  // 总刻度数（每1kg一格）
+  final double maxOffset = (totalTicks - visibleTicks + 1) * tickSpacing; // 最大偏移（滑到最右）
+  final double minOffset = 0;  // 最左偏移为 0（显示 minValue）
 
-    weightOffset.value = weightOffset.value.clamp(-maxOffset, minOffset);
-    weightTargetOffset.value = weightOffset.value;
+  weightOffset.value = weightOffset.value.clamp(-maxOffset, minOffset);
+  weightTargetOffset.value = weightOffset.value;
 
-    // 滑动中实时更新当前值
-    currentWeightValue;
-  }
+  // 实时更新当前值
+  currentWeight.value = currentWeightValue;
+}
 
   // 体重滑动结束（吸附到 0.5 kg 或整数）
   void onWeightDragEnd(DragEndDetails details) {
     final double current = currentWeightValue;
-    final double targetValue = (current * 2).round() / 2;  // 吸附到 0.5 kg
+    final double targetValue = (current * 2).round() / 2; // 吸附到 0.5 kg
 
     final double centerOffsetInTicks = visibleHeight / 2 / tickSpacing;
-    double target = -(targetValue - weightMinValue - centerOffsetInTicks) * tickSpacing;
+    double target =
+        -(targetValue - weightMinValue - centerOffsetInTicks) * tickSpacing;
 
-    final double totalRange = weightMaxValue - weightMinValue;
-    final double maxOffset = (totalRange - visibleTicks + 1) * tickSpacing;
-    final double minOffset = -tickSpacing * (visibleTicks / 2);
+    final double totalTicks = (weightMaxValue - weightMinValue) / 1.0;
+    final double maxOffset = (totalTicks - visibleTicks + 1) * tickSpacing;
+    final double minOffset = 0;
+
     target = target.clamp(-maxOffset, minOffset);
 
     weightTargetOffset.value = target;
-
-    // 吸附后强制更新 Rx
     currentWeight.value = targetValue;
   }
-double get currentValue {
+
+  double get currentValue {
     final double firstTickValue = minValue + (-offset.value / tickSpacing);
     final double centerTickOffset = visibleHeight / 2 / tickSpacing;
     return (firstTickValue + centerTickOffset).clamp(minValue, maxValue);
   }
+
   // 滑动更新
   void onVerticalDragUpdate(DragUpdateDetails details) {
     offset.value += details.delta.dy;
@@ -155,35 +158,107 @@ double get currentValue {
   @override
   void onInit() {
     super.onInit();
-    targetOffset.value = offset.value;
+
+    // ==================== 设置身高默认值 170 cm ====================
+    final double defaultHeight = 170.0;
+    final double centerOffsetInTicks = visibleHeight / 2 / tickSpacing;
+    final double initialHeightOffset =
+        -(defaultHeight - minValue - centerOffsetInTicks) * tickSpacing;
+
+    offset.value = initialHeightOffset.clamp(
+      -(maxValue - minValue - visibleTicks + 1) * tickSpacing,
+      0,
+    );
+    targetOffset.value = offset.value; // 同步目标偏移（动画起始点）
+
+    // ==================== 设置体重默认值 60 kg ====================
+    final double defaultWeight = 60.0;
+    final double initialWeightOffset =
+        -(defaultWeight - weightMinValue - centerOffsetInTicks) * tickSpacing;
+
+    weightOffset.value = initialWeightOffset.clamp(
+      -(weightMaxValue - weightMinValue - visibleTicks + 1) * tickSpacing,
+      0,
+    );
+    weightTargetOffset.value = weightOffset.value;
+
+    // 可选：同步输入框显示
+    weightController.text = defaultWeight.toStringAsFixed(1);
   }
 
   // 当前选中的生日（初始为 null）
-final selectedBirthday = Rx<DateTime?>(null);
+  final selectedBirthday = Rx<DateTime?>(null);
 
-// 选择生日的方法（供 BottomSheet 调用）
-Future<void> selectBirthday() async {
-  final DateTime? picked = await showDatePicker(
-    context: Get.context!,
-    initialDate: selectedBirthday.value ?? DateTime.now().subtract(Duration(days: 365 * 20)), // 默认20岁
-    firstDate: DateTime(1900),
-    lastDate: DateTime.now(),
-    builder: (context, child) {
-      return Theme(
-        data: ThemeData.light().copyWith(
-          colorScheme: ColorScheme.light(primary: Color(0xff3262FF)),
-          textButtonTheme: TextButtonThemeData(
-            style: TextButton.styleFrom(foregroundColor: Color(0xff3262FF)),
+  // 选择生日的方法（供 BottomSheet 调用）
+  Future<void> selectBirthday() async {
+    final DateTime? picked = await showDatePicker(
+      context: Get.context!,
+      initialDate:
+          selectedBirthday.value ??
+          DateTime.now().subtract(Duration(days: 365 * 20)), // 默认20岁
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(primary: Color(0xff3262FF)),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Color(0xff3262FF)),
+            ),
           ),
-        ),
-        child: child!,
-      );
-    },
-  );
+          child: child!,
+        );
+      },
+    );
 
-  if (picked != null && picked != selectedBirthday.value) {
-    selectedBirthday.value = picked;
-    print('用户选择了生日：${picked.toString().substring(0, 10)}');
+    if (picked != null && picked != selectedBirthday.value) {
+      selectedBirthday.value = picked;
+      print('用户选择了生日：${picked.toString().substring(0, 10)}');
+    }
   }
-}
+
+  Future<void> nextPatchInfo() async {
+    // logger.d('first Name :${firstName}');
+    // logger.d('last Name :${lastName}');
+    // logger.d('gender : ${selectedGender.value.label}');
+    // logger.d('Height : ${currentValue.round()}');
+    // logger.d('weight :${currentWeightValue.round()}');
+    // logger.d('birthday : ${selectedBirthday.value}');
+    // String? token = SecureStorageService().getIdToken();
+    // logger.d('token :${token}');
+    // String? userId = SecureStorageService().getUserId();
+    // logger.d('userId :${userId}');
+    if (firstName.isEmpty) {
+      logger.d('请填写firstName');
+      Get.snackbar('请填写firstName','');
+      return;
+    }
+    if (lastName.isEmpty) {
+      logger.d('请填写lastName');
+      Get.snackbar('请填写lastName','');
+      return;
+    }
+
+    // if(currentValue.round()){
+    //   logger.d('请填写firstName');
+    //   return ;
+    // }
+    // if (selectedBirthday.value == null) {
+    //   logger.d('请输入生日');
+    //   Get.snackbar('请填写生日','');
+      
+    //   return;
+    // }
+    Map<String,Object> map = {
+      'name': firstName + lastName,
+      'gender': selectedGender.value.label,
+      'height': currentValue.round(),
+      'weight': currentWeightValue.round(),
+      'birthdate': selectedBirthday.value!.toUtc().toIso8601String(),
+      
+    };
+    bool result = await DefaultRepositoryImpl().patchInfo(map);
+    logger.d('提交测试: ${result}');
+
+  }
 }

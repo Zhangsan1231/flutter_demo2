@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/modules/information/controllers/information_controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 
 class InformationWidget extends StatefulWidget {
   InformationWidget({Key? key}) : super(key: key);
@@ -10,10 +12,10 @@ class InformationWidget extends StatefulWidget {
 }
 
 Widget firstTextInput() {
-  InformationController informationController = InformationController();
+  final controller = Get.find<InformationController>();
 
   return TextField(
-    controller: informationController.firstNameController,
+    controller: controller.firstNameController,
     decoration: InputDecoration(
       filled: true,
       fillColor: Color(0xffF5F6FA),
@@ -27,10 +29,10 @@ Widget firstTextInput() {
 }
 
 Widget lastTextInput() {
-  InformationController informationController = InformationController();
+  final controller = Get.find<InformationController>();
 
   return TextField(
-    controller: informationController.lastNameController,
+    controller: controller.lastNameController,
     decoration: InputDecoration(
       filled: true,
       fillColor: Color(0xffF5F6FA),

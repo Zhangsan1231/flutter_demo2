@@ -1,5 +1,6 @@
 import 'package:authing_sdk/result.dart';
 import 'package:authing_sdk/user.dart';
+import 'package:flutter_demo2/app/data/model/user_model.dart';
 
 abstract class AuthRepository {
 
@@ -15,6 +16,7 @@ abstract class AuthRepository {
   Future<void> logoutl();
   
   Future<User> registerByEmail(String email, String password) ;
-    
+
+  
 
 }

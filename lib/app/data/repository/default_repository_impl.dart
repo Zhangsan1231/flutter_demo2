@@ -201,4 +201,24 @@ UserModel? _parseInfoResponse(dio.Response<dynamic> response) {
     return null;
   }
 }
+
+  @override
+  Future<bool> patchInfo(Map<String,Object> map ) async {
+    var uri = DioProvider.baseUrl + Api.infoApi;
+    var dioCall = dioClient.patch(uri,queryParameters: {'type':0}, data: map);
+    try {
+      return callApiWithErrorParser(dioCall).then((response) {
+        if(response.data['code'] == 1){
+          logger.d('修改成功');
+          return true;
+        }else{
+          logger.d('修改失败');
+          return false;
+        }
+      });
+    } catch (e) {
+      logger.d('patchinfo 异常:$e');
+      rethrow;
+    }
+  }
 }
