@@ -44,7 +44,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
                   InkWell(
                     onTap: () {
                       logger.d('name点击测试');
-                      // Get.toNamed(Routes.PROFILE_NAME);
+                      Get.toNamed(Routes.PROFILE_NAME);
                     },
                     child: Container(
                       child: Row(

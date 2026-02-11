@@ -54,9 +54,8 @@ class AppPages {
           children: [
             GetPage(
               name: _Paths.PROFILE_NAME,
-              page: () => ProfileNameView(),
-              binding: UserProfileBinding(),
-            ),
+          page: () => ProfileNameView(),
+            )
           ],
         ),
       ],

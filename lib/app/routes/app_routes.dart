@@ -11,7 +11,7 @@ abstract class Routes {
   static const NAVIGATION = _Paths.NAVIGATION;
   static const INFORMATION = _Paths.INFORMATION;
   static const USER_PROFILE = _Paths.USER + _Paths.USER_PROFILE;
-   static const PROFILE_NAME = _Paths.PROFILE_NAME;
+   static const PROFILE_NAME = _Paths.USER + _Paths.USER_PROFILE +_Paths.PROFILE_NAME;
 }
 
 abstract class _Paths {
@@ -24,7 +24,7 @@ abstract class _Paths {
   static const NAVIGATION = '/navigation';
   static const INFORMATION = '/information';
   static const USER_PROFILE = '/user-profile';
-    static const PROFILE_NAME = '/user-profile-name';
+    static const PROFILE_NAME = '/profile-name';
 
 
 }
