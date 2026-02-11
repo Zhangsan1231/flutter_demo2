@@ -21,6 +21,48 @@ class $AssetsImagesGen {
   /// File path: assets/images/AIH.png
   AssetGenImage get aih => const AssetGenImage('assets/images/AIH.png');
 
+  /// File path: assets/images/Frame 2102.png
+  AssetGenImage get frame2102 =>
+      const AssetGenImage('assets/images/Frame 2102.png');
+
+  /// File path: assets/images/Frame-1.png
+  AssetGenImage get frame1 => const AssetGenImage('assets/images/Frame-1.png');
+
+  /// File path: assets/images/Frame-10.png
+  AssetGenImage get frame10 =>
+      const AssetGenImage('assets/images/Frame-10.png');
+
+  /// File path: assets/images/Frame-11.png
+  AssetGenImage get frame11 =>
+      const AssetGenImage('assets/images/Frame-11.png');
+
+  /// File path: assets/images/Frame-2.png
+  AssetGenImage get frame2 => const AssetGenImage('assets/images/Frame-2.png');
+
+  /// File path: assets/images/Frame-3.png
+  AssetGenImage get frame3 => const AssetGenImage('assets/images/Frame-3.png');
+
+  /// File path: assets/images/Frame-4.png
+  AssetGenImage get frame4 => const AssetGenImage('assets/images/Frame-4.png');
+
+  /// File path: assets/images/Frame-5.png
+  AssetGenImage get frame5 => const AssetGenImage('assets/images/Frame-5.png');
+
+  /// File path: assets/images/Frame-6.png
+  AssetGenImage get frame6 => const AssetGenImage('assets/images/Frame-6.png');
+
+  /// File path: assets/images/Frame-7.png
+  AssetGenImage get frame7 => const AssetGenImage('assets/images/Frame-7.png');
+
+  /// File path: assets/images/Frame-8.png
+  AssetGenImage get frame8 => const AssetGenImage('assets/images/Frame-8.png');
+
+  /// File path: assets/images/Frame-9.png
+  AssetGenImage get frame9 => const AssetGenImage('assets/images/Frame-9.png');
+
+  /// File path: assets/images/Frame.png
+  AssetGenImage get frame => const AssetGenImage('assets/images/Frame.png');
+
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
 
@@ -35,6 +77,16 @@ class $AssetsImagesGen {
   /// File path: assets/images/googe.png
   AssetGenImage get googe => const AssetGenImage('assets/images/googe.png');
 
+  /// File path: assets/images/group.png
+  AssetGenImage get group => const AssetGenImage('assets/images/group.png');
+
+  /// File path: assets/images/reminder.png
+  AssetGenImage get reminder =>
+      const AssetGenImage('assets/images/reminder.png');
+
+  /// File path: assets/images/right.png
+  AssetGenImage get right => const AssetGenImage('assets/images/right.png');
+
   /// File path: assets/images/wechat.png
   AssetGenImage get wechat => const AssetGenImage('assets/images/wechat.png');
 
@@ -45,10 +97,26 @@ class $AssetsImagesGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     aih,
+    frame2102,
+    frame1,
+    frame10,
+    frame11,
+    frame2,
+    frame3,
+    frame4,
+    frame5,
+    frame6,
+    frame7,
+    frame8,
+    frame9,
+    frame,
     vector,
     backgronud,
     goggeIcon,
     googe,
+    group,
+    reminder,
+    right,
     wechat,
     wechatIcon,
   ];

@@ -34,6 +34,8 @@ class LoginController extends BaseController {
         logger.d('userBithdate:${user?.birthdate}');
         if (user?.name == 'defualtName'){
           Get.toNamed(Routes.INFORMATION);
+        }else{
+          Get.toNamed(Routes.USER);
         }
 
         // logger.d('storage.getUserInfo() ================${storage.getUserInfo()?.name}');
