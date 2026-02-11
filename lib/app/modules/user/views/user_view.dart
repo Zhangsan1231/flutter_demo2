@@ -166,7 +166,7 @@ class UserView extends BaseViews<UserController> {
                 children: [
                   //My Provide
                   InkWell(
-                    onTap: controller.userInfo,
+                    onTap: () =>Get.toNamed(Routes.USER_PROFILE),
                     child: Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

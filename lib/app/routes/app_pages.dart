@@ -1,3 +1,4 @@
+import 'package:flutter_demo2/app/modules/user/user_profile/views/profile_name_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -13,6 +14,8 @@ import '../modules/register/views/register_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/user/bindings/user_binding.dart';
+import '../modules/user/user_profile/bindings/user_profile_binding.dart';
+import '../modules/user/user_profile/views/user_profile_view.dart';
 import '../modules/user/views/user_view.dart';
 
 part 'app_routes.dart';
@@ -23,11 +26,7 @@ class AppPages {
   static const INITIAL = Routes.USER;
 
   static final routes = [
-    GetPage(
-      name: _Paths.HOME,
-      page: () => HomeView(),
-      binding: HomeBinding(),
-    ),
+    GetPage(name: _Paths.HOME, page: () => HomeView(), binding: HomeBinding()),
     GetPage(
       name: _Paths.LOGIN,
       page: () => LoginView(),
@@ -47,6 +46,20 @@ class AppPages {
       name: _Paths.USER,
       page: () => UserView(),
       binding: UserBinding(),
+      children: [
+        GetPage(
+          name: _Paths.USER_PROFILE,
+          page: () => UserProfileView(),
+          binding: UserProfileBinding(),
+          children: [
+            GetPage(
+              name: _Paths.PROFILE_NAME,
+              page: () => ProfileNameView(),
+              binding: UserProfileBinding(),
+            ),
+          ],
+        ),
+      ],
     ),
     GetPage(
       name: _Paths.NAVIGATION,

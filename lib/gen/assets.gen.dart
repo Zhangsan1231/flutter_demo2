@@ -80,6 +80,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/group.png
   AssetGenImage get group => const AssetGenImage('assets/images/group.png');
 
+  /// File path: assets/images/photo.png
+  AssetGenImage get photo => const AssetGenImage('assets/images/photo.png');
+
   /// File path: assets/images/reminder.png
   AssetGenImage get reminder =>
       const AssetGenImage('assets/images/reminder.png');
@@ -115,6 +118,7 @@ class $AssetsImagesGen {
     goggeIcon,
     googe,
     group,
+    photo,
     reminder,
     right,
     wechat,
