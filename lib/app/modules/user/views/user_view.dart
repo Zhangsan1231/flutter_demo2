@@ -31,10 +31,18 @@ class UserView extends BaseViews<UserController> {
             children: [
               Row(
                 children: [
-                  Image.asset(
-                    Assets.images.aih.path,
-                    width: 58.w,
-                    height: 58.h,
+                 Image.network(
+                  SecureStorageService().getUserInfo()?.photo ?? '',
+                  width: 58.w,
+                  height: 58.w,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(Assets.images.userPhoto.path,
+                     width: 58.w,
+                  height: 58.w,
+                  fit: BoxFit.cover,
+                    );
+                  },
                   ),
                   Gap(20.w),
                   Text(SecureStorageService().getUserInfo()?.name ?? ''),

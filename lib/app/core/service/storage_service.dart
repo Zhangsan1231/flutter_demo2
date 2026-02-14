@@ -201,4 +201,10 @@ class SecureStorageService {
     }
     return UserModel.fromJson(jsonDecode(userData));
   }
+  setUserPhoto(String path){
+    setString(AppValues.userPhoto,path);
+  }
+  String? getUserPhoto( ){
+    return getString(AppValues.userPhoto);
+  }
 }

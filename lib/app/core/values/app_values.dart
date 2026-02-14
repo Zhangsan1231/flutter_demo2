@@ -64,4 +64,7 @@ abstract class AppValues {
 
   static const String agreementValue = 'agreement_value';
   static const String userInfo = 'USER_INFO';
+
+  static const String userPhoto = 'USER_PHOTO';
+
 }

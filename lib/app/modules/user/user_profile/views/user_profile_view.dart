@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
+import 'package:flutter_demo2/app/modules/user/user_profile/views/birthday_picker_ios.dart';
 import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,8 +44,9 @@ class UserProfileView extends BaseViews<UserProfileController> {
                   //Profile Picture
                   InkWell(
                     onTap: () {
-                      logger.d('name点击测试');
-                      Get.toNamed(Routes.PROFILE_NAME);
+                      controller.uploadPhoto();
+                      // logger.d('name点击测试');
+                      // Get.toNamed(Routes.PROFILE_NAME);
                     },
                     child: Container(
                       child: Row(
@@ -61,7 +63,32 @@ class UserProfileView extends BaseViews<UserProfileController> {
 
                           Row(
                             children: [
-                              Text('data', style: TextStyle()),
+                              Obx(() {
+                                if (controller.selectedImage.value != null) {
+                                  return Image.file(
+                                    controller.selectedImage.value!,
+                                    width: 58.w,
+                                    height: 58.h,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      logger.d('显示选择的图片失败：${error}');
+                                      return Image.asset(
+                                        Assets.images.userPhoto.path,
+                                        width: 58.w,
+                                        height: 58.w,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  );
+                                }
+                                // 没有选择时显示默认图
+                                return Image.asset(
+                                  Assets.images.userPhoto.path,
+                                  width: 58.w,
+                                  height: 58.w,
+                                  fit: BoxFit.cover,
+                                );
+                              }),
                               Image.asset(
                                 Assets.images.right.path,
                                 width: 24.w,
@@ -281,6 +308,29 @@ class UserProfileView extends BaseViews<UserProfileController> {
 
                   //Birthday
                   InkWell(
+                    onTap: () {
+                      Get.bottomSheet(
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(20.r),
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24.w,
+                            vertical: 16.h,
+                          ),
+                          child: BirthdayPicker(
+                            selectedDate: controller.selectedBirthday,
+                            label: 'Birthday',
+                            isRequired: true,
+                          ),
+                        ),
+                        isScrollControlled: true, // 允许自定义高度
+                        backgroundColor: Colors.transparent,
+                      );
+                    },
                     // onTap: () =>Get.toNamed(Routes.USER_PROFILE),
                     child: Container(
                       child: Row(
@@ -628,34 +678,27 @@ class UserProfileView extends BaseViews<UserProfileController> {
                   Container(
                     alignment: Alignment.bottomLeft,
                     child: Text(
-                    'Medical History',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xff666666),
+                      'Medical History',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff666666),
+                      ),
                     ),
-                  ),
                   ),
                   Gap(10.h),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: Colors.grey[300]!,
-                        width: 1,
-                      )
+                      border: Border.all(color: Colors.grey[300]!, width: 1),
                     ),
                     child: TextField(
                       minLines: 5,
                       maxLines: 8,
-                      decoration: InputDecoration(
-                        border: InputBorder.none
-                      ),
-                      
+                      decoration: InputDecoration(border: InputBorder.none),
                     ),
-                    
-                  )
+                  ),
                 ],
               ),
             ),

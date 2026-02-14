@@ -90,6 +90,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/right.png
   AssetGenImage get right => const AssetGenImage('assets/images/right.png');
 
+  /// File path: assets/images/userPhoto.png
+  AssetGenImage get userPhoto =>
+      const AssetGenImage('assets/images/userPhoto.png');
+
   /// File path: assets/images/wechat.png
   AssetGenImage get wechat => const AssetGenImage('assets/images/wechat.png');
 
@@ -121,6 +125,7 @@ class $AssetsImagesGen {
     photo,
     reminder,
     right,
+    userPhoto,
     wechat,
     wechatIcon,
   ];

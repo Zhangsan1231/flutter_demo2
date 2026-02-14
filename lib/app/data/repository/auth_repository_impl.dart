@@ -6,8 +6,6 @@ import 'package:flutter_demo2/app/core/model/region_unit.dart';
 import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:flutter_demo2/app/data/repository/auth_repository.dart';
 import 'package:flutter_demo2/app/data/repository/default_repository_impl.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 
 class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   @override
@@ -103,5 +101,13 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
       return false;
     }
   }
+  
+  @override
+  Future<bool> uploadPhoto(Map<String, Object> map) async {
+    
+   return  await DefaultRepositoryImpl().patchInfo(map);
+  }
+  
+ 
 
 }

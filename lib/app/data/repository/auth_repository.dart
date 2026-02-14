@@ -15,7 +15,9 @@ abstract class AuthRepository {
 
   Future<void> logoutl();
   
-  Future<User> registerByEmail(String email, String password) ;
+  Future<User> registerByEmail(String email, String password);
+
+  Future<bool> uploadPhoto(Map<String, Object> map);
 
   
 
