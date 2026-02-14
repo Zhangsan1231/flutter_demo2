@@ -102,7 +102,6 @@ remoteInit() async {
 
 Future<void> _initLanguage() async {
   final storage = SecureStorageService.instance;
-  storage.deleteAll();
   // 先讀取一次
   String? savedLocale = await storage.getString(AppValues.locale);
 

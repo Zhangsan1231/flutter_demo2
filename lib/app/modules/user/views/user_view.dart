@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/model/page_background_.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
+import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:flutter_demo2/app/modules/user/controllers/user_controller.dart';
 import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
@@ -26,47 +29,60 @@ class UserView extends BaseViews<UserController> {
       child: Column(
         children: [
           //顶部头像区域
-          Row(
-            mainAxisAlignment: .spaceBetween,
-            children: [
-              Row(
-                children: [
-                 Image.network(
-                  SecureStorageService().getUserInfo()?.photo ?? '',
-                  width: 58.w,
-                  height: 58.w,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(Assets.images.userPhoto.path,
-                     width: 58.w,
-                  height: 58.w,
-                  fit: BoxFit.cover,
-                    );
-                  },
-                  ),
-                  Gap(20.w),
-                  Text(SecureStorageService().getUserInfo()?.name ?? ''),
-                ],
-              ),
-              //  Gap(150.w),
-              Column(
-                // mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Image.asset(
-                    Assets.images.group.path,
-                    width: 22.w,
-                    height: 24.h,
-                  ),
-                  Gap(5.h),
-                  Image.asset(
-                    Assets.images.right.path,
-                    width: 20.w,
-                    height: 15.h,
-                  ),
-                ],
-              ),
-            ],
-          ),
+         Obx(() {
+          if(controller.avatarPath.value !=null &&controller.avatarPath.value.isNotEmpty){
+            return Image.file(File(controller.avatarPath.value,),width: 58.w,height: 58.h,errorBuilder: (context, error, stackTrace) {
+              return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
+            },);
+          }
+          
+         return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
+
+          //  Row(
+          //   mainAxisAlignment: .spaceBetween,
+          //   children: [
+          //     Row(
+          //       children: [
+          //        Image.asset(
+          //         SecureStorageService().getUserPhoto() ?? '',
+          //         width: 58.w,
+          //         height: 58.w,
+          //         fit: BoxFit.cover,
+          //         errorBuilder: (context, error, stackTrace) {
+          //           return Image.asset(Assets.images.userPhoto.path,
+          //            width: 58.w,
+          //         height: 58.w,
+          //         fit: BoxFit.cover,
+          //           );
+          //         },
+          //         ),
+                  
+          //         Gap(20.w),
+          //         Text(SecureStorageService().getUserInfo()?.name ?? ''),
+          //       ],
+          //     ),
+          //     //  Gap(150.w),
+          //     Column(
+          //       // mainAxisAlignment: MainAxisAlignment.end,
+          //       children: [
+          //         Image.asset(
+          //           Assets.images.group.path,
+          //           width: 22.w,
+          //           height: 24.h,
+          //         ),
+          //         Gap(5.h),
+          //         Image.asset(
+          //           Assets.images.right.path,
+          //           width: 20.w,
+          //           height: 15.h,
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
+          
+         }),
+          
           //Welcome
           Container(
             padding: EdgeInsets.symmetric(horizontal: 100.w, vertical: 20.h),
@@ -740,7 +756,9 @@ class UserView extends BaseViews<UserController> {
             ),
           ),
 
-          Container(
+          InkWell(
+            onTap: controller.logout,
+            child: Container(
 
             margin: EdgeInsets.symmetric(horizontal: 70.w,vertical: 10.h),
             padding: EdgeInsets.symmetric(horizontal: 50.w,vertical: 7.h),
@@ -755,8 +773,22 @@ class UserView extends BaseViews<UserController> {
             ),
             child: Text('log out',style: TextStyle(fontSize: 20.sp,color: Color(0xff1e4bdf)),),
           )
+        ,
+          )
+        
         ],
       ),
     );
   }
+  // Future<Widget> showPhotoAndName() async {
+  //   final storage =SecureStorageService();
+  //   final userModelPhoto = storage.getUserInfo()?.photo;
+  //   final photo = storage.getUserPhoto;
+  //   if(userModelPhoto !=null && userModelPhoto.isNotEmpty){
+  //   final imagePath = await controller.saveImageToAppDir(userModelPhoto!);
+  //   return Image.file(File(imagePath));
+
+  //   }
+  //   return Container();
+  // }
 }

@@ -26,7 +26,9 @@ class SecureStorageService {
   /// 私有构造函数，初始化 MMKV
   SecureStorageService._internal() {
     MMKV.initialize(); // 确保 MMKV 已初始化
-    _mmkv = MMKV.defaultMMKV();
+    _mmkv = MMKV.defaultMMKV(
+      cryptKey: '\u{2}U',  // 这个是官方推荐的 workaround，长度刚好触发“加密”但兼容旧逻辑
+    );
   }
 
   //------------------------------- 数据类型封装 -------------------------------
@@ -190,10 +192,38 @@ class SecureStorageService {
     return getString(AppValues.accessToken);
   }
 
+  setUserInfo(UserModel user) async{
+try {
+    // 1. 将 UserModel 转成 JSON Map
+    final jsonMap = user.toJson();
 
-  setUserInfo(UserModel user){
-    setString(AppValues.userInfo,jsonEncode(user.toJson()));
+    // 2. 转成字符串（必须是 jsonEncode）
+    final jsonString = jsonEncode(jsonMap);
+
+    // 3. 使用 SecureStorage 保存（key 建议用常量）
+    setString(AppValues.userInfo, jsonString);
+    
+    // 关键：立即再写一个无关的 dummy key，强制潜在的 flush
+    setString('debug_last_write_time', DateTime.now().toIso8601String());
+
+    // 再读回来看
+    final readBack = getString(AppValues.userInfo);
+    print('立即读回 userInfo: $readBack');  // 应该非空
+
+    print('用户信息存储成功：$jsonString');
+  } catch (e) {
+    print('存储用户信息失败：$e');
+    // 可选：抛出异常或通知 UI
+    // throw Exception('用户信息存储失败: $e');
   }
+
+  }
+
+
+  // setUserInfo(UserModel user){
+  //   setString(AppValues.userInfo,jsonEncode(user.toJson()));
+  // }
+  
   UserModel? getUserInfo(){
     String? userData = getString(AppValues.userInfo);
     if(userData == null || userData.isEmpty){

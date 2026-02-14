@@ -3,6 +3,7 @@ import 'package:authing_sdk/result.dart';
 import 'package:authing_sdk/user.dart';
 import 'package:flutter_demo2/app/core/base/base_repository.dart';
 import 'package:flutter_demo2/app/core/model/region_unit.dart';
+import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:flutter_demo2/app/data/repository/auth_repository.dart';
 import 'package:flutter_demo2/app/data/repository/default_repository_impl.dart';
@@ -24,13 +25,19 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   Future<String> loginEmailAndPassword(String username, String password) async {
     var test = storage.getRegion();
     if (storage.getRegion() == RegionUnit.zh) {
+      logger.d(password);
+      
       AuthResult response = await AuthClient.loginByAccount(username, password);
+
       // logger.d("当前登录Response：${response.user?.token}");
       // logger.d(response);
       // logger.d(response.code);
       final user = response.user;
+      // SecureStorageService().setUserInfo(user as UserModel);
+      logger.d('SecureStorageService().getUserInfo()?.name; :${SecureStorageService().getUserInfo()?.name}');
       if (user != null) {
         storage.setIdToken(user.token);
+        logger.d('user.token111111111 ${user.token}');
         if (user.accessToken != null && user.accessToken!.isNotEmpty) {
           storage.setAccessToken(user.accessToken!);
           logger.d('Access Token 保存成功: ${user.accessToken}');
@@ -50,9 +57,11 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   }
 
   @override
-  Future<void> logoutl() {
-    // TODO: implement logoutl
-    throw UnimplementedError();
+  Future<void> logout() async {
+   AuthResult result = await AuthClient.logout();
+    var code = result.code;
+    logger.d('code==========${code}');
+
   }
 
   @override
@@ -74,10 +83,14 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   Future<bool> ensureUserInitialized() async {
     try {
       try {
-        //1.从本地获取用户数据
+        //1.从后端获取用户数据
         UserModel? userModel = await DefaultRepositoryImpl().getInfo();
+        //不为空 则存入用户数据
         if (userModel != null) {
           storage.setUserInfo(userModel);
+          logger.d('获取用户信息成功 111111111');
+          final user = storage.getUserInfo();
+          logger.d('测试user.name${user?.name}');
           return true;
         }
       } catch (e) {
@@ -103,7 +116,7 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   }
   
   @override
-  Future<bool> uploadPhoto(Map<String, Object> map) async {
+  Future<bool> uploadUserProfile(Map<String, Object> map) async {
     
    return  await DefaultRepositoryImpl().patchInfo(map);
   }

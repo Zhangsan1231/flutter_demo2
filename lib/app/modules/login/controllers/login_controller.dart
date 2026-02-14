@@ -30,6 +30,7 @@ class LoginController extends BaseController {
       logger.d('1222222222222222$userInitSuccess');
       if (userInitSuccess) {
         final user = storage.getUserInfo();
+      
         logger.d('user.name = ${user?.name}');
         logger.d('userBithdate:${user?.birthdate}');
         if (user?.name == 'defualtName'){

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter_demo2/app/core/base/base_repository.dart';
+import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/core/values/app_values.dart';
 import 'package:flutter_demo2/app/data/model/my_goal.dart';
 import 'package:flutter_demo2/app/data/model/user_model.dart';
@@ -221,4 +224,32 @@ UserModel? _parseInfoResponse(dio.Response<dynamic> response) {
       rethrow;
     }
   }
+  
+  @override
+  Future<String?> uploadImage(File file) async {
+   var uri = DioProvider.domesticBaseUrl +Api.imageApi;
+   //创建formData用来上传图片
+   var formData = dio.FormData.fromMap({
+    'file': await dio.MultipartFile.fromFile(file.path,
+    filename: file.path.split('/').last,//自动获取文件名
+    ),
+
+   });
+   var dioCall = dioClient.post(uri,data:formData);
+
+   try {
+     return callApiWithErrorParser(dioCall).then((response) {
+      logger.d('查看是否上传成功');
+      logger.d(response);
+      if(response.data['code'] == 1){
+        return response.data['data'];
+      }
+      return null;
+     });
+   } catch (e) {
+     rethrow;
+   }
+  }
+
+  
 }

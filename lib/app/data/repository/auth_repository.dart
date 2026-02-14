@@ -13,11 +13,13 @@ abstract class AuthRepository {
 
   Future<Map<String,dynamic>> getUserDetails();
 
-  Future<void> logoutl();
+  Future<void> logout();
   
   Future<User> registerByEmail(String email, String password);
 
-  Future<bool> uploadPhoto(Map<String, Object> map);
+  Future<bool> uploadUserProfile(Map<String, Object> map);
+
+
 
   
 

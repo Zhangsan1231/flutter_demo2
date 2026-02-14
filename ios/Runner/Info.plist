@@ -53,6 +53,11 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>需要访问相册来选择照片</string>
+<key>NSCameraUsageDescription</key>
+<string>需要访问相机来拍摄照片</string>
+
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

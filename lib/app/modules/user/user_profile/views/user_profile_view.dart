@@ -1,8 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/modules/user/user_profile/views/birthday_picker_ios.dart';
-import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -45,6 +46,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
                   InkWell(
                     onTap: () {
                       controller.uploadPhoto();
+                      // controller.pickImage();
                       // logger.d('name点击测试');
                       // Get.toNamed(Routes.PROFILE_NAME);
                     },
@@ -64,14 +66,20 @@ class UserProfileView extends BaseViews<UserProfileController> {
                           Row(
                             children: [
                               Obx(() {
-                                if (controller.selectedImage.value != null) {
+                                final File? imageFile =
+                                    controller.selectedImage.value;
+                                logger.d(
+                                  'controller.selectedImage.value: ${controller.selectedImage.value}',
+                                );
+
+                                if (imageFile != null) {
                                   return Image.file(
-                                    controller.selectedImage.value!,
+                                    imageFile,
                                     width: 58.w,
-                                    height: 58.h,
+                                    height: 58.w,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
-                                      logger.d('显示选择的图片失败：${error}');
+                                      logger.e('显示本地图片失败: $error');
                                       return Image.asset(
                                         Assets.images.userPhoto.path,
                                         width: 58.w,
@@ -81,7 +89,17 @@ class UserProfileView extends BaseViews<UserProfileController> {
                                     },
                                   );
                                 }
-                                // 没有选择时显示默认图
+
+                                // 如果 Rx 为空，尝试从 SecureStorage 读取（fallback）
+                               final reuslt = SecureStorageService().getUserPhoto();
+                               if(reuslt !=null){
+                                return Image.asset(reuslt,width: 58.w,height: 58.h,);
+                               }
+                              
+                              
+                                
+
+                                // 默认图
                                 return Image.asset(
                                   Assets.images.userPhoto.path,
                                   width: 58.w,
@@ -89,6 +107,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
                                   fit: BoxFit.cover,
                                 );
                               }),
+
                               Image.asset(
                                 Assets.images.right.path,
                                 width: 24.w,
@@ -704,17 +723,21 @@ class UserProfileView extends BaseViews<UserProfileController> {
             ),
           ),
 
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 70.w, vertical: 10.h),
-            padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 7.h),
+          InkWell(
+            onTap: controller.savePhoto,
+            // onTap: controller.uploadPatchInfo,
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 70.w, vertical: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 7.h),
 
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(21.h),
-              border: Border.all(color: Color(0xff1e4bdf)),
-            ),
-            child: Text(
-              'Confirm',
-              style: TextStyle(fontSize: 20.sp, color: Color(0xff1e4bdf)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(21.h),
+                border: Border.all(color: Color(0xff1e4bdf)),
+              ),
+              child: Text(
+                'Confirm',
+                style: TextStyle(fontSize: 20.sp, color: Color(0xff1e4bdf)),
+              ),
             ),
           ),
         ],
