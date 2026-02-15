@@ -1,6 +1,8 @@
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:authing_sdk/client.dart';
 import 'package:authing_sdk/result.dart';
 import 'package:authing_sdk/user.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_demo2/app/core/base/base_repository.dart';
 import 'package:flutter_demo2/app/core/model/region_unit.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
@@ -24,6 +26,7 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   @override
   Future<String> loginEmailAndPassword(String username, String password) async {
     var test = storage.getRegion();
+    logger.d('test$test');
     if (storage.getRegion() == RegionUnit.zh) {
       logger.d(password);
       
@@ -50,10 +53,14 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
         print('登录成功登录成功登录成功');
       }
       return '登录成功';
-    } else {
+    } else if(storage.getRegion() ==  RegionUnit.en){
+      final auth0 = Auth0('{https://ineck.auth0.com}', '{n3MTVDRdyq9xl2riKm5cWW2wxWcGhnLA}');
+      final credentials = await auth0.webAuthentication().login(useHTTPS: true);
+     logger.d(credentials.idToken);
+      return '登录失败';
+    }else{
       return '登录失败';
     }
-    // TODO: implement loginEmailAndPassword
   }
 
   @override

@@ -1,5 +1,6 @@
 enum RegionUnit {
+  nu,
   en,
   zh,
-  nu
+  
 }

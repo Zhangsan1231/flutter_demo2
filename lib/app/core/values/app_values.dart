@@ -67,4 +67,13 @@ abstract class AppValues {
 
   static const String userPhoto = 'USER_PHOTO';
 
+//auth0
+  static const String domain = 'ineck.auth0.com';
+
+  static const String clientId = 'n3MTVDRdyq9xl2riKm5cWW2wxWcGhnLA';
+  static const String scheme = 'auth0.$clientId';  // 回调 scheme
+  static const String connection = 'Username-Password-Authentication'; // 你的数据库连接名
+
+
+
 }

@@ -1,3 +1,4 @@
+import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:authing_sdk/client.dart';
 import 'package:authing_sdk/result.dart';
 import 'package:authing_sdk/user.dart';
@@ -10,6 +11,8 @@ import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends BaseController {
+  final auth0 = Auth0(AppValues.domain, AppValues.clientId);
+
   //TODO: Implement RegisterController
 
   final emailController = TextEditingController();
@@ -23,6 +26,7 @@ class RegisterController extends BaseController {
 
   String get email => emailController.text.trim();
   String get password => passwordController.text.trim();
+  final region = SecureStorageService().getRegion();
 
   void confirmPassword(String value) {
     if (value.isEmpty) {
@@ -39,15 +43,36 @@ class RegisterController extends BaseController {
     if (SecureStorageService().getBool(AppValues.agreementValue) == false) {
       Get.snackbar('', '请同意用户协议');
     } else if (isRegister.value) {
-      AuthResult result = await AuthClient.registerByEmail(email, password);
-      User? user = result.user;
-      logger.d('注册打印测试${result.code}');
-      logger.d('注册打印测试${result.message}');
-      logger.d(result.user?.id);
-      logger.d(result.user?.token);
+      //判断国内 国外
+      if (region == 'zh') {
+        //当前环境是国内 走authing
+        AuthResult result = await AuthClient.registerByEmail(email, password);
+        User? user = result.user;
+        logger.d('注册打印测试${result.code}');
+        logger.d('注册打印测试${result.message}');
+        logger.d(result.user?.id);
+        logger.d(result.user?.token);
 
-      // AuthClient.registerByEmail(email.value, password.value);
-      Get.snackbar('注册成功', '');
+        // AuthClient.registerByEmail(email.value, password.value);
+        Get.snackbar('注册成功', '');
+      } else {
+        //国外 走auth0
+        final user = await auth0.api.signup(
+          email: email,
+          password: password,
+          connection: AppValues.connection,
+        );
+        if (user != null) {
+          print('注册成功！');
+          // print('用户 ID: ${user.}'); // 最重要的，唯一标识
+          print('邮箱: ${user.email}'); // 用户输入的邮箱
+          print('用户名: ${user.username}'); // 如果传了 username
+          // print('昵称: ${user.nickname}'); // 如果传了 nickname
+          // print('邮箱已验证？ ${user.emailVerified}'); // 通常是 false，需要验证
+          // print('创建时间: ${user.createdAt}');
+        }
+      }
+
       // Get.toNamed(Routes.LOGIN);
     } else {
       Get.snackbar('失败', '请输入账号or密码');

@@ -63,43 +63,56 @@ Future<void> _initSetting() async{
 
 remoteInit() async {
   final storage = SecureStorageService.instance;
-  final regionValue = storage.getRegion();
-  // storage.deleteAll();
-  print("regionValue: $regionValue");
+
+  // 先清空存储（如果你只是为了测试）
+   storage.deleteAll(); // 建议只在调试时用，生产环境不要随意清空
+
+  // 读取当前地区值
+  var regionValue = storage.getRegion();
+  print("初始读取的地区值: $regionValue");
+
+  // 只有当地区是 nu（未设置）时才去查询 IP 并设置
   if (regionValue == RegionUnit.nu) {
-    // 如果没有设置过API区域，尝试通过IP判断用户所在地区
+    print("地区未设置，开始通过 IP 判断...");
+
     try {
       final response = await http.get(Uri.parse('http://ip-api.com/json'));
-      print("regionresponse: ${response.body}");
+      print("IP 接口响应: ${response.body}");
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        final countryCode = data['countryCode'] as String;
+        final countryCode = data['countryCode'] as String?;
+        print('国家代码: $countryCode');
 
-        if (countryCode == 'CN' || countryCode == 'SG') {
-          // 同时设置地区 + 语言偏好
-          SecureStorageService.instance.setRegion(RegionUnit.zh);
-          // SecureStorageService.instance.setString(AppValues.locale, 'zh_CN');
-
-          // 可选：即时更新当前语言（虽然重启后也会生效，但可以提升体验）
-          // Get.updateLocale(const Locale('zh', 'CN'));
+        if (countryCode == null) {
+          print("IP 接口未返回 countryCode，默认英文");
+          await storage.setRegion(RegionUnit.en);
+        } else if (countryCode == 'CN' || countryCode == 'SG') {
+          await storage.setRegion(RegionUnit.zh);
+          print("设置为中文环境 (zh)");
         } else {
-          SecureStorageService.instance.setRegion(RegionUnit.en);
-          // SecureStorageService.instance.setString(AppValues.locale, 'en_US');
-          // Get.updateLocale(const Locale('en', 'US'));
+          await storage.setRegion(RegionUnit.en);
+          print("设置为英文环境 (en)");
         }
-        // SecureStorageService.instance.setRegion(RegionUnit.en);
-        print("当前服务器环境：${SecureStorageService.instance.getRegion()}");
-        print(
-            "当前语言设置：${SecureStorageService.instance.getString(AppValues.locale)}");
+
+        // 重新读取确认是否设置成功
+        regionValue = storage.getRegion();
+        print("设置后最终地区值: $regionValue");
+      } else {
+        print("IP 接口请求失败，状态码: ${response.statusCode}，默认英文");
+        await storage.setRegion(RegionUnit.en);
       }
     } catch (e) {
-      print('Failed to get IP location: $e');
-      // 如果发生错误，默认设置为英文环境
-      SecureStorageService.instance.setRegion(RegionUnit.en);
+      print('获取 IP 位置失败: $e，默认设置为英文');
+      await storage.setRegion(RegionUnit.en);
     }
+  } else {
+    print("地区已设置过，无需查询 IP，直接使用: $regionValue");
   }
-}
 
+  // 最后打印确认
+  print("remoteInit 结束，最终地区: ${storage.getRegion()}");
+}
 Future<void> _initLanguage() async {
   final storage = SecureStorageService.instance;
   // 先讀取一次

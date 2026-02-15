@@ -31,26 +31,58 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # iOS 风格图标库（Cupertino 风格的图标集合）
   cupertino_icons: ^1.0.8
-  calendar_date_picker2: ^2.0.1
-  get: ^4.7.3
-  logger: ^2.6.2
-  flutter_gen_runner: ^5.4.0 # 你用的这个版本
-  build_runner: ^2.4.12
-  flutter_screenutil: ^5.9.3  #屏幕适配
-  gap: ^3.0.1                 #间距
-  mmkv: "^2.3.0"
-  simple_ruler_picker: ^0.1.1
-  dio: ^5.9.1
-  authing_sdk: ^1.0.0
-  image_picker: ^1.2.1
-  path_provider: ^2.1.5
-  flutter_image_compress: ^2.4.0
-  image_cropper: ^11.0.0
-  http: ^1.6.0
 
+  # 强大的日期范围/多选日历选择器，支持范围选择、单选、多选、日历样式自定义
+  calendar_date_picker2: ^2.0.1
+
+  # GetX 状态管理 + 路由 + 依赖注入 + 国际化 + 主题切换 全家桶（轻量高效）
+  get: ^4.7.3
+
+  # 日志打印工具，支持不同级别（debug/info/warning/error）、文件输出、颜色区分
+  logger: ^2.6.2
+
+  # flutter_gen 的构建工具，用于自动生成 Assets、颜色、字体、图片的类型安全访问代码
+  # 注意：这个是 build_runner 的依赖包，不是直接使用的 runtime 包
+  flutter_gen_runner: ^5.4.0
+
+  # 代码生成工具（配合 flutter_gen_runner、json_serializable 等使用）
+  build_runner: ^2.4.12
+
+  # 屏幕适配工具（根据设计稿 px 自动转换为 dp/sp，支持 375 设计稿基准）
+  flutter_screenutil: ^5.9.3
+
+  # 简洁的间距 Widget（Gap），替代 SizedBox(height: xx) / width: xx
+  gap: ^3.0.1
+
+  # 高性能的 Key-Value 存储（基于 MMKV，Android/iOS 原生实现，比 shared_preferences 更快、更可靠）
+  mmkv: ^2.3.0
+
+  # 简单的直尺/滚轮选择器（常用于身高、体重、年龄等数值选择）
+  simple_ruler_picker: ^0.1.1
+
+  # 强大的网络请求库（支持拦截器、取消请求、FormData、文件上传等）
+  dio: ^5.9.1
+
+  # Authing 用户认证 SDK（支持手机号、邮箱、微信、Apple 等多种登录方式）
+  authing_sdk: ^1.0.0
+
+  # 系统相册/相机 图片/视频选择器（支持多选、拍照、录视频）
+  image_picker: ^1.2.1
+
+  # 获取应用文档目录、临时目录、外部存储路径（用于保存下载的文件、缓存等）
+  path_provider: ^2.1.5
+
+  # 图片压缩工具（支持 jpeg/png/webp，体积大幅缩小，常用于上传前压缩）
+  flutter_image_compress: ^2.4.0
+
+  # 图片裁剪工具（支持自由裁剪、固定比例裁剪、旋转等，用户头像裁剪常用）
+  image_cropper: ^11.0.0
+
+  # 基础 HTTP 客户端（GetX / Dio 底层也依赖它，常用于简单请求或配合其他包使用）
+  http: ^1.6.0
+  auth0_flutter: ^1.14.0
 
 
 

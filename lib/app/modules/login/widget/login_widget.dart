@@ -1,5 +1,6 @@
 // 导入 Flutter 核心库
 import 'package:flutter/material.dart';
+import 'package:flutter_demo2/app/modules/login/controllers/auth_controller.dart';
 import 'package:flutter_demo2/app/modules/login/controllers/login_controller.dart';
 
 // 导入自定义的登录页面横幅组件
@@ -454,6 +455,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   // 注册按钮
   Widget SignUpButton() {
+    // 这里注入 Controller（只注入一次）
+    // Get.put(AuthController());  // ← 加这一行！
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.symmetric(horizontal: 28.h),
@@ -464,7 +467,10 @@ class _LoginWidgetState extends State<LoginWidget> {
       ),
       child: InkWell(
         onTap: () {
-          print('用户点击了 Sign Up 按钮');
+          // Get.find<AuthController>().login();
+          // c.auth0Login();
+          Get.toNamed(Routes.REGISTER);
+          print('用户点击了 注册 按钮');
           // TODO: 跳转注册页面
         },
         borderRadius: BorderRadius.circular(20.h),

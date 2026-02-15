@@ -1,5 +1,7 @@
 import 'dart:io';
 
+// import 'package:auth0_flutter/auth0_flutter.dart';
+import 'package:auth0_flutter_platform_interface/src/credentials.dart';
 import 'package:flutter_demo2/app/core/base/base_repository.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/core/values/app_values.dart';
@@ -250,6 +252,7 @@ UserModel? _parseInfoResponse(dio.Response<dynamic> response) {
      rethrow;
    }
   }
+
 
   
 }
