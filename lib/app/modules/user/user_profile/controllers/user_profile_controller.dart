@@ -5,6 +5,8 @@ import 'package:flutter_demo2/app/core/base/base_controller.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/data/repository/auth_repository_impl.dart';
 import 'package:flutter_demo2/app/data/repository/default_repository_impl.dart';
+import 'package:flutter_demo2/app/modules/user/controllers/user_controller.dart';
+import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -87,6 +89,9 @@ class UserProfileController extends BaseController {
         currentUser.photo = imageUrl;
         SecureStorageService().setUserInfo(currentUser);
         logger.d('本地用户已经更新');
+        Get.toNamed(Routes.USER);
+        Get.find<UserController>().refreshAvatar();  // 或任何刷新方
+
       }
     } catch (e) {}
   }

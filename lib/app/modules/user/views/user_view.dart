@@ -6,6 +6,7 @@ import 'package:flutter_demo2/app/core/model/page_background_.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:flutter_demo2/app/modules/user/controllers/user_controller.dart';
+import 'package:flutter_demo2/app/modules/user/widget/custom_image.dart';
 import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,60 +29,76 @@ class UserView extends BaseViews<UserController> {
       width: double.infinity,
       child: Column(
         children: [
+Obx(() {
+  final photo = Get.find<UserController>().userPhoto.value;
+  if (controller.isLoadingAvatar.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+  return CustomCachedNetworkImage(
+    imageUrl: photo,
+    width: 58.w,
+    height: 58.h,
+    // 可選：自訂 placeholder
+    // placeholder: const CircleAvatar(
+    //   backgroundColor: Colors.grey[300],
+    //   child: Icon(Icons.person, color: Colors.white),
+    // ),
+  );
+}),
           //顶部头像区域
-         Obx(() {
-          if(controller.avatarPath.value !=null &&controller.avatarPath.value.isNotEmpty){
-            return Image.file(File(controller.avatarPath.value,),width: 58.w,height: 58.h,errorBuilder: (context, error, stackTrace) {
-              return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
-            },);
-          }
+        //  Obx(() {
+        //   if(controller.avatarPath.value !=null &&controller.avatarPath.value.isNotEmpty){
+        //     return Image.file(File(controller.avatarPath.value,),width: 58.w,height: 58.h,errorBuilder: (context, error, stackTrace) {
+        //       return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
+        //     },);
+        //   }
           
-         return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
+        //  return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
 
-          //  Row(
-          //   mainAxisAlignment: .spaceBetween,
-          //   children: [
-          //     Row(
-          //       children: [
-          //        Image.asset(
-          //         SecureStorageService().getUserPhoto() ?? '',
-          //         width: 58.w,
-          //         height: 58.w,
-          //         fit: BoxFit.cover,
-          //         errorBuilder: (context, error, stackTrace) {
-          //           return Image.asset(Assets.images.userPhoto.path,
-          //            width: 58.w,
-          //         height: 58.w,
-          //         fit: BoxFit.cover,
-          //           );
-          //         },
-          //         ),
+        //   //  Row(
+        //   //   mainAxisAlignment: .spaceBetween,
+        //   //   children: [
+        //   //     Row(
+        //   //       children: [
+        //   //        Image.asset(
+        //   //         SecureStorageService().getUserPhoto() ?? '',
+        //   //         width: 58.w,
+        //   //         height: 58.w,
+        //   //         fit: BoxFit.cover,
+        //   //         errorBuilder: (context, error, stackTrace) {
+        //   //           return Image.asset(Assets.images.userPhoto.path,
+        //   //            width: 58.w,
+        //   //         height: 58.w,
+        //   //         fit: BoxFit.cover,
+        //   //           );
+        //   //         },
+        //   //         ),
                   
-          //         Gap(20.w),
-          //         Text(SecureStorageService().getUserInfo()?.name ?? ''),
-          //       ],
-          //     ),
-          //     //  Gap(150.w),
-          //     Column(
-          //       // mainAxisAlignment: MainAxisAlignment.end,
-          //       children: [
-          //         Image.asset(
-          //           Assets.images.group.path,
-          //           width: 22.w,
-          //           height: 24.h,
-          //         ),
-          //         Gap(5.h),
-          //         Image.asset(
-          //           Assets.images.right.path,
-          //           width: 20.w,
-          //           height: 15.h,
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
+        //   //         Gap(20.w),
+        //   //         Text(SecureStorageService().getUserInfo()?.name ?? ''),
+        //   //       ],
+        //   //     ),
+        //   //     //  Gap(150.w),
+        //   //     Column(
+        //   //       // mainAxisAlignment: MainAxisAlignment.end,
+        //   //       children: [
+        //   //         Image.asset(
+        //   //           Assets.images.group.path,
+        //   //           width: 22.w,
+        //   //           height: 24.h,
+        //   //         ),
+        //   //         Gap(5.h),
+        //   //         Image.asset(
+        //   //           Assets.images.right.path,
+        //   //           width: 20.w,
+        //   //           height: 15.h,
+        //   //         ),
+        //   //       ],
+        //   //     ),
+        //   //   ],
+        //   // ),
           
-         }),
+        //  }),
           
           //Welcome
           Container(

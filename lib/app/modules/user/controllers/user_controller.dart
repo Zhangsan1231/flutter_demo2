@@ -12,9 +12,8 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class UserController extends BaseController {
-  
+  RxString photo = ''.obs;
   RxString avatarPath = ''.obs;
-  RxBool isLoadingAvatar = false.obs;
   final storage = SecureStorageService();
   //获取用户头像
   Future<void> userInfo() async {
@@ -25,6 +24,7 @@ class UserController extends BaseController {
   //注销
   Future<void> logout() async {
     AuthRepositoryImpl().logout();
+    SecureStorageService().deleteAll();
     Get.toNamed(Routes.LOGIN);
   }
 
@@ -86,11 +86,38 @@ class UserController extends BaseController {
     }
   }
 
-  //
+  final RxString userPhoto = ''.obs;           // 頭像 url 做成 Rx
+  final RxBool isLoadingAvatar = false.obs;    // 可選 loading 狀態
+
   @override
   void onInit() {
-    loadingImage();
-    // TODO: implement onInit
     super.onInit();
+    refreshAvatar();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    // 這裡每次頁面顯示時都會執行（當使用 Get.to / Get.off 等導航）
+    refreshAvatar();
+  }
+
+  Future<void> refreshAvatar() async {
+    isLoadingAvatar.value = true;
+    try {
+      final user = await SecureStorageService().getUserInfo();
+      final newPhoto = user?.photo ?? '';
+
+      if (newPhoto != userPhoto.value) {
+        userPhoto.value = newPhoto;  // 變化才觸發 Obx 重建
+      }
+
+      // 如果你想強制重新下載（忽略舊緩存），可以清空舊檔案或改用新邏輯
+      // 或者直接依賴 CustomCachedNetworkImage 自己的 didUpdateWidget
+    } catch (e) {
+      print('刷新頭像失敗: $e');
+    } finally {
+      isLoadingAvatar.value = false;
+    }
   }
 }
