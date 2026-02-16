@@ -66,9 +66,9 @@ class _SplashWidgetState extends State<SplashWidget> {
       onTap: () {
         Get.toNamed(Routes.LOGIN);
         // logger.d("nihao");
-        Get.toNamed(Routes.HOME);
+        // Get.toNamed(Routes.HOME);
         
-        print("微信点击 跳转首页");
+        // print("微信点击 跳转首页");
       },
       child: Container(
         height: 47,

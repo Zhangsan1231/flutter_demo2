@@ -65,7 +65,7 @@ remoteInit() async {
   final storage = SecureStorageService.instance;
 
   // 先清空存储（如果你只是为了测试）
-   storage.deleteAll(); // 建议只在调试时用，生产环境不要随意清空
+  //  storage.deleteAll(); // 建议只在调试时用，生产环境不要随意清空
 
   // 读取当前地区值
   var regionValue = storage.getRegion();
@@ -85,8 +85,8 @@ remoteInit() async {
         print('国家代码: $countryCode');
 
         if (countryCode == null) {
-          print("IP 接口未返回 countryCode，默认英文");
-          await storage.setRegion(RegionUnit.en);
+          print("IP 接口未返回 countryCode，默认中文");
+          await storage.setRegion(RegionUnit.zh);
         } else if (countryCode == 'CN' || countryCode == 'SG') {
           await storage.setRegion(RegionUnit.zh);
           print("设置为中文环境 (zh)");
@@ -99,12 +99,12 @@ remoteInit() async {
         regionValue = storage.getRegion();
         print("设置后最终地区值: $regionValue");
       } else {
-        print("IP 接口请求失败，状态码: ${response.statusCode}，默认英文");
-        await storage.setRegion(RegionUnit.en);
+        print("IP 接口请求失败，状态码: ${response.statusCode}，默认中文");
+        await storage.setRegion(RegionUnit.zh);
       }
     } catch (e) {
-      print('获取 IP 位置失败: $e，默认设置为英文');
-      await storage.setRegion(RegionUnit.en);
+      print('获取 IP 位置失败: $e，默认设置为中文');
+      await storage.setRegion(RegionUnit.zh);
     }
   } else {
     print("地区已设置过，无需查询 IP，直接使用: $regionValue");

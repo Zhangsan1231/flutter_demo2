@@ -51,6 +51,7 @@ class UserView extends BaseViews<UserController> {
              
             );
           }),
+          
           Gap(20.w),
           Text('${SecureStorageService().getUserInfo()?.name}'),
             ],

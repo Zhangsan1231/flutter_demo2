@@ -70,6 +70,10 @@ class $AssetsImagesGen {
   AssetGenImage get backgronud =>
       const AssetGenImage('assets/images/backgronud.png');
 
+  /// File path: assets/images/bluetooth_bg.png
+  AssetGenImage get bluetoothBg =>
+      const AssetGenImage('assets/images/bluetooth_bg.png');
+
   /// File path: assets/images/goggeIcon.png
   AssetGenImage get goggeIcon =>
       const AssetGenImage('assets/images/goggeIcon.png');
@@ -93,6 +97,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/userPhoto.png
   AssetGenImage get userPhoto =>
       const AssetGenImage('assets/images/userPhoto.png');
+
+  /// File path: assets/images/user_bluetooth.png
+  AssetGenImage get userBluetooth =>
+      const AssetGenImage('assets/images/user_bluetooth.png');
 
   /// File path: assets/images/wechat.png
   AssetGenImage get wechat => const AssetGenImage('assets/images/wechat.png');
@@ -119,6 +127,7 @@ class $AssetsImagesGen {
     frame,
     vector,
     backgronud,
+    bluetoothBg,
     goggeIcon,
     googe,
     group,
@@ -126,6 +135,7 @@ class $AssetsImagesGen {
     reminder,
     right,
     userPhoto,
+    userBluetooth,
     wechat,
     wechatIcon,
   ];

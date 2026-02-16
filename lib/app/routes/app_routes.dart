@@ -13,8 +13,8 @@ abstract class Routes {
   static const USER_PROFILE = _Paths.USER + _Paths.USER_PROFILE;
   static const PROFILE_NAME =
       _Paths.USER + _Paths.USER_PROFILE + _Paths.PROFILE_NAME;
-  static const USER = _Paths.BLUETOOTH + _Paths.USER;
-  static const BLUE_USER = _Paths.BLUETOOTH + _Paths.BLUE_USER;
+  static const BLUE_USER = _Paths.BLUE_USER;
+  static const MY_BLUETOOTH =   _Paths.MY_BLUETOOTH;
 }
 
 abstract class _Paths {
@@ -28,6 +28,7 @@ abstract class _Paths {
   static const INFORMATION = '/information';
   static const USER_PROFILE = '/user-profile';
   static const PROFILE_NAME = '/profile-name';
-  static const USER = '/user';
+  // static const USER = '/user';
   static const BLUE_USER = '/blue-user';
+  static const MY_BLUETOOTH = '/my-bluetooth';
 }

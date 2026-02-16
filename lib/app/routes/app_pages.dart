@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 import '../core/service/storage_service.dart';
-
+import '../modules/bluetooth/blue_user/bindings/blue_user_binding.dart';
+import '../modules/bluetooth/blue_user/views/blue_user_view.dart';
+import '../modules/bluetooth/my_bluetooth/bindings/my_bluetooth_binding.dart';
+import '../modules/bluetooth/my_bluetooth/views/my_bluetooth_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/information/bindings/information_binding.dart';
@@ -32,7 +35,7 @@ class AppPages {
     final user = SecureStorageService().getUserInfo();
     print('username --------------${user?.name}');
     print('idtoken ======= ${idToken}');
-    return idToken != null ? Routes.USER : Routes.SPLASH;
+    return idToken != null ? Routes.BLUE_USER : Routes.SPLASH;
   }
   // static const INITIAL = Routes.LOGIN;
 
@@ -81,6 +84,15 @@ class AppPages {
       page: () => InformationView(),
       binding: InformationBinding(),
     ),
-    
+    GetPage(
+      name: _Paths.BLUE_USER,
+      page: () => BlueUserView(),
+      binding: BlueUserBinding(),
+    ),
+    GetPage(
+      name: _Paths.MY_BLUETOOTH,
+      page: () =>  MyBluetoothView(),
+      binding: MyBluetoothBinding(),
+    ),
   ];
 }
