@@ -1,8 +1,8 @@
 import 'package:flutter_demo2/app/core/base/base_controller.dart';
 import 'package:get/get.dart';
 
-class BluetoothConnectController extends BaseController {
-  //TODO: Implement BluetoothConnectController
+class ConnectDeviceController extends BaseController {
+  //TODO: Implement ConnectDeviceController
 
   final count = 0.obs;
   @override

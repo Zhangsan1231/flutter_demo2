@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/model/page_background_.dart';
+import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -56,21 +57,22 @@ class BluetoothDevicesView extends BaseViews<BluetoothDevicesController> {
           ),
           Gap(50.h),
           Text(
-              'Data synchronization',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
-              ),
+            'Data synchronization',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff333333),
             ),
+          ),
 
           Gap(10.h),
           //Data synchronization
           Container(
-
-            padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-            decoration: BoxDecoration(color: Color(0x0d1B6BFF),
-            borderRadius: BorderRadius.circular(8.h)),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: Color(0x0d1B6BFF),
+              borderRadius: BorderRadius.circular(8.h),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -132,84 +134,92 @@ class BluetoothDevicesView extends BaseViews<BluetoothDevicesController> {
               ],
             ),
           ),
-        
-         Gap(10.h),
 
-         //aiRing
-         Text(
-              'aiRing',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
-              ),
-            ),
-            Gap(10.h),
-          Container(
+          Gap(10.h),
 
-            padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-            decoration: BoxDecoration(color: Color(0x0d1B6BFF),
-            borderRadius: BorderRadius.circular(8.h)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Image.asset(
-                  Assets.images.aiRing.path,
-                  width: 48.w,
-                  height: 46.h,
-                ),
-                Gap(10.h),
-                Text(
-              'aiRing',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
-              ),
-            ),
-                Gap(10.h),
-                Spacer(),
-                
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xff1B6BFF)),
-                    borderRadius: BorderRadius.circular(4.h),
-                  ),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 4.h,
-                  ),
-
-                  child: Text(
-                    'Bind',
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff999999),
-                    ),
-                  ),
-                ),
-              ],
+          //aiRing
+          Text(
+            'aiRing',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff333333),
             ),
           ),
-        
-         Gap(10.h),
+          Gap(10.h),
+          InkWell(
+            onTap: () {
+              Get.toNamed(Routes.BLUETOOTH_CONNECT);
+            },
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: Color(0x0d1B6BFF),
+                borderRadius: BorderRadius.circular(8.h),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    Assets.images.aiRing.path,
+                    width: 48.w,
+                    height: 46.h,
+                  ),
+                  Gap(10.h),
+                  Text(
+                    'aiRing',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff333333),
+                    ),
+                  ),
+                  Gap(10.h),
+                  Spacer(),
 
-//Weight scale
-         Text(
-              'Weight scale',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xff1B6BFF)),
+                      borderRadius: BorderRadius.circular(4.h),
+                    ),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 4.h,
+                    ),
+
+                    child: Text(
+                      'Bind',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: Color(0xff999999),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            Gap(10.h),
-          Container(
+          ),
+          
+          
+          Gap(10.h),
 
-            padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 10.h),
-            decoration: BoxDecoration(color: Color(0x0d1B6BFF),
-            borderRadius: BorderRadius.circular(8.h)),
+          //Weight scale
+          Text(
+            'Weight scale',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff333333),
+            ),
+          ),
+          Gap(10.h),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+            decoration: BoxDecoration(
+              color: Color(0x0d1B6BFF),
+              borderRadius: BorderRadius.circular(8.h),
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -220,14 +230,14 @@ class BluetoothDevicesView extends BaseViews<BluetoothDevicesController> {
                 ),
                 Gap(10.h),
                 Text(
-              'aiWeight scale',
-              style: TextStyle(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff333333),
-              ),
-            ),
-                
+                  'aiWeight scale',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff333333),
+                  ),
+                ),
+
                 Gap(10.h),
                 Spacer(),
                 Container(
@@ -252,7 +262,6 @@ class BluetoothDevicesView extends BaseViews<BluetoothDevicesController> {
               ],
             ),
           ),
-        
         ],
       ),
     );

@@ -21,6 +21,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/AIH.png
   AssetGenImage get aih => const AssetGenImage('assets/images/AIH.png');
 
+  /// File path: assets/images/BluetoothTips2.png
+  AssetGenImage get bluetoothTips2 =>
+      const AssetGenImage('assets/images/BluetoothTips2.png');
+
   /// File path: assets/images/Frame 2102.png
   AssetGenImage get frame2102 =>
       const AssetGenImage('assets/images/Frame 2102.png');
@@ -84,9 +88,17 @@ class $AssetsImagesGen {
   AssetGenImage get blueBaground =>
       const AssetGenImage('assets/images/blueBaground.png');
 
+  /// File path: assets/images/bluetoothTips1.png
+  AssetGenImage get bluetoothTips1 =>
+      const AssetGenImage('assets/images/bluetoothTips1.png');
+
   /// File path: assets/images/bluetooth_bg.png
   AssetGenImage get bluetoothBg =>
       const AssetGenImage('assets/images/bluetooth_bg.png');
+
+  /// File path: assets/images/bluetooth_connect.png
+  AssetGenImage get bluetoothConnect =>
+      const AssetGenImage('assets/images/bluetooth_connect.png');
 
   /// File path: assets/images/goggeIcon.png
   AssetGenImage get goggeIcon =>
@@ -126,6 +138,7 @@ class $AssetsImagesGen {
   /// List of all assets
   List<AssetGenImage> get values => [
     aih,
+    bluetoothTips2,
     frame2102,
     frame1,
     frame10,
@@ -145,7 +158,9 @@ class $AssetsImagesGen {
     aiRing,
     backgronud,
     blueBaground,
+    bluetoothTips1,
     bluetoothBg,
+    bluetoothConnect,
     goggeIcon,
     googe,
     group,

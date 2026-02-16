@@ -83,7 +83,7 @@ dependencies:
   # 基础 HTTP 客户端（GetX / Dio 底层也依赖它，常用于简单请求或配合其他包使用）
   http: ^1.6.0
   auth0_flutter: ^1.14.0
-
+  flutter_spinkit: ^5.2.2
 
 
 dev_dependencies:

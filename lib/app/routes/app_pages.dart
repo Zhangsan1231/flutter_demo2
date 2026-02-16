@@ -10,6 +10,8 @@ import '../modules/bluetooth/bluetooth_connect/bindings/bluetooth_connect_bindin
 import '../modules/bluetooth/bluetooth_connect/views/bluetooth_connect_view.dart';
 import '../modules/bluetooth/bluetooth_devices/bindings/bluetooth_devices_binding.dart';
 import '../modules/bluetooth/bluetooth_devices/views/bluetooth_devices_view.dart';
+import '../modules/bluetooth/connect_device/bindings/connect_device_binding.dart';
+import '../modules/bluetooth/connect_device/views/connect_device_view.dart';
 import '../modules/bluetooth/my_bluetooth/bindings/my_bluetooth_binding.dart';
 import '../modules/bluetooth/my_bluetooth/views/my_bluetooth_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -105,8 +107,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.BLUETOOTH_CONNECT,
-      page: () =>  BluetoothConnectView(),
+      page: () => BluetoothConnectView(),
       binding: BluetoothConnectBinding(),
+    ),
+    GetPage(
+      name: _Paths.CONNECT_DEVICE,
+      page: () =>  ConnectDeviceView(),
+      binding: ConnectDeviceBinding(),
     ),
   ];
 }
