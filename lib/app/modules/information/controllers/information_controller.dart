@@ -218,16 +218,7 @@ class InformationController extends BaseController {
   }
 
   Future<void> nextPatchInfo() async {
-    // logger.d('first Name :${firstName}');
-    // logger.d('last Name :${lastName}');
-    // logger.d('gender : ${selectedGender.value.label}');
-    // logger.d('Height : ${currentValue.round()}');
-    // logger.d('weight :${currentWeightValue.round()}');
-    // logger.d('birthday : ${selectedBirthday.value}');
-    // String? token = SecureStorageService().getIdToken();
-    // logger.d('token :${token}');
-    // String? userId = SecureStorageService().getUserId();
-    // logger.d('userId :${userId}');
+    
     if (firstName.isEmpty) {
       logger.d('请填写firstName');
       Get.snackbar('请填写firstName','');

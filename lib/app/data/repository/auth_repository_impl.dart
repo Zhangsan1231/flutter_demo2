@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_demo2/app/core/base/base_repository.dart';
 import 'package:flutter_demo2/app/core/model/region_unit.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
+import 'package:flutter_demo2/app/core/values/app_values.dart';
 import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:flutter_demo2/app/data/repository/auth_repository.dart';
 import 'package:flutter_demo2/app/data/repository/default_repository_impl.dart';
@@ -29,7 +30,7 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     logger.d('test$test');
     if (storage.getRegion() == RegionUnit.zh) {
       logger.d(password);
-      
+
       AuthResult response = await AuthClient.loginByAccount(username, password);
 
       // logger.d("当前登录Response：${response.user?.token}");
@@ -37,7 +38,9 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
       // logger.d(response.code);
       final user = response.user;
       // SecureStorageService().setUserInfo(user as UserModel);
-      logger.d('SecureStorageService().getUserInfo()?.name; :${SecureStorageService().getUserInfo()?.name}');
+      logger.d(
+        'SecureStorageService().getUserInfo()?.name; :${SecureStorageService().getUserInfo()?.name}',
+      );
       if (user != null) {
         storage.setIdToken(user.token);
         logger.d('user.token111111111 ${user.token}');
@@ -53,22 +56,37 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
         print('登录成功登录成功登录成功');
       }
       return '登录成功';
-    } else if(storage.getRegion() ==  RegionUnit.en){
-      final auth0 = Auth0('{https://ineck.auth0.com}', '{n3MTVDRdyq9xl2riKm5cWW2wxWcGhnLA}');
-      final credentials = await auth0.webAuthentication().login(useHTTPS: true);
-     logger.d(credentials.idToken);
-      return '登录失败';
-    }else{
+    } else if (storage.getRegion() == RegionUnit.en) {
+      final auth0 = Auth0(AppValues.domain, AppValues.clientId);
+      final credentials = await auth0.api.login(
+        usernameOrEmail: username,
+        password: password,
+        connectionOrRealm: AppValues.connection,
+      );
+      if (credentials != null) {
+        if (credentials.idToken != null) {
+          logger.d('credentials.idToken:${credentials.idToken}');
+          storage.setIdToken(credentials.idToken);
+          logger.d('idtoken保存成功');
+        }
+        if (credentials.accessToken != null) {
+          logger.d('credentials.accessToken:${credentials.accessToken}');
+          storage.setAccessToken(credentials.accessToken);
+          logger.d('Accestoken保存成功');
+        }
+      }
+
+      return '登录成功';
+    } else {
       return '登录失败';
     }
   }
 
   @override
   Future<void> logout() async {
-   AuthResult result = await AuthClient.logout();
+    AuthResult result = await AuthClient.logout();
     var code = result.code;
     logger.d('code==========${code}');
-
   }
 
   @override
@@ -107,7 +125,7 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
       // logger.d('尝试创建默认用户数据');
       await DefaultRepositoryImpl().postInfo();
       //3.创建后再次获取数据
-      UserModel? userModel =await DefaultRepositoryImpl().getInfo();
+      UserModel? userModel = await DefaultRepositoryImpl().getInfo();
       if (userModel != null) {
         storage.setUserInfo(userModel);
         logger.d('用户数据初始化成功');
@@ -121,13 +139,9 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
       return false;
     }
   }
-  
+
   @override
   Future<bool> uploadUserProfile(Map<String, Object> map) async {
-    
-   return  await DefaultRepositoryImpl().patchInfo(map);
+    return await DefaultRepositoryImpl().patchInfo(map);
   }
-  
- 
-
 }

@@ -29,77 +29,37 @@ class UserView extends BaseViews<UserController> {
       width: double.infinity,
       child: Column(
         children: [
-Obx(() {
-  final photo = Get.find<UserController>().userPhoto.value;
-  if (controller.isLoadingAvatar.value) {
-          return const Center(child: CircularProgressIndicator());
-        }
-  return CustomCachedNetworkImage(
-    imageUrl: photo,
-    width: 58.w,
-    height: 58.h,
-    // 可選：自訂 placeholder
-    // placeholder: const CircleAvatar(
-    //   backgroundColor: Colors.grey[300],
-    //   child: Icon(Icons.person, color: Colors.white),
-    // ),
-  );
-}),
-          //顶部头像区域
-        //  Obx(() {
-        //   if(controller.avatarPath.value !=null &&controller.avatarPath.value.isNotEmpty){
-        //     return Image.file(File(controller.avatarPath.value,),width: 58.w,height: 58.h,errorBuilder: (context, error, stackTrace) {
-        //       return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
-        //     },);
-        //   }
+          Row(
+            children: [
+              Obx(() {
+            final photo = Get.find<UserController>().userPhoto.value;
+            if (controller.isLoadingAvatar.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (photo == null || photo.isEmpty) {
+              return Image.asset(
+                Assets.images.userPhoto.path,
+                width: 58.w,
+                height: 58.h,
+              );
+            }
+            ;
+            return CustomCachedNetworkImage(
+              imageUrl: photo,
+              width: 58.w,
+              height: 58.h,
+             
+            );
+          }),
+          Gap(20.w),
+          Text('${SecureStorageService().getUserInfo()?.name}'),
+            ],
+          ),
           
-        //  return Image.asset(Assets.images.photo.path,width: 58.w,height: 58.h,);
+          
+          
+      
 
-        //   //  Row(
-        //   //   mainAxisAlignment: .spaceBetween,
-        //   //   children: [
-        //   //     Row(
-        //   //       children: [
-        //   //        Image.asset(
-        //   //         SecureStorageService().getUserPhoto() ?? '',
-        //   //         width: 58.w,
-        //   //         height: 58.w,
-        //   //         fit: BoxFit.cover,
-        //   //         errorBuilder: (context, error, stackTrace) {
-        //   //           return Image.asset(Assets.images.userPhoto.path,
-        //   //            width: 58.w,
-        //   //         height: 58.w,
-        //   //         fit: BoxFit.cover,
-        //   //           );
-        //   //         },
-        //   //         ),
-                  
-        //   //         Gap(20.w),
-        //   //         Text(SecureStorageService().getUserInfo()?.name ?? ''),
-        //   //       ],
-        //   //     ),
-        //   //     //  Gap(150.w),
-        //   //     Column(
-        //   //       // mainAxisAlignment: MainAxisAlignment.end,
-        //   //       children: [
-        //   //         Image.asset(
-        //   //           Assets.images.group.path,
-        //   //           width: 22.w,
-        //   //           height: 24.h,
-        //   //         ),
-        //   //         Gap(5.h),
-        //   //         Image.asset(
-        //   //           Assets.images.right.path,
-        //   //           width: 20.w,
-        //   //           height: 15.h,
-        //   //         ),
-        //   //       ],
-        //   //     ),
-        //   //   ],
-        //   // ),
-          
-        //  }),
-          
           //Welcome
           Container(
             padding: EdgeInsets.symmetric(horizontal: 100.w, vertical: 20.h),
@@ -204,595 +164,571 @@ Obx(() {
               margin: EdgeInsets.symmetric(horizontal: 10.w),
               child: SingleChildScrollView(
                 child: Column(
-                children: [
-                  //My Provide
-                  InkWell(
-                    onTap: () =>Get.toNamed(Routes.USER_PROFILE),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'My Provider',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                  children: [
+                    //My Provide
+                    InkWell(
+                      onTap: () => Get.toNamed(Routes.USER_PROFILE),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'My Provider',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //Reminder Setting
-                  InkWell(
-                    onTap: () => Get.toNamed(Routes.SPLASH),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.reminder.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Reminder Setting',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
-                      ),
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
+                    Gap(16.h),
 
-                  //Health Surveys
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame1.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Health Surveys',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    //Reminder Setting
+                    InkWell(
+                      onTap: () => Get.toNamed(Routes.SPLASH),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.reminder.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Reminder Setting',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //Pain Record
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame2.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Pain Record',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
-                      ),
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
+                    Gap(16.h),
 
-                  //Neural Record
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame3.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Neural Record',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    //Health Surveys
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame1.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Health Surveys',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //ODI Questionare
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame4.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'ODI Questionare',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
-                      ),
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
+                    Gap(16.h),
 
-                  //Promis Questionare
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame5.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Promis Questionare',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    //Pain Record
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame2.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Pain Record',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //Switch Units
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame6.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Switch Units',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
-                      ),
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
+                    Gap(16.h),
 
-                  //Device Settings
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame7.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Device Settings',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    //Neural Record
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame3.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Neural Record',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //Data Permissions
-                  InkWell(
-                    onTap: () => print('Data Permissions点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame8.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Data Permissions',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
-                      ),
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
+                    Gap(16.h),
 
-                  //Our Website
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame2102.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Our Website',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    //ODI Questionare
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame4.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'ODI Questionare',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //About AIH
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame9.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'About AIH',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
-                      ),
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
+                    Gap(16.h),
 
-                  //Shop
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame10.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Shop',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    //Promis Questionare
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame5.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Promis Questionare',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
 
-                  //Lanuage Settings
-                  InkWell(
-                    onTap: () => print('Myprovider点击测试'),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset(
-                                Assets.images.frame11.path,
-                                width: 24.w,
-                                height: 24.h,
-                              ),
-                              Gap(16.w),
-                              Text(
-                                'Lanuage Settings',
-                                style: TextStyle(fontSize: 16.sp),
-                              ),
-                            ],
-                          ),
-                          Image.asset(
-                            Assets.images.right.path,
-                            width: 24.w,
-                            height: 24.h,
-                          ),
-                          
-                        ],
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //Switch Units
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame6.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Switch Units',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                
-                  Gap(16.h),
-                  Container(
-                    width: double.infinity,
-                    color: Colors.grey,
-                    height: 1.h,
-                  ),
-                  Gap(16.h),
-                
-                ],
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //Device Settings
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame7.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Device Settings',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //Data Permissions
+                    InkWell(
+                      onTap: () => print('Data Permissions点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame8.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Data Permissions',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //Our Website
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame2102.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Our Website',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //About AIH
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame9.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'About AIH',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //Shop
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame10.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text('Shop', style: TextStyle(fontSize: 16.sp)),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+
+                    //Lanuage Settings
+                    InkWell(
+                      onTap: () => print('Myprovider点击测试'),
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Image.asset(
+                                  Assets.images.frame11.path,
+                                  width: 24.w,
+                                  height: 24.h,
+                                ),
+                                Gap(16.w),
+                                Text(
+                                  'Lanuage Settings',
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+                            Image.asset(
+                              Assets.images.right.path,
+                              width: 24.w,
+                              height: 24.h,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Gap(16.h),
+                    Container(
+                      width: double.infinity,
+                      color: Colors.grey,
+                      height: 1.h,
+                    ),
+                    Gap(16.h),
+                  ],
+                ),
               ),
-            
-              )
-            
             ),
           ),
 
           InkWell(
             onTap: controller.logout,
             child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 70.w, vertical: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 7.h),
 
-            margin: EdgeInsets.symmetric(horizontal: 70.w,vertical: 10.h),
-            padding: EdgeInsets.symmetric(horizontal: 50.w,vertical: 7.h),
-
-            decoration: BoxDecoration(
-              
-              borderRadius: BorderRadius.circular(21.h),
-              border: Border.all(
-                
-                color: Color(0xff1e4bdf)
-              )
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(21.h),
+                border: Border.all(color: Color(0xff1e4bdf)),
+              ),
+              child: Text(
+                'log out',
+                style: TextStyle(fontSize: 20.sp, color: Color(0xff1e4bdf)),
+              ),
             ),
-            child: Text('log out',style: TextStyle(fontSize: 20.sp,color: Color(0xff1e4bdf)),),
-          )
-        ,
-          )
-        
+          ),
         ],
       ),
     );

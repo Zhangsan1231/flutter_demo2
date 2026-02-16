@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_demo2/app/core/service/storage_service.dart';
-import 'package:flutter_demo2/app/modules/user/user_profile/views/profile_name_view.dart';
+
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+
+import '../core/service/storage_service.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
@@ -18,6 +19,7 @@ import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/user/bindings/user_binding.dart';
 import '../modules/user/user_profile/bindings/user_profile_binding.dart';
+import '../modules/user/user_profile/views/profile_name_view.dart';
 import '../modules/user/user_profile/views/user_profile_view.dart';
 import '../modules/user/views/user_view.dart';
 
@@ -26,11 +28,11 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
   static String get INITIAL {
-        final idToken = SecureStorageService().getIdToken();
-        final user = SecureStorageService().getUserInfo();
-        print('username --------------${user?.name}');
-        print('idtoken ======= ${idToken}');
-    return idToken !=null ? Routes.USER : Routes.SPLASH;
+    final idToken = SecureStorageService().getIdToken();
+    final user = SecureStorageService().getUserInfo();
+    print('username --------------${user?.name}');
+    print('idtoken ======= ${idToken}');
+    return idToken != null ? Routes.USER : Routes.SPLASH;
   }
   // static const INITIAL = Routes.LOGIN;
 
@@ -63,7 +65,7 @@ class AppPages {
           children: [
             GetPage(
               name: _Paths.PROFILE_NAME,
-          page: () => ProfileNameView(),
+              page: () => ProfileNameView(),
             )
           ],
         ),
@@ -79,5 +81,6 @@ class AppPages {
       page: () => InformationView(),
       binding: InformationBinding(),
     ),
+    
   ];
 }
