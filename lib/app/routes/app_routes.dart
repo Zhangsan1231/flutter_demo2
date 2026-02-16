@@ -14,7 +14,9 @@ abstract class Routes {
   static const PROFILE_NAME =
       _Paths.USER + _Paths.USER_PROFILE + _Paths.PROFILE_NAME;
   static const BLUE_USER = _Paths.BLUE_USER;
-  static const MY_BLUETOOTH =   _Paths.MY_BLUETOOTH;
+  static const MY_BLUETOOTH = _Paths.MY_BLUETOOTH;
+  static const BLUETOOTH_DEVICES = _Paths.BLUETOOTH_DEVICES;
+  static const BLUETOOTH_CONNECT =  _Paths.BLUETOOTH_CONNECT;
 }
 
 abstract class _Paths {
@@ -31,4 +33,6 @@ abstract class _Paths {
   // static const USER = '/user';
   static const BLUE_USER = '/blue-user';
   static const MY_BLUETOOTH = '/my-bluetooth';
+  static const BLUETOOTH_DEVICES = '/bluetooth-devices';
+  static const BLUETOOTH_CONNECT = '/bluetooth-connect';
 }

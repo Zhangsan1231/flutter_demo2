@@ -63,12 +63,26 @@ class $AssetsImagesGen {
   /// File path: assets/images/Frame.png
   AssetGenImage get frame => const AssetGenImage('assets/images/Frame.png');
 
+  /// File path: assets/images/Health.png
+  AssetGenImage get health => const AssetGenImage('assets/images/Health.png');
+
   /// File path: assets/images/Vector.png
   AssetGenImage get vector => const AssetGenImage('assets/images/Vector.png');
+
+  /// File path: assets/images/Weight_scale.png
+  AssetGenImage get weightScale =>
+      const AssetGenImage('assets/images/Weight_scale.png');
+
+  /// File path: assets/images/aiRing.png
+  AssetGenImage get aiRing => const AssetGenImage('assets/images/aiRing.png');
 
   /// File path: assets/images/backgronud.png
   AssetGenImage get backgronud =>
       const AssetGenImage('assets/images/backgronud.png');
+
+  /// File path: assets/images/blueBaground.png
+  AssetGenImage get blueBaground =>
+      const AssetGenImage('assets/images/blueBaground.png');
 
   /// File path: assets/images/bluetooth_bg.png
   AssetGenImage get bluetoothBg =>
@@ -125,8 +139,12 @@ class $AssetsImagesGen {
     frame8,
     frame9,
     frame,
+    health,
     vector,
+    weightScale,
+    aiRing,
     backgronud,
+    blueBaground,
     bluetoothBg,
     goggeIcon,
     googe,

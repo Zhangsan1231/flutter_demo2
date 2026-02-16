@@ -6,6 +6,10 @@ import 'package:logger/logger.dart';
 import '../core/service/storage_service.dart';
 import '../modules/bluetooth/blue_user/bindings/blue_user_binding.dart';
 import '../modules/bluetooth/blue_user/views/blue_user_view.dart';
+import '../modules/bluetooth/bluetooth_connect/bindings/bluetooth_connect_binding.dart';
+import '../modules/bluetooth/bluetooth_connect/views/bluetooth_connect_view.dart';
+import '../modules/bluetooth/bluetooth_devices/bindings/bluetooth_devices_binding.dart';
+import '../modules/bluetooth/bluetooth_devices/views/bluetooth_devices_view.dart';
 import '../modules/bluetooth/my_bluetooth/bindings/my_bluetooth_binding.dart';
 import '../modules/bluetooth/my_bluetooth/views/my_bluetooth_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -91,8 +95,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.MY_BLUETOOTH,
-      page: () =>  MyBluetoothView(),
+      page: () => MyBluetoothView(),
       binding: MyBluetoothBinding(),
+    ),
+    GetPage(
+      name: _Paths.BLUETOOTH_DEVICES,
+      page: () => BluetoothDevicesView(),
+      binding: BluetoothDevicesBinding(),
+    ),
+    GetPage(
+      name: _Paths.BLUETOOTH_CONNECT,
+      page: () =>  BluetoothConnectView(),
+      binding: BluetoothConnectBinding(),
     ),
   ];
 }
