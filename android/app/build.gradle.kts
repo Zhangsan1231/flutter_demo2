@@ -5,6 +5,8 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+
+
 android {
     namespace = "zhangsan.flutter_demo2"  // ← 必须是有效的包名，不能是空格或空
     compileSdk = flutter.compileSdkVersion
@@ -29,6 +31,11 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
+        manifestPlaceholders += mapOf(
+            "auth0Domain" to "ineck.auth0.com",
+            "auth0Scheme" to "auth0.n3MTVDRdyq9xl2riKm5cWW2wxWcGhnLA"
+        )
+
         ndk {
             abiFilters.add("arm64-v8a")
         }
@@ -52,10 +59,10 @@ flutter {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.8.0")
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("com.google.android.material:material:1.3.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+//    implementation("androidx.core:core-ktx:1.8.0")
+//    implementation("androidx.appcompat:appcompat:1.2.0")
+//    implementation("com.google.android.material:material:1.3.0")
+//    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.github.Alexxiaopang:KotlinKtx:1.2.0") {
         exclude(module = "rxlife-coroutine")
     }
@@ -73,4 +80,21 @@ dependencies {
 
     api("com.gitee.wjiaqiao:product-kotlin:1.0.35")
     api("com.github.liangjingkanji:Serialize:1.3.1")
+
+    modules {
+        module("com.tencent:mmkv-static") {
+            replacedBy("com.tencent:mmkv")
+        }
+        module("com.tencent:mmkv-shared") {
+            replacedBy("com.tencent:mmkv")
+        }
+    }
+}
+
+
+
+configurations.all {
+    resolutionStrategy {
+        exclude(group = "com.android.support", module = "support-compat")
+    }
 }

@@ -27,6 +27,13 @@
             "deviceId": "00008130-0008252001D10",
             "request": "launch",
             "type": "dart"
+        },
+        {
+            "name": "flutter_demo2 (2211133C)",
+            "program": "lib/main.dart",
+            "deviceId": "b3c13a0a",
+            "request": "launch",
+            "type": "dart"
         }
     ]
 }

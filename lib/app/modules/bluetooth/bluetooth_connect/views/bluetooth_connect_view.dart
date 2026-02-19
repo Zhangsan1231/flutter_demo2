@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/model/page_background_.dart';
+import 'package:flutter_demo2/app/core/utils/bluetooth_util.dart';
 import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,7 +46,9 @@ class BluetoothConnectView extends BaseViews<BluetoothConnectController> {
       margin: EdgeInsets.symmetric(horizontal: 15.h),
       child: Column(
         children: [
-          Container(
+          InkWell(
+            onTap: () => controller.startScan(),
+            child: Container(
             // margin: EdgeInsets.symmetric(horizontal: 10.w),
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
             decoration: BoxDecoration(
@@ -55,11 +58,22 @@ class BluetoothConnectView extends BaseViews<BluetoothConnectController> {
             child: Row(
               children: [
                 // 示例1：旋转圆圈（类似系统，但更柔和）
-                SpinKitCircle(
+                // SpinKitCircle(
+                //   color: Colors.blue,
+                //   size: 24.0,
+                //   duration: const Duration(milliseconds: 3000),
+                // ),
+                Obx(() {
+                  if(controller.searchBluetooth.value == true) {
+                    return SpinKitCircle(
                   color: Colors.blue,
                   size: 24.0,
                   duration: const Duration(milliseconds: 3000),
-                ),
+                );
+                  }else{
+                    return Gap(24);
+                  }
+                }),
                 Gap(10.w),
                 Text(
                   'Searching for devices...',
@@ -91,65 +105,66 @@ class BluetoothConnectView extends BaseViews<BluetoothConnectController> {
               ],
             ),
           ),
-
+),
           Gap(10.h),
-          InkWell(
-            onTap: () {
-              // Get.toNamed(Routes.BLUETOOTH_CONNECT);
-              Get.toNamed(Routes.CONNECT_DEVICE);
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-              decoration: BoxDecoration(
-                color: Color(0x0d1B6BFF),
-                borderRadius: BorderRadius.circular(8.h),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Image.asset(
-                    Assets.images.aiRing.path,
-                    width: 48.w,
-                    height: 46.h,
-                  ),
-                  Gap(10.h),
-                  Text(
-                    'aiRing',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff333333),
-                    ),
-                  ),
-                  Gap(10.h),
-                  Spacer(),
+          Expanded(child: Obx(() {
+            final devices = BluetoothUtil.scanResults; // ← 使用 controller 的 RxList
 
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff1B6BFF)),
-                      borderRadius: BorderRadius.circular(4.h),
+            if (devices.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.bluetooth_disabled_rounded,
+                        size: 80.w, color: Colors.grey[400]),
+                    Gap(16.h),
+                    Text(
+                      '暂未发现设备',
+                      style: TextStyle(fontSize: 18.sp, color: Colors.grey[700]),
                     ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 4.h,
+                    Gap(8.h),
+                    Text(
+                      '点击上方按钮开始搜索',
+                      style: TextStyle(fontSize: 14.sp, color: Colors.grey[500]),
                     ),
-
-                    child: Text(
-                      'Bind',
-                      style: TextStyle(
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff999999),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              );
+            }
+            
+            return ListView.builder(
+              
+              itemCount: devices.length,
+              itemBuilder: (context,index) {
+                
+                final result = devices[index];
+                final device = result.device;
+                logger.d(' device.advName device.advName :${device.advName}');
+              return Card(
+                margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 0), // 卡片间距
+          elevation: 2, // 轻微阴影（可调 1~4）
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.r), // 圆角
           ),
-          
+          color: Colors.white, // 白色背景
+          child:ListTile(
+                
+                title: Text(device.advName,style: TextStyle(color: Colors.yellow),),
+                subtitle: Text(device.remoteId.str),
+                trailing: Text(
+                    '${result.rssi} dBm',
+                    style: TextStyle(color: Colors.grey[500]),
+                  ),
+              )
+              );
+            
+            });
+          }))
         ],
       ),
     );
   }
 }
+
+
+            

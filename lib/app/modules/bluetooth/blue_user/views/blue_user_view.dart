@@ -81,6 +81,14 @@ class BlueUserView extends BaseViews<BlueUserController> {
           )
           ,
           ),
+          InkWell(
+            onTap: () => Get.toNamed(Routes.HOME),
+            child: Container(
+            decoration: BoxDecoration(
+              color: Colors.amber
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 50.w,vertical: 20.h),
+            child: Text('goHome'),),)
         ],
       ),
     );
