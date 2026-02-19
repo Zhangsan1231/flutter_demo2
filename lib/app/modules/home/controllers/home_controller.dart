@@ -52,33 +52,14 @@ class HomeController extends BaseController {
         // 停止扫描
         await blueCtrl.stopScan();
         scanSub?.cancel();
-
-        // 尝试连接
+// 由原生 SDK 连接戒指（不在此处用 flutter_blue_plus 连接）
         try {
-          await blueCtrl.connectToDevice(target.device);
-          logger.d('flutter_blue_plus 连接成功');
-
-          // 关键！马上通知安卓 SDK 绑定
-          final boundOk = await blueImpl.notifyBoundDevice(
-            deviceName: target.device.platformName ?? 'AIZO RING',
-            deviceMac: target.device.remoteId.str,
-          );
-
-          if (boundOk) {
-            logger.d('notifyBoundDevice 成功');
-            Get.snackbar('成功', '已连接并绑定戒指');
-          } else {
-            logger.w('notifyBoundDevice 返回 false');
-            Get.snackbar('警告', '绑定通知失败，检查日志');
-          }
-
-          // 可选：测试获取一次电量
-          final power = await blueImpl.getCurrentPowerState();
-          if (power != null) {
-            logger.d('测试电量：${power['electricity']}%');
-          }
+          final mac = target.device.remoteId.str;
+          final name = target.device.platformName ?? 'AIZO RING';
+          await blueCtrl.connectAojByMac(mac, deviceName: name, showLoading: true);
+          logger.d('SDK 连接流程已触发');
         } catch (e) {
-          logger.e('连接或绑定失败: $e');
+          logger.e('连接失败: $e');
           Get.snackbar('失败', '连接出错：$e');
         }
       }

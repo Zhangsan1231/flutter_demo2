@@ -7,7 +7,6 @@ class BluetoothRepositoryImpl extends BaseRemoteSource
     implements BluetoothRepository {
   static const MethodChannel _channel = MethodChannel("com.zhangsan/aizo_ring");
 
-
   @override
   Future<bool> init() async {
     try {
@@ -19,6 +18,42 @@ class BluetoothRepositoryImpl extends BaseRemoteSource
       return false;
     } catch (e) {
       print('Flutter 初始化异常: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> connectDevice({
+    required String deviceName,
+    required String deviceMac,
+  }) async {
+    try {
+      final bool success = await _channel.invokeMethod('connect', {
+        'deviceName': deviceName.isNotEmpty ? deviceName : 'AIZO RING',
+        'deviceMac': deviceMac,
+      });
+      print('SDK 连接结果: $success');
+      return success;
+    } on PlatformException catch (e) {
+      print('SDK 连接失败: ${e.code} - ${e.message}');
+      return false;
+    } catch (e) {
+      print('SDK 连接异常: $e');
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> disconnectDevice() async {
+    try {
+      final bool success = await _channel.invokeMethod('disconnect');
+      print('断开设备结果: $success');
+      return success;
+    } on PlatformException catch (e) {
+      print('断开设备失败: ${e.code} - ${e.message}');
+      return false;
+    } catch (e) {
+      print('断开设备异常: $e');
       return false;
     }
   }
@@ -131,7 +166,8 @@ Future<Map<String, dynamic>?> getCurrentPowerState() async {
     }
 
     print('当前电池状态获取成功: $result');
-    return result as Map<String, dynamic>;
+    // 平台通道返回 Map<Object?, Object?>，需转成 Map<String, dynamic>
+    return Map<String, dynamic>.from(result as Map);
   } on PlatformException catch (e) {
     print('获取当前电池状态调用失败: ${e.code} - ${e.message}');
     return null;

@@ -151,10 +151,11 @@ class BluetoothController extends BaseController {
   }
 
   // ──────────────────────────────────────────────
-  // AOJ 专用连接方式（推荐使用）
+  // AOJ 专用连接方式：由原生 SDK 发起连接（文档 2.1.2 connect(mac)，回调里 notifyBoundDevice）
   // ──────────────────────────────────────────────
   Future<void> connectAojByMac(
     String macAddress, {
+    String? deviceName,
     bool showLoading = true,
   }) async {
     if (showLoading) {
@@ -164,86 +165,63 @@ class BluetoothController extends BaseController {
       );
     }
 
-    BluetoothDevice? device;
-
     try {
-      // 1. 从已扫描结果中找设备（复用你原有的逻辑）
-      final targetResult = BluetoothUtil.scanResults.firstWhereOrNull(
-        (r) => r.device.remoteId.str.toUpperCase() == macAddress.toUpperCase(),
-      );
-
-      if (targetResult == null) {
-        throw Exception('未找到 MAC 为 $macAddress 的设备，请重新扫描');
-      }
-
-      device = targetResult.device;
-
-      // 2. 建立底层 GATT 连接
-      // await device.connect(
-
-      //   timeout: const Duration(seconds: 20),
-      //   autoConnect: false, license: free,
-      // );
-      await device.connect(
-        timeout: const Duration(seconds: 20),
-        autoConnect: false,
-        license: License.free, // ← 这里 free 没定义
-      );
-
-      // 更新状态
-      isAojConnected.value = true;
-      connectionState.value = BluetoothConnectionState.connected;
-      _aojDevice = device;
-
-      print('GATT 连接成功: ${device.platformName ?? "未知"} ($macAddress)');
-
-      // 3. 关键步骤：通知 AIZO SDK 绑定这个设备
-      final repo =
-          BluetoothRepositoryImpl(); // 或 Get.find<BluetoothRepository>()
-      final boundSuccess = await repo.notifyBoundDevice(
-        deviceName: device.platformName ?? 'AIZO RING',
-        deviceMac: device.remoteId.str,
-      );
-
-      print('notifyBoundDevice 调用结果: $boundSuccess');
-
-      if (boundSuccess) {
-        Get.snackbar('连接成功', '已连接并通知 SDK 绑定');
-      } else {
-        Get.snackbar('警告', '蓝牙已连，但 SDK 绑定通知失败');
-        print('警告：SDK 绑定返回 false，后续功能可能异常');
-      }
-
-      // 4. 立即测试 SDK 是否能正常工作（强烈推荐）
-      final power = await repo.getCurrentPowerState();
-      if (power != null && power['electricity'] != null) {
-        print(
-          'SDK 返回电量: ${power['electricity']}% , 充电状态: ${power['workingMode']}',
+      // 若未传 deviceName，从扫描结果中取
+      String name = deviceName ?? 'AIZO RING';
+      if (deviceName == null) {
+        final targetResult = BluetoothUtil.scanResults.firstWhereOrNull(
+          (r) => r.device.remoteId.str.toUpperCase() == macAddress.toUpperCase(),
         );
-        Get.snackbar('测试成功', '电量: ${power['electricity']}%');
-      } else {
-        print('SDK 获取电量失败，可能握手未完成');
+        if (targetResult != null) {
+          name = targetResult.device.platformName ?? 'AIZO RING';
+        }
       }
 
-      // 5. 监听底层被动断开（保持你的原逻辑）
-      device.connectionState.listen((state) {
-        connectionState.value = state;
-        isAojConnected.value = state == BluetoothConnectionState.connected;
+      final repo = Get.isRegistered<BluetoothRepositoryImpl>()
+          ? Get.find<BluetoothRepositoryImpl>()
+          : BluetoothRepositoryImpl();
 
-        if (state == BluetoothConnectionState.disconnected) {
-          _aojDevice = null;
-          Get.snackbar('AOJ断开', '设备已断开连接');
-          print('设备被动断开');
+      // 由原生 SDK 连接戒指，连接成功后原生会 notifyBoundDevice，DeviceManager.isConnect() 为 true
+      final success = await repo.connectDevice(
+        deviceName: name,
+        deviceMac: macAddress,
+      );
+      print('打印sussess ： $success');
+      if (success) {
+        isAojConnected.value = true;
+        connectionState.value = BluetoothConnectionState.connected;
+        Get.snackbar('连接成功', '已通过 SDK 连接并绑定戒指');
+
+        // SDK 刚连上时可能尚未就绪，稍等再查电量
+        await Future.delayed(const Duration(milliseconds: 1500));
+        print('BluetoothController 开始获取电量...');
+        Map<String, dynamic>? power;
+        try {
+          power = await repo.getCurrentPowerState().timeout(
+            const Duration(seconds: 8),
+            onTimeout: () {
+              print('BluetoothController 获取电量超时');
+              return null;
+            },
+          );
+        } catch (e) {
+          print('BluetoothController 获取电量异常: $e');
+          power = null;
         }
-      });
+        print('BluetoothController 电量结果: power=$power');
+        if (power != null && power['electricity'] != null) {
+          print('SDK 返回电量: ${power['electricity']}% , 充电状态: ${power['workingMode']}');
+          Get.snackbar('电量', '${power['electricity']}%');
+        } else {
+          print('BluetoothController 未拿到电量: power 为 null 或无 electricity');
+        }
+      } else {
+        Get.snackbar('连接失败', 'SDK 连接或绑定失败');
+        isAojConnected.value = false;
+      }
     } catch (e) {
       print('AOJ连接失败: $e');
       Get.snackbar('AOJ连接失败', e.toString().split('\n').first);
-
-      // 清理
-      try {
-        await device?.disconnect();
-      } catch (_) {}
       isAojConnected.value = false;
       connectionState.value = BluetoothConnectionState.disconnected;
     } finally {
@@ -251,10 +229,33 @@ class BluetoothController extends BaseController {
     }
   }
 
+
+
+
+  /// 断开 AOJ 设备（由原生 SDK 解绑并断开连接）
   Future<void> disconnectAoj() async {
-    await BluetoothUtil.aojDisconnect();
-    isAojConnected.value = false;
-    _aojDevice = null;
+    try {
+      final repo = Get.isRegistered<BluetoothRepositoryImpl>()
+          ? Get.find<BluetoothRepositoryImpl>()
+          : BluetoothRepositoryImpl();
+      final success = await repo.disconnectDevice();
+      if (success) {
+        isAojConnected.value = false;
+        connectionState.value = BluetoothConnectionState.disconnected;
+        connectedDevice.value = null;
+        _aojDevice = null;
+        Get.snackbar('已断开', '设备已断开连接');
+      } else {
+        Get.snackbar('断开失败', '请重试');
+      }
+    } catch (e) {
+      print('断开 AOJ 失败: $e');
+      Get.snackbar('断开失败', e.toString());
+      isAojConnected.value = false;
+      connectionState.value = BluetoothConnectionState.disconnected;
+      connectedDevice.value = null;
+      _aojDevice = null;
+    }
   }
 
   // ──────────────────────────────────────────────

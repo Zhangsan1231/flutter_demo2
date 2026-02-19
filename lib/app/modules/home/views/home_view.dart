@@ -132,22 +132,39 @@ class HomeView extends BaseViews<HomeController> {
             }),
           ),
 
-          // 底部连接状态（简单显示）
+          // 底部连接状态 + 断开按钮
           Obx(
-            () => Padding(
-              padding: EdgeInsets.all(16.w),
-              child: Text(
-                blueController.isAojConnected.value
-                    ? 'AOJ 已连接 • 数据: ${blueController.latestAojData}'
-                    : '未连接',
-                style: TextStyle(
-                  color: blueController.isAojConnected.value
-                      ? Colors.green
-                      : Colors.red,
-                  fontSize: 16.sp,
+            () {
+              final connected = blueController.isAojConnected.value;
+              return Padding(
+                padding: EdgeInsets.all(16.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      connected
+                          ? 'AOJ 已连接'
+                          : '未连接',
+                      style: TextStyle(
+                        color: connected ? Colors.green : Colors.red,
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                    if (connected)
+                      ElevatedButton(
+                        onPressed: () async {
+                          await blueController.disconnectAoj();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          foregroundColor: Colors.white,
+                        ),
+                        child: Text('断开设备', style: TextStyle(fontSize: 14.sp)),
+                      ),
+                  ],
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
       ),

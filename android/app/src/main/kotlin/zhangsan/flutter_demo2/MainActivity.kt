@@ -34,22 +34,87 @@ class MainActivity : FlutterActivity() {
 
     // 电池/连接状态事件通道名称，用于原生主动推送实时数据给 Flutter
     private val BATTERY_EVENT_CHANNEL = "com.zhangsan/aizo_ring_batteryStatus"
-    // 只保留一个主要的状态通道（连接 + 电池都走这里）
     private val DEVICE_STATUS_CHANNEL = "com.zhangsan/aizo_ring/device_status"
-
     private val POWER_EVENT_CHANNEL = "com.zhangsan/aizo_ring_power"
+
+    // 由 SDK connect(mac) 触发的连接结果，在 AizoDeviceConnectCallback.connect() 里回调给 Flutter
+    private var pendingConnectResult: MethodChannel.Result? = null
+    private var pendingDeviceName: String? = null
+    private var pendingDeviceMac: String? = null
+
+    // 连接状态事件 sink（供全局连接回调推送 CONNECTED/DISCONNECTED）
+    private var connectionEventSink: EventChannel.EventSink? = null
+    private val connectionHandler = Handler(Looper.getMainLooper())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // 初始化 AHDevicePlugin（插件初始化，通常在引擎注册时自动完成，这里手动调用作为备用）
         val result = AHDevicePlugin.getInstance().initPlugin(this)
-        print("测试 Android SDK 版本: ${Build.VERSION.SDK_INT}")
+        android.util.Log.d("MainActivity", "测试 Android SDK 版本: ${Build.VERSION.SDK_INT}")
+    }
 
-        // 获取 Flutter 引擎的消息信使（用于创建通信通道）
-        flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        val messenger = flutterEngine.dartExecutor.binaryMessenger
 
-            // 注册 MethodChannel：接收 Flutter 的方法调用（如 initSDK）
-            MethodChannel(messenger, CHANNEL).setMethodCallHandler { call, result ->
+        // 先注册 SDK 连接回调（文档 2.1.2：addCallback 后 connect(mac)）
+        ServiceSdkCommandV2.addCallback(object : AizoDeviceConnectCallback {
+            override fun connect() {
+                connectionHandler.post {
+                    android.util.Log.d("AizoConnect", "SDK 连接成功，执行 notifyBoundDevice")
+                    val name = pendingDeviceName ?: "AIZO RING"
+                    val mac = pendingDeviceMac ?: ""
+                    if (mac.isNotEmpty() && pendingConnectResult != null) {
+                        ServiceSdkCommandV2.notifyBoundDevice(
+                            deviceName = name,
+                            deviceMac = mac,
+                            callback = object : BCallback {
+                                override fun result(r: Boolean) {
+                                    runOnUiThread {
+                                        pendingConnectResult?.success(r)
+                                        pendingConnectResult = null
+                                        pendingDeviceName = null
+                                        pendingDeviceMac = null
+                                    }
+                                    "notifyBoundDevice $r".logIx()
+                                }
+                            }
+                        )
+                    } else {
+                        runOnUiThread {
+                            pendingConnectResult?.success(true)
+                            pendingConnectResult = null
+                            pendingDeviceName = null
+                            pendingDeviceMac = null
+                        }
+                    }
+                    connectionEventSink?.success("CONNECTED")
+                }
+            }
+
+            override fun connectError(throwable: Throwable, state: Int) {
+                connectionHandler.post {
+                    android.util.Log.e("AizoConnect", "SDK 连接失败: $state", throwable)
+                    pendingConnectResult?.error(
+                        "CONNECT_FAILED",
+                        throwable.message ?: "state=$state",
+                        null
+                    )
+                    pendingConnectResult = null
+                    pendingDeviceName = null
+                    pendingDeviceMac = null
+                    connectionEventSink?.success("ERROR_$state")
+                }
+            }
+
+            override fun disconnect() {
+                connectionHandler.post {
+                    connectionEventSink?.success("DISCONNECTED")
+                }
+            }
+        })
+
+        // 注册 MethodChannel：接收 Flutter 的方法调用（如 init、connect、notifyBoundDevice）
+        MethodChannel(messenger, CHANNEL).setMethodCallHandler { call, result ->
                 when (call.method) {
                     // Flutter 调用 "init" 方法时执行 SDK 初始化
                     "init" -> {
@@ -139,6 +204,48 @@ class MainActivity : FlutterActivity() {
                         getCurrentPowerState(result)
                     }
 
+                    // 断开设备（文档 2.1.4：deviceSet(2) 解绑戒指，SDK 会断开连接）
+                    "disconnect" -> {
+                        try {
+                            if (!DeviceManager.isConnect()) {
+                                android.util.Log.d("AizoDisconnect", "当前未连接，直接返回成功")
+                                result.success(true)
+                                return@setMethodCallHandler
+                            }
+                            ServiceSdkCommandV2.deviceSet(2) { success: Boolean ->
+                                android.util.Log.d("AizoDisconnect", "deviceSet(2) 解绑回调: $success")
+                                runOnUiThread {
+                                    result.success(success)
+                                }
+                            }
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            android.util.Log.e("AizoDisconnect", "断开异常", e)
+                            result.error("DISCONNECT_FAILED", e.message ?: "断开失败", null)
+                        }
+                    }
+
+                    // 由 SDK 发起连接（文档 2.1.2：先 addCallback，再 connect(mac)；连接成功后在回调里 notifyBoundDevice）
+                    "connect" -> {
+                        try {
+                            val args = call.arguments as? Map<String, Any>
+                            val deviceMac = args?.get("deviceMac") as? String ?: ""
+                            val deviceName = args?.get("deviceName") as? String ?: "AIZO RING"
+                            if (deviceMac.isEmpty()) {
+                                result.error("INVALID_ARGS", "deviceMac 不能为空", null)
+                                return@setMethodCallHandler
+                            }
+                            pendingConnectResult = result
+                            pendingDeviceName = deviceName
+                            pendingDeviceMac = deviceMac
+                            android.util.Log.d("AizoConnect", "SDK 开始连接: $deviceMac")
+                            ServiceSdkCommandV2.connect(deviceMac)
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            android.util.Log.e("AizoConnect", "connect 异常", e)
+                            result.error("CONNECT_FAILED", e.message ?: "连接异常", null)
+                        }
+                    }
 
                     // 新增：获取硬件信息
                     "getFirmwareInfo" -> {
@@ -185,56 +292,14 @@ class MainActivity : FlutterActivity() {
                 }
             }
 
-            // 注册 EventChannel：原生主动推送设备连接状态和电池信息
+            // 注册 EventChannel：连接状态由上方全局 AizoDeviceConnectCallback 推送到 connectionEventSink
             EventChannel(messenger, BATTERY_EVENT_CHANNEL).setStreamHandler(object :
                 EventChannel.StreamHandler {
-
-                // 用于在主线程推送事件
-                private var handler: Handler? = null
-
-                /**
-                 * Flutter 开始监听事件时调用
-                 * @param arguments Flutter 传过来的参数（本次未使用）
-                 * @param events 事件推送对象，用于发送数据给 Flutter
-                 */
                 override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-                    handler = Handler(Looper.getMainLooper())  // 创建主线程 Handler，确保推送在 UI 线程
-//                    eventSink = events  // 保存事件 sink，后续回调中会用它推送数据
-
-                    // 注册 AIZO SDK 连接状态回调（文档中提到的 AizoDeviceConnectCallback）
-                    ServiceSdkCommandV2.addCallback(object : AizoDeviceConnectCallback {
-
-                        // 连接成功回调
-                        override fun connect() {
-                            handler?.post {
-                                events?.success("CONNECTED")  // 推送连接成功事件给 Flutter
-                            }
-                        }
-
-                        // 连接出错回调
-                        override fun connectError(throwable: Throwable, state: Int) {
-                            handler?.post {
-                                events?.success("$state")  // 推送错误状态码给 Flutter
-                            }
-                        }
-
-                        // 断开连接回调
-                        override fun disconnect() {
-                            handler?.post {
-                                events?.success("DISCONNECTED")  // 推送断开事件给 Flutter
-                            }
-                        }
-                    })
+                    connectionEventSink = events
                 }
-
-                /**
-                 * Flutter 取消监听事件时调用
-                 * 清理资源，避免内存泄漏
-                 */
                 override fun onCancel(arguments: Any?) {
-//                    eventSink = null
-                    handler?.removeCallbacksAndMessages(null)
-                    handler = null
+                    connectionEventSink = null
                 }
             })
 
@@ -285,11 +350,6 @@ class MainActivity : FlutterActivity() {
                     // events?.endOfStream()   // 但通常 Flutter 侧 cancel 后就不需要了
                 }
             })
-
-
-        }
-
-
     }
 
     private fun getCurrentPowerState(result: MethodChannel.Result) {
@@ -299,14 +359,22 @@ class MainActivity : FlutterActivity() {
             return
         }
 
+        val resultSent = booleanArrayOf(false)
+        var timeoutRunnable: Runnable? = null
+
         val callback = object : PowerStateCallback {
             override fun PowerState(bean: PowerState) {
                 Handler(Looper.getMainLooper()).post {
+                    if (resultSent[0]) return@post
+                    resultSent[0] = true
+                    timeoutRunnable?.let { connectionHandler.removeCallbacks(it) }
+                    try {
+                        ServiceSdkCommandV2.unregisterPowerStateListener(this)
+                    } catch (_: Exception) {}
                     val map = mapOf(
-                        "electricity"   to bean.electricity,     // Int? 电量百分比
-                        "workingMode"   to bean.workingMode,     // Int?  0=未充电 1=充电中
-                        "fetchTimeMs"   to System.currentTimeMillis(),  // 可选：采集时间
-                        // "debugInfo"  to bean.toString()       // 可选：调试用
+                        "electricity"   to (bean.electricity ?: 0),
+                        "workingMode"   to (bean.workingMode ?: 0),
+                        "fetchTimeMs"   to System.currentTimeMillis(),
                     )
                     android.util.Log.d("AizoPower", "getInstantPowerState 成功: $map")
                     result.success(map)
@@ -314,11 +382,29 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        timeoutRunnable = Runnable {
+            if (resultSent[0]) return@Runnable
+            resultSent[0] = true
+            try {
+                ServiceSdkCommandV2.unregisterPowerStateListener(callback)
+            } catch (_: Exception) {}
+            android.util.Log.w("AizoPower", "getCurrentPowerState 超时，SDK 未回调，返回 null")
+            result.success(null)
+        }
+
+        connectionHandler.postDelayed(timeoutRunnable!!, 3000)
+
         try {
+            ServiceSdkCommandV2.registerPowerStateListener(callback)
             ServiceSdkCommandV2.getInstantPowerState()
         } catch (e: Exception) {
-            android.util.Log.e("AizoPower", "调用 getInstantPowerState 异常", e)
-            result.error("SDK_CALL_FAILED", "获取电池状态失败：${e.message}", null)
+            if (!resultSent[0]) {
+                resultSent[0] = true
+                timeoutRunnable?.let { connectionHandler.removeCallbacks(it) }
+                android.util.Log.e("AizoPower", "调用 getInstantPowerState 异常", e)
+                try { ServiceSdkCommandV2.unregisterPowerStateListener(callback) } catch (_: Exception) {}
+                result.error("SDK_CALL_FAILED", "获取电池状态失败：${e.message}", null)
+            }
         }
     }
 
