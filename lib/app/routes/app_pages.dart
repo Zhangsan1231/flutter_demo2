@@ -41,7 +41,7 @@ class AppPages {
     final user = SecureStorageService().getUserInfo();
     print('username --------------${user?.name}');
     print('idtoken ======= ${idToken}');
-    return idToken != null ? Routes.BLUE_USER : Routes.SPLASH;
+    return idToken != null ? Routes.HOME : Routes.SPLASH;
   }
   // static const INITIAL = Routes.LOGIN;
 
