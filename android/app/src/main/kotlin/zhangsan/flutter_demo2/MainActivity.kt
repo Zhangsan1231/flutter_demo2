@@ -78,40 +78,35 @@ class MainActivity : FlutterActivity() {
                     // 新增：通知绑定戒指
                     "notifyBoundDevice" -> {
                         try {
-                            // 从 Flutter 传过来的 Map 参数
                             val args = call.arguments as? Map<String, Any>
                             val deviceName = args?.get("deviceName") as? String ?: ""
                             val deviceMac = args?.get("deviceMac") as? String ?: ""
 
                             if (deviceName.isEmpty() || deviceMac.isEmpty()) {
-                                result.error(
-                                    "INVALID_ARGS", "deviceName 或 deviceMac 不能为空", null
-                                )
+                                result.error("INVALID_ARGS", "deviceName 或 deviceMac 不能为空", null)
                                 return@setMethodCallHandler
                             }
 
-                            // 调用 SDK 的 notifyBoundDevice
                             ServiceSdkCommandV2.notifyBoundDevice(
                                 deviceName = deviceName,
                                 deviceMac = deviceMac,
                                 callback = object : BCallback {
                                     override fun result(r: Boolean) {
-                                        r.yes {
-                                            "notifyBoundDevice true".logIx()
+                                        runOnUiThread {
+                                            result.success(r)  // 关键：在这里返回结果给 Flutter
                                         }
+                                        "notifyBoundDevice $r".logIx()
                                     }
                                 }
-
-
                             )
-                            // 注意：这里不立即 success，因为是异步回调
-                            // 等 SDK 回调后再 result.success(r)
+                            // 注意：这里不要 result.success()，因为是异步，等回调
                         } catch (e: Throwable) {
                             e.printStackTrace()
-                            android.util.Log.e("AizoBind", "notifyBoundDevice failed", e)
+                            android.util.Log.e("AizoBind", "notifyBoundDevice 异常", e)
                             result.error("BIND_FAILED", e.message ?: "绑定通知异常", null)
                         }
                     }
+
                     // 新增：戒指解绑/复位/重启
                     "deviceSet" -> {
                         try {
@@ -326,4 +321,6 @@ class MainActivity : FlutterActivity() {
             result.error("SDK_CALL_FAILED", "获取电池状态失败：${e.message}", null)
         }
     }
+
+
 }

@@ -69,49 +69,49 @@ remoteInit() async {
 
   // 读取当前地区值
   var regionValue = storage.getRegion();
-  print("初始读取的地区值: $regionValue");
+  // print("初始读取的地区值: $regionValue");
 
   // 只有当地区是 nu（未设置）时才去查询 IP 并设置
   if (regionValue == RegionUnit.nu) {
-    print("地区未设置，开始通过 IP 判断...");
+    // print("地区未设置，开始通过 IP 判断...");
 
     try {
       final response = await http.get(Uri.parse('http://ip-api.com/json'));
-      print("IP 接口响应: ${response.body}");
+      // print("IP 接口响应: ${response.body}");
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final countryCode = data['countryCode'] as String?;
-        print('国家代码: $countryCode');
+        // print('国家代码: $countryCode');
 
         if (countryCode == null) {
-          print("IP 接口未返回 countryCode，默认中文");
+          // print("IP 接口未返回 countryCode，默认中文");
           await storage.setRegion(RegionUnit.zh);
         } else if (countryCode == 'CN' || countryCode == 'SG') {
           await storage.setRegion(RegionUnit.zh);
-          print("设置为中文环境 (zh)");
+          // print("设置为中文环境 (zh)");
         } else {
           await storage.setRegion(RegionUnit.en);
-          print("设置为英文环境 (en)");
+          // print("设置为英文环境 (en)");
         }
 
         // 重新读取确认是否设置成功
         regionValue = storage.getRegion();
-        print("设置后最终地区值: $regionValue");
+        // print("设置后最终地区值: $regionValue");
       } else {
-        print("IP 接口请求失败，状态码: ${response.statusCode}，默认中文");
+        // print("IP 接口请求失败，状态码: ${response.statusCode}，默认中文");
         await storage.setRegion(RegionUnit.zh);
       }
     } catch (e) {
-      print('获取 IP 位置失败: $e，默认设置为中文');
+      // print('获取 IP 位置失败: $e，默认设置为中文');
       await storage.setRegion(RegionUnit.zh);
     }
   } else {
-    print("地区已设置过，无需查询 IP，直接使用: $regionValue");
+    // print("地区已设置过，无需查询 IP，直接使用: $regionValue");
   }
 
   // 最后打印确认
-  print("remoteInit 结束，最终地区: ${storage.getRegion()}");
+  // print("remoteInit 结束，最终地区: ${storage.getRegion()}");
 }
 Future<void> _initLanguage() async {
   final storage = SecureStorageService.instance;
@@ -126,7 +126,7 @@ Future<void> _initLanguage() async {
   // 第一次安裝 → 判斷系統語言
   final systemLocale = PlatformDispatcher.instance.locale;
   final languageCode = systemLocale.languageCode;
-  print('1111111111111111$languageCode');
+  // print('1111111111111111$languageCode');
 
   final defaultLocale = languageCode == 'zh' ? 'zh_CN' : 'en_US';
 
@@ -134,7 +134,7 @@ Future<void> _initLanguage() async {
   storage.setString( AppValues.locale,defaultLocale,);
   
   // 可以加一行 log 確認是否真的執行到這裡
-  print('已初始化語言為: $defaultLocale');
+  // print('已初始化語言為: $defaultLocale');
 }
 /// 從儲存中取得當前語言（用於 GetMaterialApp 的 locale）
 Locale _getSavedLocale() {

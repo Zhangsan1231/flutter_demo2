@@ -22,6 +22,7 @@ static final RxList<ScanResult> scanResults = <ScanResult>[].obs;    /// 获取�
   static BluetoothDevice? _aojDevice;
   static StreamSubscription<BluetoothConnectionState>? _aojConnectionSub;
   static StreamSubscription<List<int>>? _aojNotifySub;
+  static BluetoothDevice? get aojConnectedDevice => _aojDevice;
 
   
 
@@ -278,9 +279,17 @@ static final RxList<ScanResult> scanResults = <ScanResult>[].obs;    /// 获取�
 
     // 发现服务并监听 notify 特征值
     List<BluetoothService> services = await device.discoverServices();
+    // print('=== 发现的服务数量: ${services.length} ===');
     for (var service in services) {
+      // print('服务 UUID: ${service.uuid.toString().toUpperCase()}');
       if (service.uuid == AOJConstants.serviceUUID) {
         for (var characteristic in service.characteristics) {
+    //       // print('  └─ 特征 UUID: ${characteristic.uuid.toString().toUpperCase()}');
+    // print('     properties: notify=${characteristic.properties.notify}, '
+    //       'indicate=${characteristic.properties.indicate}, '
+    //       'read=${characteristic.properties.read}, '
+    //       'write=${characteristic.properties.write}');
+    // print('     descriptors count: ${characteristic.descriptors.length}');
           if (characteristic.uuid == AOJConstants.notifyUUID) {
             // 开启通知
             await characteristic.setNotifyValue(true);
