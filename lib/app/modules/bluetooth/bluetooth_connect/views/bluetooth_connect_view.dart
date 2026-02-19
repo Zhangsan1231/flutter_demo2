@@ -46,10 +46,9 @@ class BluetoothConnectView extends BaseViews<BluetoothConnectController> {
       margin: EdgeInsets.symmetric(horizontal: 15.h),
       child: Column(
         children: [
-          InkWell(
-            onTap: () => controller.startScan(),
-            child: Container(
-              // margin: EdgeInsets.symmetric(horizontal: 10.w),
+          Obx(() {
+            final isSearching = controller.searchBluetooth.value;
+            return Container(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8.h),
@@ -57,52 +56,89 @@ class BluetoothConnectView extends BaseViews<BluetoothConnectController> {
               ),
               child: Row(
                 children: [
-                  // 示例1：旋转圆圈（类似系统，但更柔和）
-                  // SpinKitCircle(
-                  //   color: Colors.blue,
-                  //   size: 24.0,
-                  //   duration: const Duration(milliseconds: 3000),
-                  // ),
-                  Obx(() {
-                    if (controller.searchBluetooth.value == true) {
-                      return SpinKitCircle(
-                        color: Colors.blue,
-                        size: 24.0,
-                        duration: const Duration(milliseconds: 3000),
-                      );
-                    } else {
-                      return Gap(24);
-                    }
-                  }),
-                  Gap(10.w),
-                  Text(
-                    'Searching for devices...',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Color(0xff999999),
+                  InkWell(
+                    onTap: isSearching ? null : () => controller.startScan(),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (isSearching)
+                          SpinKitCircle(
+                            color: Colors.blue,
+                            size: 24.0,
+                            duration: const Duration(milliseconds: 1200),
+                          )
+                        else
+                          SizedBox(width: 24.w, height: 24.w),
+                        Gap(10.w),
+                        Text(
+                          isSearching
+                              ? 'Searching for devices... (${BluetoothConnectController.scanDurationSeconds}s)'
+                              : 'Tap to search for devices',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff999999),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Spacer(),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 5.h,
-                    ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.h),
-                      border: Border.all(color: Color(0xff1e6dff)),
-                    ),
-                    child: Text(
-                      'Stop',
-                      style: TextStyle(
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff1e6dff),
+                  GestureDetector(
+                    onTap: isSearching ? () => controller.stopScan() : null,
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 5.h,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.h),
+                        border: Border.all(
+                          color: isSearching
+                              ? Color(0xff1e6dff)
+                              : Color(0xffcccccc),
+                        ),
+                      ),
+                      child: Text(
+                        'Stop',
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w400,
+                          color: isSearching
+                              ? Color(0xff1e6dff)
+                              : Color(0xff999999),
+                        ),
                       ),
                     ),
                   ),
                 ],
+              ),
+            );
+          }),
+          Gap(10.h),
+          // 解绑按钮
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => controller.unbindDevice(),
+              borderRadius: BorderRadius.circular(8.r),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.r),
+                  border: Border.all(color: Color(0xff1e6dff)),
+                ),
+                child: Text(
+                  '解绑',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff1e6dff),
+                  ),
+                ),
               ),
             ),
           ),
@@ -148,34 +184,76 @@ class BluetoothConnectView extends BaseViews<BluetoothConnectController> {
                 itemBuilder: (context, index) {
                   final result = devices[index];
                   final device = result.device;
-                  logger.d(' device.advName device.advName :${device.advName}');
-                  return InkWell(
-                    onTap: () => controller.connect(device),
-                    child: Card(
-                    margin: EdgeInsets.symmetric(
-                      vertical: 6.h,
-                      horizontal: 0,
-                    ), // 卡片间距
-                    elevation: 2, // 轻微阴影（可调 1~4）
+                  final deviceName = device.platformName ?? device.name;
+                  final deviceMac = device.remoteId.str;
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 6.h, horizontal: 0),
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r), // 圆角
+                      borderRadius: BorderRadius.circular(12.r),
                     ),
-                    color: Colors.white, // 白色背景
+                    color: Colors.white,
                     child: ListTile(
+                      onTap: () => controller.connect(device),
                       title: Text(
-                        device.advName,
-                        style: TextStyle(color: Colors.yellow),
+                        deviceName.isEmpty ? '未知设备' : deviceName,
+                        style: TextStyle(
+                          color: Color(0xff333333),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      subtitle: Text(device.remoteId.str),
-                      trailing: Text(
-                        '${result.rssi} dBm',
-                        style: TextStyle(color: Colors.grey[500]),
+                      subtitle: Text(
+                        deviceMac,
+                        style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            '${result.rssi} dBm',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              color: Colors.grey[500],
+                            ),
+                          ),
+                          Gap(8.w),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                Get.toNamed(
+                                  Routes.CONNECT_DEVICE,
+                                  arguments: {
+                                    'deviceMac': deviceMac,
+                                    'deviceName': deviceName.isEmpty ? 'AIZO RING' : deviceName,
+                                  },
+                                );
+                              },
+                              borderRadius: BorderRadius.circular(8.r),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w,
+                                  vertical: 6.h,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  color: Color(0xff1e6dff),
+                                ),
+                                child: Text(
+                                  '绑定',
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  )
-                
                   );
-                
                 },
               );
             }),

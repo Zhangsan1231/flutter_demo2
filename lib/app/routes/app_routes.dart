@@ -17,7 +17,8 @@ abstract class Routes {
   static const MY_BLUETOOTH = _Paths.MY_BLUETOOTH;
   static const BLUETOOTH_DEVICES = _Paths.BLUETOOTH_DEVICES;
   static const BLUETOOTH_CONNECT = _Paths.BLUETOOTH_CONNECT;
-  static const CONNECT_DEVICE =  _Paths.CONNECT_DEVICE;
+  static const CONNECT_DEVICE = _Paths.CONNECT_DEVICE;
+  static const BLUETOOTH_SETTING = _Paths.BLUETOOTH_SETTING;
 }
 
 abstract class _Paths {
@@ -37,4 +38,5 @@ abstract class _Paths {
   static const BLUETOOTH_DEVICES = '/bluetooth-devices';
   static const BLUETOOTH_CONNECT = '/bluetooth-connect';
   static const CONNECT_DEVICE = '/connect-device';
+  static const BLUETOOTH_SETTING = '/bluetooth-setting';
 }
