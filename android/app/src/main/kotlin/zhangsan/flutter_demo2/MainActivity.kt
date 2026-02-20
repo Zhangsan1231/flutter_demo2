@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import com.aojmedical.plugin.ble.AHDevicePlugin
 import com.eiot.aizo.ext.yes
 import com.eiot.aizo.sdk.AizoDevice
@@ -14,6 +15,12 @@ import com.eiot.ringsdk.be.DeviceManager
 import com.eiot.ringsdk.callback.BCallback
 import com.eiot.ringsdk.callback.PowerStateCallback
 import com.eiot.ringsdk.ext.logIx
+import com.eiot.ringsdk.heartrate.MeasureTimeCallback
+import com.eiot.ringsdk.heartrate.MeasureTimeData
+import com.eiot.ringsdk.measure.MeasureResult
+import com.eiot.ringsdk.measure.MeasureResultCallback
+import com.eiot.ringsdk.userinfo.UserInfo
+import com.eiot.ringsdk.userinfo.UserInfoCallback
 import com.fluttercandies.flutter_image_compress.logger.log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -284,6 +291,109 @@ class MainActivity : FlutterActivity() {
                             e.printStackTrace()
                             android.util.Log.e("AizoFirmware", "getFirmwareParams 异常", e)
                             result.error("FIRMWARE_FAILED", e.message ?: "获取硬件信息失败", null)
+                        }
+                    }
+
+                    //获取用户信息
+                    "getUserInfo" -> {
+                        try {
+                            if (!DeviceManager.isConnect()) {
+                                android.util.Log.w("AizoUser", "设备未连接，无法获取用户信息")
+                                result.error("NOT_CONNECTED", "设备未连接", null)
+                                return@setMethodCallHandler
+                            }
+
+                            ServiceSdkCommandV2.getUserInfo(object : UserInfoCallback {
+                                override fun userInfo(bean: UserInfo) {
+                                    runOnUiThread {
+                                        val infoMap = mapOf(
+                                            "gender" to (bean.gender ?: 1),     // 1男 2女
+                                            "birth" to (bean.birth ?: "2000-01"),
+                                            "weight" to (bean.weight ?: 0.0),
+                                            "height" to (bean.height ?: 0.0)
+                                        )
+                                        android.util.Log.d("AizoUser", "用户信息: $infoMap")
+                                        result.success(infoMap)
+                                    }
+                                }
+                            })
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            android.util.Log.e("AizoUser", "getUserInfo 异常", e)
+                            result.error("USERINFO_FAILED", e.message ?: "获取用户信息失败", null)
+                        }
+                    }
+
+                    "getDeviceMeasureTime" -> {
+                        try {
+                            if (!DeviceManager.isConnect()) {
+                                android.util.Log.w("AizoHeart", "设备未连接，无法获取心率间隔")
+                                result.error("NOT_CONNECTED", "设备未连接", null)
+                                return@setMethodCallHandler
+                            }
+
+                            ServiceSdkCommandV2.getDeviceMeasureTime(object : MeasureTimeCallback {
+                                override fun measureTime(bean: MeasureTimeData) {
+                                    runOnUiThread {
+                                        val dataMap = mapOf(
+                                            "currentInterval"   to (bean.currentInterval ?: 0),
+                                            "defaultInterval"   to (bean.defaultInterval ?: 0),
+                                            "intervalList"      to (bean.intervalList?.map { it } ?: emptyList<Any>())
+                                        )
+                                        android.util.Log.d("AizoHeart", "心率间隔数据: $dataMap")
+                                        result.success(dataMap)
+                                    }
+                                }
+                            })
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            android.util.Log.e("AizoHeart", "getDeviceMeasureTime 异常", e)
+                            result.error("MEASURE_TIME_FAILED", e.message ?: "获取心率间隔失败", null)
+                        }
+                    }
+
+
+                    "instantMeasurement" -> {
+                        try {
+                            val args = call.arguments as? Map<String, Any>
+                            val type = (args?.get("type") as? Number)?.toInt() ?: -1
+                            val operation = (args?.get("operation") as? Number)?.toInt() ?: 1
+
+                            if (type !in listOf(1, 2, 3, 9)) {
+                                result.error("INVALID_TYPE", "无效的测量类型: $type", null)
+                                return@setMethodCallHandler
+                            }
+
+                            if (!DeviceManager.isConnect()) {
+                                android.util.Log.w("AizoMeasure", "设备未连接，无法开始测量")
+                                result.error("NOT_CONNECTED", "设备未连接", null)
+                                return@setMethodCallHandler
+                            }
+
+                            ServiceSdkCommandV2.instantMeasurement(type, operation, object : MeasureResultCallback {
+                                override fun measureResult(bean: MeasureResult) {
+                                    runOnUiThread {
+                                        val resultMap = mapOf(
+                                            "result"        to bean.result,
+                                            "type"          to bean.type,
+                                            "time"          to bean.time,
+                                            "heartrate"     to (bean.heartrate ?: 0),
+                                            "bloodoxygen"   to (bean.bloodoxygen ?: 0),
+                                            "bodytemp"      to (bean.bodytemp ?: 0.0),
+                                            "envtemp"       to (bean.envtemp ?: 0.0),
+//                                            "pressure"      to bean.pressure
+                                        )
+                                        Log.d("AizoMeasure", "测量结果返回: $resultMap")
+                                        result.success(resultMap)
+                                    }
+                                }
+                            })
+
+                            android.util.Log.d("AizoMeasure", "已发起测量: type=$type, operation=$operation")
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                            android.util.Log.e("AizoMeasure", "instantMeasurement 异常", e)
+                            result.error("MEASURE_FAILED", e.message ?: "测量失败", null)
                         }
                     }
 

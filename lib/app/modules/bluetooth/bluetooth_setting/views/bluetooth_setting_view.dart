@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
+import 'package:flutter_demo2/app/core/base/controller/bluetooth_controller.dart';
+import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -62,6 +64,7 @@ class BluetoothSettingView extends BaseViews<BluetoothSettingController> {
           ),
           Gap(12.h),
           _card(
+            
             title: 'Equipment status',
             child: Obx(() => Column(
                   children: [
@@ -87,14 +90,14 @@ class BluetoothSettingView extends BaseViews<BluetoothSettingController> {
           Gap(12.h),
           _card(
             title: 'Measurement Interval',
-            child: Obx(() => Column(
-                  children: [
-                    _tapRow('Get Current Interval'),
-                    _intervalRow('Set 10 Minutes Interval', 10),
-                    _intervalRow('Set 20 Minutes Interval', 20),
-                    _intervalRow('Set 30 Minutes Interval', 30),
-                  ],
-                )),
+            child: Column(
+              children: [
+                _tapRow('Get Current Interval'),
+                _intervalRow('Set 10 Minutes Interval', 10),
+                _intervalRow('Set 20 Minutes Interval', 20),
+                _intervalRow('Set 30 Minutes Interval', 30),
+              ],
+            ),
           ),
           Gap(12.h),
           _card(
@@ -104,6 +107,10 @@ class BluetoothSettingView extends BaseViews<BluetoothSettingController> {
                 _tapRow('Get Health Data', onTap: controller.getHealthData),
                 _tapRow('Get Sleep Data', onTap: controller.getSleepData),
                 _tapRow('Get Hardware Info', onTap: controller.getHardwareInfo),
+                _tapRow('获取心率信息', onTap: () => controller.getDeviceMeasureTime()),
+                 _tapRow('健康测量', onTap: () => controller.instantMeasurement()),
+                                  _tapRow('去戒指首页', onTap: () => Get.toNamed(Routes.AI_RING)),
+
               ],
             ),
           ),

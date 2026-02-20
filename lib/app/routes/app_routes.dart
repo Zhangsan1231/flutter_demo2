@@ -19,6 +19,8 @@ abstract class Routes {
   static const BLUETOOTH_CONNECT = _Paths.BLUETOOTH_CONNECT;
   static const CONNECT_DEVICE = _Paths.CONNECT_DEVICE;
   static const BLUETOOTH_SETTING = _Paths.BLUETOOTH_SETTING;
+  static const AI_RING = _Paths.AI_RING;
+  static const FORGET_PASSWORD = _Paths.FORGET_PASSWORD;
 }
 
 abstract class _Paths {
@@ -39,4 +41,6 @@ abstract class _Paths {
   static const BLUETOOTH_CONNECT = '/bluetooth-connect';
   static const CONNECT_DEVICE = '/connect-device';
   static const BLUETOOTH_SETTING = '/bluetooth-setting';
+  static const AI_RING = '/ai-ring';
+  static const FORGET_PASSWORD = '/forget-password';
 }

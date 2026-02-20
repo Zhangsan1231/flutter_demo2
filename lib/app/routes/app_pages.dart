@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 import '../core/service/storage_service.dart';
+import '../modules/ai_ring/bindings/ai_ring_binding.dart';
+import '../modules/ai_ring/views/ai_ring_view.dart';
 import '../modules/bluetooth/blue_user/bindings/blue_user_binding.dart';
 import '../modules/bluetooth/blue_user/views/blue_user_view.dart';
 import '../modules/bluetooth/bluetooth_connect/bindings/bluetooth_connect_binding.dart';
@@ -16,6 +18,8 @@ import '../modules/bluetooth/connect_device/bindings/connect_device_binding.dart
 import '../modules/bluetooth/connect_device/views/connect_device_view.dart';
 import '../modules/bluetooth/my_bluetooth/bindings/my_bluetooth_binding.dart';
 import '../modules/bluetooth/my_bluetooth/views/my_bluetooth_view.dart';
+import '../modules/forget_password/bindings/forget_password_binding.dart';
+import '../modules/forget_password/views/forget_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/information/bindings/information_binding.dart';
@@ -43,7 +47,7 @@ class AppPages {
     final user = SecureStorageService().getUserInfo();
     // print('username --------------${user?.name}');
     // print('idtoken ======= ${idToken}');
-    return idToken != null ? Routes.BLUETOOTH_CONNECT : Routes.SPLASH;
+    return idToken != null ? Routes.LOGIN : Routes.SPLASH;
   }
   // static const INITIAL = Routes.LOGIN;
 
@@ -119,8 +123,18 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.BLUETOOTH_SETTING,
-      page: () =>  BluetoothSettingView(),
+      page: () => BluetoothSettingView(),
       binding: BluetoothSettingBinding(),
+    ),
+    GetPage(
+      name: _Paths.AI_RING,
+      page: () => AiRingView(),
+      binding: AiRingBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGET_PASSWORD,
+      page: () =>  ForgetPasswordView(),
+      binding: ForgetPasswordBinding(),
     ),
   ];
 }

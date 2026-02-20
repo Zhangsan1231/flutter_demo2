@@ -137,43 +137,95 @@ class BluetoothRepositoryImpl extends BaseRemoteSource
     }
   }
 
-
   /// 监听戒指电池状态变化
-/// 返回 Stream<Map<String, dynamic>?>，每次电量变化推送一次
-Stream<Map<String, dynamic>?> get powerStateStream {
-  const eventChannel = EventChannel('com.zhangsan/aizo_ring_power');
-  return eventChannel.receiveBroadcastStream().map((dynamic event) {
-    if (event == null) return null;
-    return event as Map<String, dynamic>;
-  });
-}
+  /// 返回 Stream<Map<String, dynamic>?>，每次电量变化推送一次
+  Stream<Map<String, dynamic>?> get powerStateStream {
+    const eventChannel = EventChannel('com.zhangsan/aizo_ring_power');
+    return eventChannel.receiveBroadcastStream().map((dynamic event) {
+      if (event == null) return null;
+      return event as Map<String, dynamic>;
+    });
+  }
 
   @override
   // TODO: implement powerStream
   Stream<Map<String, dynamic>> get powerStream => throw UnimplementedError();
 
-/// 主动获取一次当前电池状态
-/// 返回 Map 包含 electricity (电量百分比)、workingMode (充电状态)等字段
-/// 如果设备未连接、调用失败或超时，返回 null
-@override
-Future<Map<String, dynamic>?> getCurrentPowerState() async {
-  try {
-    final dynamic result = await _channel.invokeMethod('getCurrentPowerState');
+  /// 主动获取一次当前电池状态
+  /// 返回 Map 包含 electricity (电量百分比)、workingMode (充电状态)等字段
+  /// 如果设备未连接、调用失败或超时，返回 null
+  @override
+  Future<Map<String, dynamic>?> getCurrentPowerState() async {
+    try {
+      final dynamic result = await _channel.invokeMethod(
+        'getCurrentPowerState',
+      );
 
-    if (result == null) {
-      print('获取当前电池状态失败：设备未连接或 SDK 返回 null');
+      if (result == null) {
+        print('获取当前电池状态失败：设备未连接或 SDK 返回 null');
+        return null;
+      }
+
+      print('当前电池状态获取成功: $result');
+      // 平台通道返回 Map<Object?, Object?>，需转成 Map<String, dynamic>
+      return Map<String, dynamic>.from(result as Map);
+    } on PlatformException catch (e) {
+      print('获取当前电池状态调用失败: ${e.code} - ${e.message}');
+      return null;
+    } catch (e) {
+      print('获取当前电池状态异常: $e');
       return null;
     }
-
-    print('当前电池状态获取成功: $result');
-    // 平台通道返回 Map<Object?, Object?>，需转成 Map<String, dynamic>
-    return Map<String, dynamic>.from(result as Map);
-  } on PlatformException catch (e) {
-    print('获取当前电池状态调用失败: ${e.code} - ${e.message}');
-    return null;
-  } catch (e) {
-    print('获取当前电池状态异常: $e');
-    return null;
   }
-}
+
+  /// 获取心率/测量间隔（getDeviceMeasureTime：currentInterval/defaultInterval/intervalList）
+  /// 原生为异步回调，若 SDK 不回调会超时返回 null
+  @override
+  Future<Map<String, dynamic>?> getDeviceMeasureTime() async {
+    try {
+      final result = await _channel.invokeMethod('getDeviceMeasureTime').timeout(
+        const Duration(seconds: 8),
+        onTimeout: () {
+          logger.d('getDeviceMeasureTime 超时，SDK 未回调');
+          return null;
+        },
+      );
+      if (result == null) {
+        logger.d('获取心率间隔失败');
+        return null;
+      }
+      logger.d('获取心率间隔成功: $result');
+      return Map<String, dynamic>.from(result as Map);
+    } catch (e) {
+      logger.e('getDeviceMeasureTime 异常: $e');
+      return null;
+    }
+  }
+  
+  /// 即时测量（心率/血氧/体温等），原生在 MeasureResultCallback.measureResult 里 result.success
+  /// SDK 可能需 10～15 秒才回调，超时时间需大于该值
+  @override
+  Future<Map<String, dynamic>?> instantMeasurement() async {
+    try {
+      final result = await _channel.invokeMethod('instantMeasurement', {
+        'type': 1,
+        'operation': 1,
+      }).timeout(
+        const Duration(seconds: 20),
+        onTimeout: () {
+          logger.d('instantMeasurement 超时，SDK 未回调');
+          return null;
+        },
+      );
+      if (result == null) {
+        logger.d('健康测量失败');
+        return null;
+      }
+      logger.d('健康测量成功: $result');
+      return Map<String, dynamic>.from(result as Map);
+    } catch (e) {
+      logger.e('instantMeasurement 异常: $e');
+      return null;
+    }
+  }
 }

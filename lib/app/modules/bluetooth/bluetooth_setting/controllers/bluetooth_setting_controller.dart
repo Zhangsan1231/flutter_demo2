@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_controller.dart';
+import 'package:flutter_demo2/app/data/repository/bluetooth_repository_impl.dart';
 import 'package:get/get.dart';
 
 class BluetoothSettingController extends BaseController {
@@ -57,5 +59,40 @@ class BluetoothSettingController extends BaseController {
   void getHardwareInfo() {
     // TODO: 获取硬件信息
     Get.snackbar('提示', 'Get Hardware Info');
+  }
+
+  /// 获取心率/测量间隔信息（getDeviceMeasureTime）
+  Future<void> getDeviceMeasureTime() async {
+    final repo = Get.isRegistered<BluetoothRepositoryImpl>()
+        ? Get.find<BluetoothRepositoryImpl>()
+        : BluetoothRepositoryImpl();
+    final data = await repo.getDeviceMeasureTime();
+    if (data == null || data.isEmpty) {
+      Get.snackbar('提示', '获取心率间隔失败，请确保设备已连接');
+      return;
+    }
+    final sb = StringBuffer()
+      ..writeln('当前间隔: ${data['currentInterval'] ?? '-'} 分钟')
+      ..writeln('默认间隔: ${data['defaultInterval'] ?? '-'} 分钟')
+      ..writeln('可选间隔: ${data['intervalList'] ?? '-'}');
+    Get.dialog(
+      AlertDialog(
+        title: Text('心率/测量间隔'),
+        content: SingleChildScrollView(child: Text(sb.toString())),
+        actions: [TextButton(onPressed: () => Get.back(), child: Text('确定'))],
+      ),
+    );
+  }
+
+  Future<void> instantMeasurement() async {
+    final repo = Get.isRegistered<BluetoothRepositoryImpl>()
+        ? Get.find<BluetoothRepositoryImpl>()
+        : BluetoothRepositoryImpl();
+    final data = await repo.instantMeasurement();
+    if (data == null || data.isEmpty) {
+      Get.snackbar('提示', '测量失败，请确保设备已连接');
+      return;
+    }
+    print('当前结果 ：${data['result']}');
   }
 }

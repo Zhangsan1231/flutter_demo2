@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auth0_flutter/auth0_flutter.dart';
 import 'package:authing_sdk/client.dart';
 import 'package:authing_sdk/result.dart';
@@ -144,4 +146,37 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
   Future<bool> uploadUserProfile(Map<String, Object> map) async {
     return await DefaultRepositoryImpl().patchInfo(map);
   }
+
+  //authing通过邮箱忘记密码
+  @override
+  Future<bool> forgetEmail(String email) async {
+    try {
+      AuthResult result = await AuthClient.sendEmail(email, 'RESET_PASSWORD');
+      logger.d('邮箱：${email}');
+      logger.d('result.code = ${result.code}');
+      if (result.code == 200) {
+        print('邮箱发送成功');
+        return true;
+      }
+      print('邮箱发送失败');
+
+      return false;
+    } catch (e) {
+      print('邮箱发送失败');
+
+      return false;
+    }
+  }
+  
+  @override
+  Future<int> resetPasswordByEmailCode(String email, String code, String password) async {
+    try {
+      AuthResult result = await AuthClient.resetPasswordByEmailCode(email,code,password);
+      return result.code;
+    } catch (e) {
+      return 0;
+    }
+  }
+  
+ 
 }

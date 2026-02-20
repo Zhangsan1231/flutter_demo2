@@ -18,6 +18,21 @@ abstract class BluetoothRepository {
   Stream<Map<String, dynamic>?> get powerStateStream;
 
 Future<Map<String, dynamic>?> getCurrentPowerState();
+// Future<Map<String, dynamic>?> getUserInfo();
+
+Future<Map<String, dynamic>?> getDeviceMeasureTime();
+
+Future<Map<String, dynamic>?> instantMeasurement();
+
+
+
+
+
+
+
+
+
+
   // Stream<Map<String, dynamic>> get powerStream;
   // void startListenPowerState();
   // /// 停止监听（建议在页面 dispose 时调用）

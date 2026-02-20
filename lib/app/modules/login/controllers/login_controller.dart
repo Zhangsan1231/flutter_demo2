@@ -15,10 +15,15 @@ class LoginController extends BaseController {
   SecureStorageService storage = SecureStorageService();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+      final forgetEmailController = TextEditingController();   // 创建邮箱输入控制器
+
   // / 方便获取值的方法（可选）
   String get email => emailController.text.trim();
   String get password => passwordController.text.trim();
   // AuthRepositoryImpl authImpl = AuthRepositoryImpl();
+    String get forgetEmail => forgetEmailController.text.trim();
+
 
   // // 替换成你的真实值
   // static const String domain = 'ineck.auth0.com';
@@ -110,6 +115,16 @@ class LoginController extends BaseController {
     // }
   }
 
+ Future<void>  forgetPassword() async{
+  logger.d(' 打印 forgetEmail   ${forgetEmail}');
+   final result = await AuthRepositoryImpl().forgetEmail(forgetEmail);
+   if(result){
+    print('发送成功');
+    return;
+   }
+  print('发送失败');
+  return ;
+  }
   //获取账号
   void accountText() {}
 }

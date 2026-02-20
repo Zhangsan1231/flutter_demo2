@@ -19,7 +19,13 @@ abstract class AuthRepository {
 
   Future<bool> uploadUserProfile(Map<String, Object> map);
 
+  Future<bool> forgetEmail(String email);
 
+    Future<int> resetPasswordByEmailCode(String email,String code,String password);
+
+
+
+  
 
   
 

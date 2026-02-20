@@ -287,4 +287,15 @@ class BluetoothController extends BaseController {
     }
     await BluetoothUtil.writeCharacteristic(char, command);
   }
+
+
+  /// 获取心率/测量间隔，结果通过 Get 或回调展示
+  Future<Map<String, dynamic>?> getDeviceMeasureTime() async {
+    final repo = Get.isRegistered<BluetoothRepositoryImpl>()
+        ? Get.find<BluetoothRepositoryImpl>()
+        : BluetoothRepositoryImpl();
+    return repo.getDeviceMeasureTime();
+  }
+
+ 
 }

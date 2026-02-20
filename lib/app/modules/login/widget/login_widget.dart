@@ -1,4 +1,6 @@
 // 导入 Flutter 核心库
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/modules/login/controllers/auth_controller.dart';
 import 'package:flutter_demo2/app/modules/login/controllers/login_controller.dart';
@@ -202,7 +204,8 @@ class _LoginWidgetState extends State<LoginWidget> {
           padding: EdgeInsets.only(right: 12.w),   // 右边距
           child: GestureDetector(
             onTap: () {
-              showForgotPasswordDialog();           // 点击弹出重置密码弹窗
+              Get.toNamed(Routes.FORGET_PASSWORD);
+              // showForgotPasswordDialog();           // 点击弹出重置密码弹窗
               print('用户点击了“忘记密码”');
             },
             child: Text(
@@ -268,8 +271,11 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                 // 邮箱输入框，使用 Obx 响应式更新 errorText
                 Obx(
-                  () => TextField(
-                    controller: emailController,
+                  () { 
+                                            final controller = Get.find<LoginController>();
+
+                    return TextField(
+                    controller: controller.forgetEmailController,
                     keyboardType: TextInputType.emailAddress, // 邮箱键盘
                     autofocus: true,                      // 自动聚焦
                     decoration: InputDecoration(
@@ -293,7 +299,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         errorText.value = '';
                       }
                     },
-                  ),
+                  );}
                 ),
 
                 Gap(24.h),
@@ -308,66 +314,16 @@ class _LoginWidgetState extends State<LoginWidget> {
                       borderRadius: BorderRadius.circular(20.h),
                     ),
                     child: InkWell(
-                      onTap: () async {                  // 点击事件 - 异步处理
-                        final email = emailController.text.trim(); // 去除首尾空格
-                        if(email.isNotEmpty){
-
-                        }
-                        errorText.value = '';            // 先清空错误
-
-                        if (email.isEmpty) {
-                          errorText.value = 'Please enter your email';
-                          return;
-                        }
-
-                        if (!GetUtils.isEmail(email)) {
-                          errorText.value = 'Invalid email format';
-                          return;
-                        }
-
+                      onTap: () async {   
+                        final controller = Get.find<LoginController>();
+                                       // 点击事件 - 异步处理
+                        // final email = emailController.text.trim(); // 去除首尾空格
+                       
+                       
+                        controller.forgetPassword();
                         Get.back();                      // 校验通过 → 关闭弹窗
 
-                        try {
-                          // 模拟网络请求（实际应替换为真实 API）
-                          await Future.delayed(const Duration(milliseconds: 800));
-
-                          Get.snackbar(                  // 成功提示
-                            '',
-                            'We have sent a reset email to $email',
-                            messageText: const Text(
-                              'We have sent a reset email',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.black87),
-                            ),
-                            snackPosition: SnackPosition.TOP,
-                            backgroundColor: Colors.white,
-                            boxShadows: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                            icon: Image.asset(
-                              Assets.images.vector.path,
-                              width: 20.w,
-                              height: 20.h,
-                            ),
-                            shouldIconPulse: false,
-                            margin: EdgeInsets.symmetric(horizontal: 40.w),
-                            borderRadius: 12,
-                            duration: const Duration(seconds: 4),
-                          );
-                        } catch (e) {
-                          Get.snackbar(                  // 失败提示
-                            'Error',
-                            'Failed to send reset email: $e',
-                            snackPosition: SnackPosition.BOTTOM,
-                            backgroundColor: Colors.red.shade700,
-                            colorText: Colors.white,
-                            duration: const Duration(seconds: 4),
-                          );
-                        }
+                        
                       },
                       borderRadius: BorderRadius.circular(20.h),
                       child: Padding(

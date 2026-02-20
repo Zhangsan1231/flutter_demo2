@@ -84,6 +84,14 @@ class $AssetsImagesGen {
   AssetGenImage get backgronud =>
       const AssetGenImage('assets/images/backgronud.png');
 
+  /// File path: assets/images/blood_oxygen.png
+  AssetGenImage get bloodOxygen =>
+      const AssetGenImage('assets/images/blood_oxygen.png');
+
+  /// File path: assets/images/blood_pressure.png
+  AssetGenImage get bloodPressure =>
+      const AssetGenImage('assets/images/blood_pressure.png');
+
   /// File path: assets/images/blueBaground.png
   AssetGenImage get blueBaground =>
       const AssetGenImage('assets/images/blueBaground.png');
@@ -157,6 +165,8 @@ class $AssetsImagesGen {
     weightScale,
     aiRing,
     backgronud,
+    bloodOxygen,
+    bloodPressure,
     blueBaground,
     bluetoothTips1,
     bluetoothBg,
