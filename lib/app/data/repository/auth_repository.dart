@@ -23,6 +23,9 @@ abstract class AuthRepository {
 
     Future<int> resetPasswordByEmailCode(String email,String code,String password);
 
+//auth0的修改密码
+  Future<void> resetPassword(String email);
+
 
 
   

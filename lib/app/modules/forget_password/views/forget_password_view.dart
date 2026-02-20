@@ -1,6 +1,7 @@
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
+import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -16,6 +17,9 @@ class ForgetPasswordView extends BaseViews<ForgetPasswordController> {
       backgroundColor: Colors.transparent,
       leading: Icon(Icons.arrow_back_ios),
       title: Text('重置密码'),
+      actions: [
+        InkWell(onTap: () => Get.offNamed(Routes.LOGIN), child: Text('登录')),
+      ],
     );
   }
 
@@ -76,17 +80,40 @@ class ForgetPasswordView extends BaseViews<ForgetPasswordController> {
               Gap(12.w),
               InkWell(
                 onTap: () async {
+                  final region = SecureStorageService().getRegion();
                   if (controller.frogetEmail.isEmpty) {
                     CherryToast.warning(title: Text('请输入邮箱')).show(context);
                   } else {
                     final resuilt = await controller.resetPasswordByPhoneCode();
                     print(resuilt);
                     if (resuilt) {
-                      CherryToast.success(title: Text('验证码发送成功')).show(context);
+                      if (region == 'zh') {
+                        CherryToast.success(
+                          title: Text('验证码发送成功'),
+                        ).show(context);
+                      } else {
+                        CherryToast.success(
+                          title: Text('auth0重置密码链接已发送邮箱'),
+                        ).show(context);
+                      }
                     } else {
                       CherryToast.warning(title: Text('验证码发送失败')).show(context);
                     }
                   }
+                  // if (controller.frogetEmail.isEmpty) {
+                  //   CherryToast.warning(title: Text('请输入邮箱')).show(context);
+                  // } else if(region =='zh'){
+                  //   final resuilt = await controller.resetPasswordByPhoneCode();
+                  //    print(resuilt);
+                  //    if(resuilt){
+                  //      CherryToast.success(title: Text('验证码发送成功')).show(context);
+                  //    }else{
+                  //      CherryToast.warning(title: Text('验证码发送失败')).show(context);
+                  //    }
+                  // }else{
+                  //   //调用auth0方法
+                  //   controller.
+                  // }
                 },
                 child: Container(
                   alignment: Alignment.center,

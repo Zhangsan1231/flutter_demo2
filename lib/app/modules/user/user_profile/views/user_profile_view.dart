@@ -45,7 +45,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
                   //Profile Picture
                   InkWell(
                     onTap: () {
-                      controller.uploadPhoto();
+                      // controller.uploadPhoto();
                       // controller.pickImage();
                       // logger.d('name点击测试');
                       // Get.toNamed(Routes.PROFILE_NAME);
@@ -65,49 +65,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
 
                           Row(
                             children: [
-                              Obx(() {
-                                final File? imageFile =
-                                    controller.selectedImage.value;
-                                logger.d(
-                                  'controller.selectedImage.value: ${controller.selectedImage.value}',
-                                );
-
-                                if (imageFile != null) {
-                                  return Image.file(
-                                    imageFile,
-                                    width: 58.w,
-                                    height: 58.w,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      logger.e('显示本地图片失败: $error');
-                                      return Image.asset(
-                                        Assets.images.userPhoto.path,
-                                        width: 58.w,
-                                        height: 58.w,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  );
-                                }
-
-                                // 如果 Rx 为空，尝试从 SecureStorage 读取（fallback）
-                               final reuslt = SecureStorageService().getUserPhoto();
-                               if(reuslt !=null){
-                                return Image.asset(reuslt,width: 58.w,height: 58.h,);
-                               }
-                              
-                              
-                                
-
-                                // 默认图
-                                return Image.asset(
-                                  Assets.images.userPhoto.path,
-                                  width: 58.w,
-                                  height: 58.w,
-                                  fit: BoxFit.cover,
-                                );
-                              }),
-
+                              //头像区域
                               Image.asset(
                                 Assets.images.right.path,
                                 width: 24.w,
@@ -724,7 +682,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
           ),
 
           InkWell(
-            onTap: controller.savePhoto,
+            // onTap: controller.savePhoto,
             // onTap: controller.uploadPatchInfo,
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 70.w, vertical: 10.h),

@@ -31,35 +31,11 @@ class UserView extends BaseViews<UserController> {
         children: [
           Row(
             children: [
-              Obx(() {
-            final photo = Get.find<UserController>().userPhoto.value;
-            if (controller.isLoadingAvatar.value) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (photo == null || photo.isEmpty) {
-              return Image.asset(
-                Assets.images.userPhoto.path,
-                width: 58.w,
-                height: 58.h,
-              );
-            }
-            ;
-            return CustomCachedNetworkImage(
-              imageUrl: photo,
-              width: 58.w,
-              height: 58.h,
-             
-            );
-          }),
-          
-          Gap(20.w),
-          Text('${SecureStorageService().getUserInfo()?.name}'),
+              //显示头像区域
+              Gap(20.w),
+              Text('${SecureStorageService().getUserInfo()?.name}'),
             ],
           ),
-          
-          
-          
-      
 
           //Welcome
           Container(
@@ -168,7 +144,16 @@ class UserView extends BaseViews<UserController> {
                   children: [
                     //My Provide
                     InkWell(
-                      onTap: () => Get.toNamed(Routes.USER_PROFILE),
+                      onTap: () {
+                        logger.d(
+                          '打印用户头像 ：${SecureStorageService().getUserInfo()?.photo}',
+                        );
+
+                        logger.d(
+                          '打印用户头像userPhoto ：${SecureStorageService().getUserPhoto()}',
+                        );
+                      },
+                      // onTap: () => Get.toNamed(Routes.USER_PROFILE),
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

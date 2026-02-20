@@ -178,5 +178,18 @@ class AuthRepositoryImpl extends BaseRepository implements AuthRepository {
     }
   }
   
+  @override
+  Future<void> resetPassword(String email) async {
+   final auth0 = Auth0(AppValues.domain,AppValues.clientId);
+
+  try {
+     auth0.api.resetPassword(email: email, connection: AppValues.connection);
+     print('auth0 邮件发送成功');
+  } catch (e) {
+         print('auth0 邮件发送失败');
+
+  }
+  }
+  
  
 }

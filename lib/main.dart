@@ -69,7 +69,7 @@ remoteInit() async {
 
   // 读取当前地区值
   var regionValue = storage.getRegion();
-  // print("初始读取的地区值: $regionValue");
+  print("初始读取的地区值: $regionValue");
 
   // 只有当地区是 nu（未设置）时才去查询 IP 并设置
   if (regionValue == RegionUnit.nu) {
@@ -97,7 +97,7 @@ remoteInit() async {
 
         // 重新读取确认是否设置成功
         regionValue = storage.getRegion();
-        // print("设置后最终地区值: $regionValue");
+        print("设置后最终地区值: $regionValue");
       } else {
         // print("IP 接口请求失败，状态码: ${response.statusCode}，默认中文");
         await storage.setRegion(RegionUnit.zh);
@@ -111,7 +111,7 @@ remoteInit() async {
   }
 
   // 最后打印确认
-  // print("remoteInit 结束，最终地区: ${storage.getRegion()}");
+  print("remoteInit 结束，最终地区: ${storage.getRegion()}");
 }
 Future<void> _initLanguage() async {
   final storage = SecureStorageService.instance;
