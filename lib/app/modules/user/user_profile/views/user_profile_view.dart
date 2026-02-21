@@ -46,6 +46,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
                   //Profile Picture
                   InkWell(
                     onTap: () {
+                      controller.pickImageFromGallery();
                       // controller.uploadPhoto();
                       // controller.pickImage();
                       // logger.d('name点击测试');
@@ -79,6 +80,7 @@ class UserProfileView extends BaseViews<UserProfileController> {
                               ),
                             ],
                           ),
+                        
                         ],
                       ),
                     ),
