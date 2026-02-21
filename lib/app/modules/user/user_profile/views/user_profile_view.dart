@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/modules/user/user_profile/views/birthday_picker_ios.dart';
+import 'package:flutter_demo2/app/modules/user/widget/user_avatar.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -66,6 +67,11 @@ class UserProfileView extends BaseViews<UserProfileController> {
                           Row(
                             children: [
                               //头像区域
+                              UserAvatar(
+                                networkUrl: SecureStorageService().getUserInfo()!.photo,
+                                size: 60.w,
+                              ),
+
                               Image.asset(
                                 Assets.images.right.path,
                                 width: 24.w,

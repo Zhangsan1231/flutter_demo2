@@ -46,7 +46,7 @@ class BlueUserView extends BaseViews<BlueUserController> {
             }
             return Row(
                 children: [
-                  CustomCachedNetworkImage(imageUrl: photo,width: 58.w,height: 58.h,),
+                  // CustomCachedNetworkImage(imageUrl: photo,width: 58.w,height: 58.h,),
                   Text('$name'),
                 ],
               );

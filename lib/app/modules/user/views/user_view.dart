@@ -7,6 +7,7 @@ import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/data/model/user_model.dart';
 import 'package:flutter_demo2/app/modules/user/controllers/user_controller.dart';
 import 'package:flutter_demo2/app/modules/user/widget/custom_image.dart';
+import 'package:flutter_demo2/app/modules/user/widget/user_avatar.dart';
 import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,6 +33,12 @@ class UserView extends BaseViews<UserController> {
           Row(
             children: [
               //显示头像区域
+
+              UserAvatar(
+                networkUrl: SecureStorageService().getUserInfo()?.photo,
+                size: 60.h,
+                // onTap: () => Get.to(() => FullImageView(url: user.avatar)),
+              ),
               Gap(20.w),
               Text('${SecureStorageService().getUserInfo()?.name}'),
             ],
@@ -144,16 +151,16 @@ class UserView extends BaseViews<UserController> {
                   children: [
                     //My Provide
                     InkWell(
-                      onTap: () {
-                        logger.d(
-                          '打印用户头像 ：${SecureStorageService().getUserInfo()?.photo}',
-                        );
+                      // onTap: () {
+                      //   // logger.d(
+                      //   //   '打印用户头像 ：${SecureStorageService().getUserInfo()?.photo}',
+                      //   // );
 
-                        logger.d(
-                          '打印用户头像userPhoto ：${SecureStorageService().getUserPhoto()}',
-                        );
-                      },
-                      // onTap: () => Get.toNamed(Routes.USER_PROFILE),
+                      //   // logger.d(
+                      //   //   '打印用户头像userPhoto ：${SecureStorageService().getUserPhoto()}',
+                      //   // );
+                      // },
+                      onTap: () => Get.toNamed(Routes.USER_PROFILE),
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
