@@ -5,6 +5,7 @@ import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/core/service/storage_service.dart';
 import 'package:flutter_demo2/app/modules/user/user_profile/views/birthday_picker_ios.dart';
 import 'package:flutter_demo2/app/modules/user/widget/user_avatar.dart';
+import 'package:flutter_demo2/app/routes/app_pages.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -67,12 +68,25 @@ class UserProfileView extends BaseViews<UserProfileController> {
 
                           Row(
                             children: [
-                              //头像区域
-                              UserAvatar(
-                                networkUrl: SecureStorageService().getUserInfo()!.photo,
-                                size: 60.w,
-                              ),
+                              Obx(() {
+                                final imageFile =
+                                    controller.selectedImage.value;
+                                if (imageFile == null) {
+                                  return UserAvatar(
+                                    networkUrl: SecureStorageService()
+                                        .getUserInfo()!
+                                        .photo,
+                                    size: 60.w,
+                                  );
+                                }
+                                return Image.file(
+                                  imageFile,
+                                  width: 60.w,
+                                  height: 60.h,
+                                );
+                              }),
 
+                              //头像区域
                               Image.asset(
                                 Assets.images.right.path,
                                 width: 24.w,
@@ -80,8 +94,107 @@ class UserProfileView extends BaseViews<UserProfileController> {
                               ),
                             ],
                           ),
-                        
                         ],
+                      ),
+                    ),
+                  ),
+
+                  Gap(24.h),
+                  Container(
+                    width: double.infinity,
+                    color: Colors.grey,
+                    height: 1.h,
+                  ),
+                  Gap(24.h),
+
+                  Obx(() {
+                    return InkWell(
+                    onTap: () {
+                      controller.uploadAvatar();
+                      // if(controller.isUploading.value){
+
+                      // }
+                    },
+
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 70.w,
+                        vertical: 10.h,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 50.w,
+                        vertical: 7.h,
+                      ),
+
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(21.h),
+                        border: Border.all(color: Color(0xff1e4bdf)),
+                      ),
+                      child: controller.isUploading.value
+                          ? Text(
+                              '正在上传',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: Color(0xff1e4bdf),
+                              ),
+                            )
+                          : Text(
+                              '上传头像',
+                              style: TextStyle(
+                                fontSize: 20.sp,
+                                color: Color(0xff1e4bdf),
+                              ),
+                            ),
+                    ),
+                  );
+                  
+                  }),
+                  
+                  if (controller.isUploading.value)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 40.w,
+                        vertical: 16.h,
+                      ),
+                      child: Column(
+                        children: [
+                          LinearProgressIndicator(
+                            value: controller.uploadProgress.value,
+                            backgroundColor: Colors.grey[300],
+                            valueColor: AlwaysStoppedAnimation(Colors.blue),
+                          ),
+                          Gap(8.h),
+                          Text(
+                            '${(controller.uploadProgress.value * 100).toStringAsFixed(0)}%',
+                            style: TextStyle(fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  InkWell(
+                    onTap: () => Get.toNamed(Routes.USER),
+
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 70.w,
+                        vertical: 10.h,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 50.w,
+                        vertical: 7.h,
+                      ),
+
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(21.h),
+                        border: Border.all(color: Color(0xff1e4bdf)),
+                      ),
+                      child: Text(
+                        '去首页',
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          color: Color(0xff1e4bdf),
+                        ),
                       ),
                     ),
                   ),
