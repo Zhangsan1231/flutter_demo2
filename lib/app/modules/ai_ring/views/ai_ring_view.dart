@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_oxygen_paint.dart';
+import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_pressure_paint.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
@@ -33,7 +34,7 @@ class AiRingView extends BaseViews<AiRingController> {
           ),
           children: <Widget>[
             _bloodOxygenCard(),
-            _bloodOxygenCard(),
+            _bloodPressureCard(),
 
           ],
         ),
@@ -41,21 +42,7 @@ class AiRingView extends BaseViews<AiRingController> {
     );
   }
 
-  // @override
-  // Widget body(BuildContext context) {
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 50.h),
-  //     child: GridView.count(
-  //       crossAxisCount: 2,
-  //       mainAxisSpacing: 16.h,
-  //       crossAxisSpacing: 16.w,
-  //       childAspectRatio: 1.05,
-  //       children: [
-  //         _buildBloodOxygenCard()
-  //         ],
-  //     ),
-  //   );
-  // }
+
 }
 
 Widget cardText(String label) {
@@ -91,7 +78,7 @@ Widget _buildCard({
           children: [
             Text(
               title,
-              style: TextStyle(fontSize: 14.sp, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 12.sp, color: Colors.grey[700],fontWeight: FontWeight.w500),
             ),
             Icon(icon, size: 22.w, color: Colors.grey[600]),
           ],
@@ -107,5 +94,12 @@ Widget _bloodOxygenCard() {
     title: 'Blood Oxygen',
     icon: Icons.bloodtype_outlined,
     child: BloodOxygenCanvas(),
+  );
+}
+Widget _bloodPressureCard() {
+  return _buildCard(
+    title: 'Blood Pressure',
+    icon: Icons.bloodtype_outlined,
+    child: BloodPressureCanvas(label: '中度'),
   );
 }
