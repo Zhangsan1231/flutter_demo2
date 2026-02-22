@@ -199,7 +199,7 @@ class UserView extends BaseViews<UserController> {
 
                     //Reminder Setting
                     InkWell(
-                      onTap: () => Get.toNamed(Routes.SPLASH),
+                      onTap: () => Get.toNamed(Routes.AI_RING),
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -213,7 +213,7 @@ class UserView extends BaseViews<UserController> {
                                 ),
                                 Gap(16.w),
                                 Text(
-                                  'Reminder Setting',
+                                  '蓝牙用户首页',
                                   style: TextStyle(fontSize: 16.sp),
                                 ),
                               ],
