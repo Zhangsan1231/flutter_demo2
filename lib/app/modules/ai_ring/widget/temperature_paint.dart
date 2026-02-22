@@ -5,82 +5,72 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class TemperaturePaint extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    // 圆心（稍微向下偏移，和你的图片位置一致）
-    final center = Offset(size.width / 2, (size.height / 2) + 11.h);
+    final center = Offset(size.width / 2, size.height / 2);
 
-    // 圆的半径
-    final radius = size.width / 2 - 10;
+    // 边框粗细（建议 7~10，根据视觉调整）
+    final double strokeWidth = 8.0;
 
-    // ────────────────────── 1. 最外层浅色圆 ──────────────────────
-    final circlePaint = Paint()
+    // 半径（防止边框被裁剪）
+    final double radius =
+        math.min(size.width, size.height) / 2 - strokeWidth / 2;
+        double _toRadian(double degree) => degree * math.pi / 180;
+
+
+
+        // ===== 统一角度管理（改这里就行）=====
+    final double startDegree = 120;   // ← 从左下开始绘画，改这个数字即可
+    final double sweepDegree = 300;   // 扫过角度
+
+    final double startAngle = _toRadian(startDegree);
+    final double sweepAngle = _toRadian(sweepDegree);
+
+    // 🔥 温度风格 SweepGradient（最推荐！）
+    final gradient = SweepGradient(
+      center: Alignment.center,                    // 以圆心为中心
+      startAngle: startAngle, // 从正上方（12点钟方向）开始
+      endAngle: startAngle + sweepAngle, // 旋转一圈半（完整覆盖）
+      colors: const [
+        Color(0xFFFFEA7A), 
+        Color(0xFF00F787), // 
+        Color(0xFF1EF778), // 
+        Color(0xFF4CAF50), // 绿色
+        Color(0xFFFFEA7A), 
+        Color(0xFFFD3968), // 橙黄
+      ],
+      stops: const [0.0, 0.2, 0.4, 0.6, 0.8, 1.0], // 颜色分布位置
+    );
+
+    final paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3.0
-      ..color = const Color(0xffBFFFE0);
-
-    canvas.drawCircle(center, radius, circlePaint);
-
-    // ────────────────────── 2. 绘制刻度数字 34~40（从底部偏左开始） ──────────────────────
-    final numbers = [34, 35, 36, 37, 38, 39, 40];
-
-    // 关键调整参数（你想要的效果核心在这里）
-    const double startAngle = math.pi + 0.65;   // ← 从底部左侧一点开始（不是左侧水平）
-    const double totalAngle = math.pi * 1.7;    // ← 总扫过角度，让37正好在顶部
-
-    for (int i = 0; i < numbers.length; i++) {
-      // 计算每个数字的角度
-      final double angle = startAngle + (totalAngle * i / (numbers.length - 1));
-
-      // 数字距离圆心的距离（放在圆外面一点）
-      final double textRadius = radius + 22.w;
-
-      // 计算文字坐标
-      final double x = center.dx + textRadius * math.cos(angle);
-      final double y = center.dy + textRadius * math.sin(angle);
-
-      // 绘制数字
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: numbers[i].toString(),
-          style: TextStyle(
-            color: const Color(0xff333333),
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-
-      textPainter.layout();
-
-      textPainter.paint(
-        canvas,
-        Offset(
-          x - textPainter.width / 2,   // 水平居中
-          y - textPainter.height / 2,  // 垂直居中
-        ),
-      );
-    }
+      ..strokeWidth = strokeWidth
+      ..shader = gradient.createShader(
+        Rect.fromCircle(center: center, radius: radius),
+      )
+      ..strokeCap = StrokeCap.round; // 让接头更圆润
+    // 绘制渐变圆环
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius),
+      startAngle,   // 使用变量
+      sweepAngle,   // 使用变量
+      false,
+      paint,
+    );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-
-
 class TemperatureCanvas extends StatefulWidget {
-  TemperatureCanvas({Key? key}) : super(key: key);
+  const TemperatureCanvas({Key? key}) : super(key: key);
 
   @override
-  _TemperatureCanvasState createState() => _TemperatureCanvasState();
+  State<TemperatureCanvas> createState() => _TemperatureCanvasState();
 }
 
 class _TemperatureCanvasState extends State<TemperatureCanvas> {
   @override
   Widget build(BuildContext context) {
-   return CustomPaint(
-      size:  Size(81.w, 81.h), // 建议加上固定大小，避免布局问题
-      painter: TemperaturePaint(),
-    );
+    return CustomPaint(size: Size(81.w, 81.h), painter: TemperaturePaint());
   }
 }

@@ -37,7 +37,8 @@ class AiRingView extends BaseViews<AiRingController> {
           children: <Widget>[
             _bloodOxygenCard(),
             _bloodPressureCard(),
-            _temperatureCard(),
+            TemperatureCanvas(),
+            // _temperatureCard(),
 
             // Image.asset(Assets.images.temperature.path),
             // TemperatureCanvas(),
@@ -125,11 +126,11 @@ Widget _bloodPressureCard() {
   );
 }
 
-Widget _temperatureCard() {
-  return _buildCard(
-    title: 'Temperature',
-    icon: Icons.bloodtype_outlined,
-    imagePath: Assets.images.temperature.path,
-    child: TemperatureCanvas(),
-  );
-}
+// Widget _temperatureCard() {
+//   return _buildCard(
+//     title: 'Temperature',
+//     icon: Icons.bloodtype_outlined,
+//     imagePath: Assets.images.temperature.path,
+//     child: TemperatureCanvas(),
+//   );
+// }
