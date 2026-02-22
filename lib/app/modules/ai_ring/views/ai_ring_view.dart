@@ -3,6 +3,7 @@ import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_oxygen_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_pressure_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/heart_ratr_paint.dart';
+import 'package:flutter_demo2/app/modules/ai_ring/widget/sleep_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/temperature_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/weight_paint.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
@@ -44,7 +45,8 @@ class AiRingView extends BaseViews<AiRingController> {
             _bloodSugarCard(),
             _weightCard(),
             _stepsCard(),
-            _heartRateCard()
+            _heartRateCard(),
+            _sleepCard()
 
             // Image.asset(Assets.images.temperature.path),
             // TemperatureCanvas(),
@@ -186,5 +188,12 @@ Widget _heartRateCard() {
     title: 'Heart rate',
     icon: Icons.bloodtype_outlined,
     child: HeartRatrCanvas(bpm: 72,)
+  );
+}
+Widget _sleepCard() {
+  return _buildCard(
+    title: 'Sleep',
+    icon: Icons.bloodtype_outlined,
+    child: SleepCanvas(sleepHours: 7.5,)
   );
 }
