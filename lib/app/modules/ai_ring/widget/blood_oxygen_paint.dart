@@ -14,7 +14,7 @@ class BloodOxygenPaint extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // 计算画布中心点和圆形半径（当前尺寸下 radius=40 比较合适）
-    final center = Offset(size.width / 2, size.height / 2);
+    final center = Offset(size.width / 2, (size.height / 2)+15);
     final radius = 40.0;
 
     // ────────────────────── ① 外层红色细圆环 ──────────────────────

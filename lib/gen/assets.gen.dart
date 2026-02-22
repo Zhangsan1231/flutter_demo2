@@ -128,6 +128,10 @@ class $AssetsImagesGen {
   /// File path: assets/images/right.png
   AssetGenImage get right => const AssetGenImage('assets/images/right.png');
 
+  /// File path: assets/images/temperature.png
+  AssetGenImage get temperature =>
+      const AssetGenImage('assets/images/temperature.png');
+
   /// File path: assets/images/userPhoto.png
   AssetGenImage get userPhoto =>
       const AssetGenImage('assets/images/userPhoto.png');
@@ -177,6 +181,7 @@ class $AssetsImagesGen {
     photo,
     reminder,
     right,
+    temperature,
     userPhoto,
     userBluetooth,
     wechat,
