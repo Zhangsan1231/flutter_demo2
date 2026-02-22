@@ -3,6 +3,7 @@ import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_oxygen_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_pressure_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/temperature_paint.dart';
+import 'package:flutter_demo2/app/modules/ai_ring/widget/weight_paint.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -39,6 +40,8 @@ class AiRingView extends BaseViews<AiRingController> {
             _bloodPressureCard(),
             // TemperatureCanvas(),
             _temperatureCard(),
+            _bloodSugarCard(),
+            _weightCard(),
 
             // Image.asset(Assets.images.temperature.path),
             // TemperatureCanvas(),
@@ -98,10 +101,10 @@ Widget _buildCard({
             children: [
               if (imagePath != null)
                 Positioned.fill(
-                  child: Center(child: Image.asset(imagePath, width: 81.w, height: 81.h),),
+                  child: Center(child: Image.asset(imagePath, width: 85.w, height: 85.h),),
                 ),
 
-              Positioned(child: child),
+              Positioned(child: Center(child: child,)),
             ],
           ),
         ),
@@ -131,5 +134,27 @@ Widget _temperatureCard() {
     title: 'Temperature',
     icon: Icons.bloodtype_outlined,
     child: TemperatureCanvas(),
+  );
+}
+
+Widget _bloodSugarCard() {
+  return _buildCard(
+    title: 'Blood sugar',
+    icon: Icons.bloodtype_outlined,
+    imagePath: Assets.images.bloodSugar.path,
+    child: Column(
+      children: [
+        Gap(25.h),
+        Text('43'),
+       Text('mg/dL')
+      ],
+    ),
+  );
+}
+Widget _weightCard() {
+  return _buildCard(
+    title: 'Weight',
+    icon: Icons.bloodtype_outlined,
+    child: WeightConvas(currentValue: 65,),
   );
 }

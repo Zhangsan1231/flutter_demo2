@@ -84,6 +84,10 @@ class $AssetsImagesGen {
   AssetGenImage get backgronud =>
       const AssetGenImage('assets/images/backgronud.png');
 
+  /// File path: assets/images/bloodSugar.png
+  AssetGenImage get bloodSugar =>
+      const AssetGenImage('assets/images/bloodSugar.png');
+
   /// File path: assets/images/blood_oxygen.png
   AssetGenImage get bloodOxygen =>
       const AssetGenImage('assets/images/blood_oxygen.png');
@@ -169,6 +173,7 @@ class $AssetsImagesGen {
     weightScale,
     aiRing,
     backgronud,
+    bloodSugar,
     bloodOxygen,
     bloodPressure,
     blueBaground,
