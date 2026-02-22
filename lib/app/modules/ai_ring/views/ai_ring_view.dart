@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_demo2/app/core/base/base_views.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_oxygen_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/blood_pressure_paint.dart';
+import 'package:flutter_demo2/app/modules/ai_ring/widget/heart_ratr_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/temperature_paint.dart';
 import 'package:flutter_demo2/app/modules/ai_ring/widget/weight_paint.dart';
 import 'package:flutter_demo2/gen/assets.gen.dart';
@@ -42,6 +43,8 @@ class AiRingView extends BaseViews<AiRingController> {
             _temperatureCard(),
             _bloodSugarCard(),
             _weightCard(),
+            _stepsCard(),
+            _heartRateCard()
 
             // Image.asset(Assets.images.temperature.path),
             // TemperatureCanvas(),
@@ -71,6 +74,9 @@ Widget _buildCard({
   required String title,
   required IconData icon,
   required Widget child,
+  double width = 82.0,
+  double height = 82.0,
+
   String? imagePath,
 }) {
   return Container(
@@ -101,7 +107,7 @@ Widget _buildCard({
             children: [
               if (imagePath != null)
                 Positioned.fill(
-                  child: Center(child: Image.asset(imagePath, width: 85.w, height: 85.h),),
+                  child: Center(child: Image.asset(imagePath, width: width.w, height: height.h),),
                 ),
 
               Positioned(child: Center(child: child,)),
@@ -156,5 +162,29 @@ Widget _weightCard() {
     title: 'Weight',
     icon: Icons.bloodtype_outlined,
     child: WeightConvas(currentValue: 65,),
+  );
+}
+Widget _stepsCard() {
+  return _buildCard(
+    title: 'Steps',
+    icon: Icons.bloodtype_outlined,
+    imagePath: Assets.images.steps.path,
+    width: 92,
+    height: 92,
+    child: Column(
+      children: [
+        Gap(25.h),
+        Text('43'),
+       Text('mg/dL')
+      ],
+    ),
+  );
+}
+
+Widget _heartRateCard() {
+  return _buildCard(
+    title: 'Heart rate',
+    icon: Icons.bloodtype_outlined,
+    child: HeartRatrCanvas(bpm: 72,)
   );
 }
