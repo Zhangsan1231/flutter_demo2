@@ -39,6 +39,24 @@ class WeightPaint extends CustomPainter {
       false,
       twoPaint,
     );
+    // ================== twoPaint 现在跟随指针进度渲染（只画到指针位置）=================
+    // 计算当前指针对应的进度（和指针完全同步）
+    final double progressColor = ((value.clamp(30.0, 90.0) - 30.0) / 60.0).clamp(0.0, 1.0);
+    final double twoSweepAngle = progressColor * math.pi;   // ← 只绘制到指针位置
+
+    final colorPaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..color = const Color(0xFF00C4FF)   // ← 这里改颜色！（你原来是灰色，现在可以改成你想要的颜色）
+      ..strokeWidth = 8.0
+      ..strokeCap = StrokeCap.round;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius - 8),
+      math.pi,           // 从左侧开始
+      twoSweepAngle,     // ← 关键：只画到当前指针位置
+      false,
+      colorPaint,
+    );
 
     // ================== 新增：内部 30 个刻度线 ==================
     // 总共 30 个刻度，均匀分布在 180° 半圆上
