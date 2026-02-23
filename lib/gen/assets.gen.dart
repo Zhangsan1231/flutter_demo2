@@ -132,6 +132,13 @@ class $AssetsImagesGen {
   /// File path: assets/images/right.png
   AssetGenImage get right => const AssetGenImage('assets/images/right.png');
 
+  /// File path: assets/images/sleepSun.png
+  AssetGenImage get sleepSun =>
+      const AssetGenImage('assets/images/sleepSun.png');
+
+  /// File path: assets/images/slepp.png
+  AssetGenImage get slepp => const AssetGenImage('assets/images/slepp.png');
+
   /// File path: assets/images/steps.png
   AssetGenImage get steps => const AssetGenImage('assets/images/steps.png');
 
@@ -189,6 +196,8 @@ class $AssetsImagesGen {
     photo,
     reminder,
     right,
+    sleepSun,
+    slepp,
     steps,
     temperature,
     userPhoto,

@@ -194,6 +194,8 @@ Widget _sleepCard() {
   return _buildCard(
     title: 'Sleep',
     icon: Icons.bloodtype_outlined,
-    child: SleepCanvas(sleepHours: 7.5,)
+    child: SleepCanvas(sleepHours: 8,
+    // sunImage: Assets.images.sleepSun.path,moonImage: Assets.images.slepp.path,
+    )
   );
 }
