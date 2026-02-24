@@ -238,7 +238,7 @@ class UserView extends BaseViews<UserController> {
 
                     //Health Surveys
                     InkWell(
-                      onTap: () => print('Myprovider点击测试'),
+                      // onTap: () => Get.toNamed(Routes.BLUETOOTH_CONNECT),
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -252,7 +252,7 @@ class UserView extends BaseViews<UserController> {
                                 ),
                                 Gap(16.w),
                                 Text(
-                                  'Health Surveys',
+                                  'airing 蓝牙连接页面',
                                   style: TextStyle(fontSize: 16.sp),
                                 ),
                               ],
@@ -277,7 +277,7 @@ class UserView extends BaseViews<UserController> {
 
                     //Pain Record
                     InkWell(
-                      onTap: () => print('Myprovider点击测试'),
+                      onTap: () => Get.toNamed(Routes.BLUETOOTH),
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -291,7 +291,7 @@ class UserView extends BaseViews<UserController> {
                                 ),
                                 Gap(16.w),
                                 Text(
-                                  'Pain Record',
+                                  '蓝牙测试',
                                   style: TextStyle(fontSize: 16.sp),
                                 ),
                               ],

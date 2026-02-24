@@ -87,7 +87,7 @@ class LoginController extends BaseController {
         if (user?.name == 'defualtName'){
           Get.toNamed(Routes.INFORMATION);
         }else{
-          Get.toNamed(Routes.BLUE_USER);
+          // Get.toNamed(Routes.BLUE_USER);
         }
 
         // logger.d('storage.getUserInfo() ================${storage.getUserInfo()?.name}');

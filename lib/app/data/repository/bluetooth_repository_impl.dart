@@ -1,231 +1,186 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_demo2/app/core/base/remote/base_remote_source.dart';
 import 'package:flutter_demo2/app/data/repository/bluetooth_repository.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/route_manager.dart';
 
 class BluetoothRepositoryImpl extends BaseRemoteSource
     implements BluetoothRepository {
+  static final BluetoothRepositoryImpl _instance =
+      BluetoothRepositoryImpl._internal();
+  factory BluetoothRepositoryImpl() => _instance; // ← 加上这行
   static const MethodChannel _channel = MethodChannel("com.zhangsan/aizo_ring");
+  static const EventChannel _eventChannel = EventChannel(
+    "com.zhangsan/aizo_ring/events",
+  );
+  // 连接状态（全局可监听）
+  final RxBool _isConnected = false.obs;
+  RxBool get isConnected => _isConnected;
+  // 绑定状态（全局可监听）
+  final RxBool _isBound = false.obs;
+  RxBool get isBound => _isBound;
 
-  @override
-  Future<bool> init() async {
-    try {
-      final bool success = await _channel.invokeMethod('init');
-      print('Flutter 调用初始化结果: $success');
-      return success;
-    } on PlatformException catch (e) {
-      print('Flutter 初始化调用失败: ${e.message}');
-      return false;
-    } catch (e) {
-      print('Flutter 初始化异常: $e');
-      return false;
-    }
+  // ==================== 电池状态（全局可监听） ====================
+  final RxInt _batteryLevel = 50.obs; // 默认值
+  final RxBool _isCharging = false.obs;
+
+  RxInt get batteryLevel => _batteryLevel;
+  RxBool get isCharging => _isCharging;
+
+  BluetoothRepositoryImpl._internal() {
+    // ← 改成私有构造
+    _setupEventListener();
   }
 
-  @override
-  Future<bool> connectDevice({
-    required String deviceName,
-    required String deviceMac,
-  }) async {
-    try {
-      final bool success = await _channel.invokeMethod('connect', {
-        'deviceName': deviceName.isNotEmpty ? deviceName : 'AIZO RING',
-        'deviceMac': deviceMac,
-      });
-      print('SDK 连接结果: $success');
-      return success;
-    } on PlatformException catch (e) {
-      print('SDK 连接失败: ${e.code} - ${e.message}');
-      return false;
-    } catch (e) {
-      print('SDK 连接异常: $e');
-      return false;
-    }
+  // ==================== 监听 EventChannel（连接/断开/错误） ====================
+  void _setupEventListener() {
+    _eventChannel.receiveBroadcastStream().listen(
+      (event) {
+        if (event is Map<dynamic, dynamic>) {
+          final String e = event['event'] ?? '';
+          final bool success = event['success'] ?? false;
+          logger.d('当前监听状态================${e}');
+
+          switch (e) {
+            case 'connect':
+              _isConnected.value = true;
+
+              print('🔗 蓝牙已连接');
+              Get.snackbar(
+                '成功',
+                '已连接 AIZO RING',
+                backgroundColor: Colors.green,
+              );
+              break;
+
+            case 'disconnect':
+              _isConnected.value = false;
+              _isBound.value = false; // ← 新增：断开就解绑
+
+              print('❌ 蓝牙已断开 → 已重置绑定状态');
+              // Get.snackbar(
+              //   '失败',
+              //   '❌ 蓝牙已断开 → 已重置绑定状态',
+              //   backgroundColor: Colors.red,
+              // );
+              break;
+
+            case 'connectError':
+              _isConnected.value = false;
+              _isBound.value = false; // ← 新增
+
+              print('❌ 连接出错');
+              Get.snackbar('失败', '❌ 连接出错', backgroundColor: Colors.red);
+              break;
+
+            case 'notifyBoundDeviceResult':
+              print('绑定通知结果: ${success ? "成功" : "失败"}');
+              _isBound.value = success;
+
+              if (_isBound.value) {
+                Get.snackbar(
+                  '成功',
+                  '绑定成功 AIZO RING',
+                  backgroundColor: Colors.green,
+                );
+              } else {
+                Get.snackbar(
+                  '失败',
+                  '❌ 绑定出错 AIZO RING',
+                  backgroundColor: Colors.red,
+                );
+              }
+              break;
+
+            case 'deviceSetResult':
+              final type = event['type'] ?? -1;
+              logger.d('type=====44444=====${type}');
+              print('deviceSet 结果: ${success ? "成功" : "失败"}');
+
+              // 如果你暂时不想改原生，这里也可以不处理（上面 deviceSet 方法已经处理了）
+              break;
+            case 'powerState':
+              if (event is Map<dynamic, dynamic>) {
+                final int electricity = event['electricity'] ?? 0;
+                final int workingMode = event['workingMode'] ?? 0;
+
+                _batteryLevel.value = electricity;
+                _isCharging.value = workingMode == 1;
+
+                print(
+                  '🔋 戒指电池更新: $electricity% ${workingMode == 1 ? "充电中" : "未充电"}',
+                );
+              }
+              break;
+          }
+        }
+      },
+      onError: (error) {
+        print('EventChannel 错误: $error');
+        _isConnected.value = false;
+        _isBound.value = false;
+      },
+    );
   }
 
-  @override
-  Future<bool> disconnectDevice() async {
-    try {
-      final bool success = await _channel.invokeMethod('disconnect');
-      print('断开设备结果: $success');
-      return success;
-    } on PlatformException catch (e) {
-      print('断开设备失败: ${e.code} - ${e.message}');
-      return false;
-    } catch (e) {
-      print('断开设备异常: $e');
-      return false;
-    }
-  }
+  //首先判断 是否有同样操作
+  //没有则 创建一个 未来 对象
+  //final success = await _channel.invokeMethod进行指令下发
+  //等待真正返回结果
+  //根据真实结果处理状态
 
   @override
-  Future<bool> notifyBoundDevice({
-    required String deviceName,
-    required String deviceMac,
-  }) async {
-    try {
-      // deviceName 不能为空，SDK 文档要求必填
-      final String name = deviceName.isNotEmpty
-          ? deviceName
-          : "AIZO Ring"; // 给个默认值防止空
-
-      final bool success = await _channel.invokeMethod('notifyBoundDevice', {
-        'deviceName': name,
-        'deviceMac': deviceMac,
-      });
-
-      print('通知绑定戒指结果: $success');
-      return success;
-    } on PlatformException catch (e) {
-      print('通知绑定戒指调用失败: ${e.code} - ${e.message}');
-      return false;
-    } catch (e) {
-      print('通知绑定戒指异常: $e');
-      return false;
-    }
+  Future<void> connectDevice({required String deviceMac}) async {
+    await _channel.invokeMethod('connect', {'mac': deviceMac});
   }
 
-  /// 戒指设置操作（解绑 / 恢复出厂 / 重启）
-  /// [type] 必须是 1, 2, 4 中的一个
-  ///   1 → 恢复出厂设置
-  ///   2 → 解绑戒指
-  ///   4 → 重启戒指（约25秒）
-  @override
-  Future<bool> deviceSet(int type) async {
-    if (![1, 2, 4].contains(type)) {
-      print('无效的 type 值: $type，必须是 1、2 或 4');
-      return false;
-    }
-
-    try {
-      final bool success = await _channel.invokeMethod('deviceSet', {
-        'type': type,
-      });
-
-      print('戒指设置操作 ($type) 结果: $success');
-      return success;
-    } on PlatformException catch (e) {
-      print('戒指设置调用失败: ${e.code} - ${e.message}');
-      return false;
-    } catch (e) {
-      print('戒指设置异常: $e');
-      return false;
-    }
-  }
-
-  /// 获取戒指硬件信息（固件参数）
-  /// 需要设备已连接，否则返回 null
-  @override
-  Future<Map<String, dynamic>?> getFirmwareInfo() async {
-    try {
-      final dynamic result = await _channel.invokeMethod('getFirmwareInfo');
-
-      if (result == null) {
-        print('获取硬件信息失败：设备未连接或 SDK 返回 null');
-        return null;
-      }
-
-      // result 应该是 Map<String, dynamic>，包含所有字段
-      print('硬件信息获取成功: $result');
-      return result as Map<String, dynamic>;
-    } on PlatformException catch (e) {
-      print('获取硬件信息调用失败: ${e.code} - ${e.message}');
-      return null;
-    } catch (e) {
-      print('获取硬件信息异常: $e');
-      return null;
-    }
-  }
-
-  /// 监听戒指电池状态变化
-  /// 返回 Stream<Map<String, dynamic>?>，每次电量变化推送一次
-  Stream<Map<String, dynamic>?> get powerStateStream {
-    const eventChannel = EventChannel('com.zhangsan/aizo_ring_power');
-    return eventChannel.receiveBroadcastStream().map((dynamic event) {
-      if (event == null) return null;
-      return event as Map<String, dynamic>;
+  Future<void> notifyBoundDevice(String deviceName, String deviceMac) async {
+    await _channel.invokeMethod<bool>('notifyBoundDevice', {
+      'deviceName': deviceName,
+      'deviceMac': deviceMac,
     });
   }
 
+  //1 -> "恢复出厂设置"   2 -> "解绑戒指"   4 -> "重启戒指"
   @override
-  // TODO: implement powerStream
-  Stream<Map<String, dynamic>> get powerStream => throw UnimplementedError();
-
-  /// 主动获取一次当前电池状态
-  /// 返回 Map 包含 electricity (电量百分比)、workingMode (充电状态)等字段
-  /// 如果设备未连接、调用失败或超时，返回 null
-  @override
-  Future<Map<String, dynamic>?> getCurrentPowerState() async {
-    try {
-      final dynamic result = await _channel.invokeMethod(
-        'getCurrentPowerState',
-      );
-
-      if (result == null) {
-        print('获取当前电池状态失败：设备未连接或 SDK 返回 null');
-        return null;
-      }
-
-      print('当前电池状态获取成功: $result');
-      // 平台通道返回 Map<Object?, Object?>，需转成 Map<String, dynamic>
-      return Map<String, dynamic>.from(result as Map);
-    } on PlatformException catch (e) {
-      print('获取当前电池状态调用失败: ${e.code} - ${e.message}');
-      return null;
-    } catch (e) {
-      print('获取当前电池状态异常: $e');
-      return null;
-    }
+  Future<void> deviceSet(int type) async {
+    await _channel.invokeMethod<bool>('deviceSet', {'type': type});
   }
 
-  /// 获取心率/测量间隔（getDeviceMeasureTime：currentInterval/defaultInterval/intervalList）
-  /// 原生为异步回调，若 SDK 不回调会超时返回 null
   @override
-  Future<Map<String, dynamic>?> getDeviceMeasureTime() async {
-    try {
-      final result = await _channel.invokeMethod('getDeviceMeasureTime').timeout(
-        const Duration(seconds: 8),
-        onTimeout: () {
-          logger.d('getDeviceMeasureTime 超时，SDK 未回调');
-          return null;
-        },
+  Future<bool> getInstantPowerState() async {
+    final bool success =
+        await _channel.invokeMethod<bool>('getInstantPowerState') ?? false;
+    if (success) {
+      print(
+        '✅ 已请求实时电量，现有 PowerStateCallback 会自动更新 _batteryLevel 和 _isCharging',
       );
-      if (result == null) {
-        logger.d('获取心率间隔失败');
-        return null;
-      }
-      logger.d('获取心率间隔成功: $result');
-      return Map<String, dynamic>.from(result as Map);
-    } catch (e) {
-      logger.e('getDeviceMeasureTime 异常: $e');
-      return null;
     }
+    return true;
   }
-  
-  /// 即时测量（心率/血氧/体温等），原生在 MeasureResultCallback.measureResult 里 result.success
-  /// SDK 可能需 10～15 秒才回调，超时时间需大于该值
+
   @override
-  Future<Map<String, dynamic>?> instantMeasurement() async {
-    try {
-      final result = await _channel.invokeMethod('instantMeasurement', {
-        'type': 1,
-        'operation': 1,
-      }).timeout(
-        const Duration(seconds: 20),
-        onTimeout: () {
-          logger.d('instantMeasurement 超时，SDK 未回调');
-          return null;
-        },
-      );
-      if (result == null) {
-        logger.d('健康测量失败');
-        return null;
-      }
-      logger.d('健康测量成功: $result');
-      return Map<String, dynamic>.from(result as Map);
-    } catch (e) {
-      logger.e('instantMeasurement 异常: $e');
-      return null;
+  Future<bool> getCurrentActivityGoals() async {
+    if (!_isConnected.value || !_isBound.value) {
+      logger.d('连接或绑定中断，请进行连接或绑定');
+      return false;
     }
+    final Map<dynamic, dynamic>? goals = await _channel.invokeMethod(
+      'getCurrentActivityGoals',
+    );
+
+    if (goals != null) {
+      final int steps = goals['stepGlobal'] as int? ?? 8000;
+      final double distance = goals['distanceGlobal'] as double? ?? 5.0; // km
+      final int calories = goals['caloriesGlobal'] as int? ?? 300;
+
+      print('🎯 活动目标: 步数 $steps | 距离 ${distance}km | 热量 ${calories}kcal');
+      return true;
+    }
+    return false;
   }
 }

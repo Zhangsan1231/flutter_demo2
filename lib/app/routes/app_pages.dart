@@ -6,18 +6,8 @@ import 'package:logger/logger.dart';
 import '../core/service/storage_service.dart';
 import '../modules/ai_ring/bindings/ai_ring_binding.dart';
 import '../modules/ai_ring/views/ai_ring_view.dart';
-import '../modules/bluetooth/blue_user/bindings/blue_user_binding.dart';
-import '../modules/bluetooth/blue_user/views/blue_user_view.dart';
-import '../modules/bluetooth/bluetooth_connect/bindings/bluetooth_connect_binding.dart';
-import '../modules/bluetooth/bluetooth_connect/views/bluetooth_connect_view.dart';
-import '../modules/bluetooth/bluetooth_devices/bindings/bluetooth_devices_binding.dart';
-import '../modules/bluetooth/bluetooth_devices/views/bluetooth_devices_view.dart';
-import '../modules/bluetooth/bluetooth_setting/bindings/bluetooth_setting_binding.dart';
-import '../modules/bluetooth/bluetooth_setting/views/bluetooth_setting_view.dart';
-import '../modules/bluetooth/connect_device/bindings/connect_device_binding.dart';
-import '../modules/bluetooth/connect_device/views/connect_device_view.dart';
-import '../modules/bluetooth/my_bluetooth/bindings/my_bluetooth_binding.dart';
-import '../modules/bluetooth/my_bluetooth/views/my_bluetooth_view.dart';
+import '../modules/bluetooth/bindings/bluetooth_binding.dart';
+import '../modules/bluetooth/views/bluetooth_view.dart';
 import '../modules/forget_password/bindings/forget_password_binding.dart';
 import '../modules/forget_password/views/forget_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -97,44 +87,19 @@ class AppPages {
       binding: InformationBinding(),
     ),
     GetPage(
-      name: _Paths.BLUE_USER,
-      page: () => BlueUserView(),
-      binding: BlueUserBinding(),
-    ),
-    GetPage(
-      name: _Paths.MY_BLUETOOTH,
-      page: () => MyBluetoothView(),
-      binding: MyBluetoothBinding(),
-    ),
-    GetPage(
-      name: _Paths.BLUETOOTH_DEVICES,
-      page: () => BluetoothDevicesView(),
-      binding: BluetoothDevicesBinding(),
-    ),
-    GetPage(
-      name: _Paths.BLUETOOTH_CONNECT,
-      page: () => BluetoothConnectView(),
-      binding: BluetoothConnectBinding(),
-    ),
-    GetPage(
-      name: _Paths.CONNECT_DEVICE,
-      page: () => ConnectDeviceView(),
-      binding: ConnectDeviceBinding(),
-    ),
-    GetPage(
-      name: _Paths.BLUETOOTH_SETTING,
-      page: () => BluetoothSettingView(),
-      binding: BluetoothSettingBinding(),
-    ),
-    GetPage(
       name: _Paths.AI_RING,
       page: () => AiRingView(),
       binding: AiRingBinding(),
     ),
     GetPage(
       name: _Paths.FORGET_PASSWORD,
-      page: () =>  ForgetPasswordView(),
+      page: () => ForgetPasswordView(),
       binding: ForgetPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.BLUETOOTH,
+      page: () =>  BluetoothView(),
+      binding: BluetoothBinding(),
     ),
   ];
 }
